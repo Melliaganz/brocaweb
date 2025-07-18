@@ -1,7 +1,6 @@
-import React from 'react'
 
 export default function Footer() {
   return (
-    <div>@2025 BrocaWeb. All rights reserved</div>
+    <div>©2025 BrocaWeb. All rights reserved</div>
   )
 }
