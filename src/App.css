@@ -2,7 +2,7 @@
 
 :root {
   --primary: #1c120d;
-  --secondary: #996b4d;
+  --secondary: rgb(153, 107, 77);
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
 }
@@ -23,25 +23,64 @@ a {
 .headerContainer {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   background-color: var(--blank_001);
   width: 100vw;
   border-bottom: 1px solid var(--primary);
 }
-.headerContainer ul{
+.headerContainer ul {
   list-style: none;
 }
-.headerContainer button{
-  background-color: transparent;
-  border: none
+.headerContainer a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 17px 40px;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 15px;
+  transition: all 0.5s ease;
 }
-.titreHeader h1{
+.headerContainer a:hover {
+  letter-spacing: 3px;
+  background-color: var(--secondary);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(153, 107, 77) 0px 7px 29px 0px;
+}
+.headerContainer a:active {
+  letter-spacing: 3px;
+  background-color: var(--secondary);
+  color: hsl(0, 0%, 100%);
+  transform: translateY(10px);
+  transition: 100ms;
+}
+.headerContainer button {
+  background-color: transparent;
+  border: none;
+}
+.titreHeader h1 {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.titreHeader{
-    font-size: 2.5em;
-
+.titreHeader {
+  font-size: 2.5em;
+}
+.hamburger {
+  display: none;
+}
+.footerCopyright {
+  position: absolute bottom center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--secondary);
+  font-weight: bolder;
+  letter-spacing: 1ch;
 }

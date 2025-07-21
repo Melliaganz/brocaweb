@@ -1,6 +1,6 @@
 
 export default function Footer() {
   return (
-    <div>©2025 BrocaWeb. All rights reserved</div>
+    <div className='footerCopyright'>©2025 BrocaWeb. All rights reserved</div>
   )
 }
