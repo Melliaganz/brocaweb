@@ -7,7 +7,13 @@
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
 }
-
+.App{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 100%;
+  overflow-x: hidden;
+}
 body {
   flex: 2;
   display: flex;
@@ -21,6 +27,8 @@ a {
   color: initial;
   text-decoration: none;
 }
+header{position: fixed ;
+left: 0;}
 .headerContainer {
   display: flex;
   flex-direction: row;

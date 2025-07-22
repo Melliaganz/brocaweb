@@ -1,0 +1,19 @@
+.articleDetailContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 800px;
+  margin-top: 10rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  background-color: var(--blank_002);
+}
+.articleDetailContent{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem
+}

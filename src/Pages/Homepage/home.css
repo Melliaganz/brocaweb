@@ -9,13 +9,13 @@
   background-color: var(--blank_002);
   margin-left: auto;
   margin-right: auto;
-  margin-top: 2rem;
+  margin-top: 10rem;
   border-radius: 10px;
 
 }
 
 .articlesGrid {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-top: 1rem;
@@ -23,16 +23,24 @@
 }
 
 .articleCard {
+  max-width: 200px;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 1rem;
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
+
 }
 
 .articleCard img {
-  width: 100%;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   border-radius: 4px;
+}
+.articleCard:hover{
+transform: translateY(2px);
+background-color: var(--secondary);
+color: var(--primary);
 }

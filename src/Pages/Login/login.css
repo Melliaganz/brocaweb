@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 10rem;
   margin-bottom: 2rem;
 }
 .btn {
@@ -11,7 +11,7 @@
   padding: 10px;
   border-radius: 25px;
   border: none;
-  background-color: #EDD1BF;
+  background-color: #edd1bf;
   color: var(--secondary);
   font-size: 1rem;
   cursor: pointer;
@@ -25,10 +25,23 @@
   transform: translateY(2px);
 }
 .inputs {
-  display: flex;
+  font-size: 18px;
+  padding: 5px 10px;
   width: 100%;
-  margin-bottom: 1rem;
-  border-radius: 25px;
-  padding: 10px;
-  border-width: 1px;
+  padding-left: 35px;
+  outline: none;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid var(--secondary);
+  border-radius: 5px;
+  box-shadow: 3px 3px 2px 0px #e2e2e2;
+  transition: 0.3s ease;
+}
+.inputs:focus {
+  background: #f2f2f2;
+  border: 1px solid var(--background);
+  border-radius: 10px;
+}
+.inputs::placeholder {
+	color: #DDDDDD;
 }

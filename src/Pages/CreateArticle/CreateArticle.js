@@ -3,6 +3,7 @@ import { createArticle } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Services/AuthContext";
+import "./createArticle.css";
 
 function CreateArticle() {
   const [formData, setFormData] = useState({
@@ -62,7 +63,7 @@ function CreateArticle() {
   }, [isAuthenticated, user, navigate]);
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div className="createArticleContainer">
       <h2>Créer un article</h2>
       <form onSubmit={handleSubmit} style={{ maxWidth: "500px" }}>
         <input
@@ -72,7 +73,7 @@ function CreateArticle() {
           value={formData.titre}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="inputs"
         />
         <textarea
           name="description"
@@ -81,7 +82,7 @@ function CreateArticle() {
           onChange={handleChange}
           required
           rows={4}
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="inputs"
         />
         <input
           type="number"
@@ -90,22 +91,28 @@ function CreateArticle() {
           value={formData.prix}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "1rem" }}
+          className="inputs"
         />
-        <input
-          type="text"
+        <select
           name="etat"
-          placeholder="État (ex : Bon, Neuf, Usé...)"
           value={formData.etat}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "1rem" }}
-        />
+          className="inputs"
+        >
+          <option value="">-- Sélectionner un état --</option>
+          <option value="Neuf">Neuf</option>
+          <option value="Très bon état">Très bon état</option>
+          <option value="Bon état">Bon état</option>
+          <option value="Usé">Usé</option>
+          <option value="À réparer">À réparer</option>
+        </select>
+
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          style={{ marginBottom: "1rem" }}
+          className="inputs"
         />
         <button type="submit" disabled={loading}>
           {loading ? "Création..." : "Créer l’article"}

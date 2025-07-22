@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getArticleById } from '../../Services/api';
+import './articleDetail.css';
 
 function ArticleDetail() {
   const { id } = useParams();
@@ -27,16 +28,20 @@ function ArticleDetail() {
   if (!article) return <p>Article introuvable.</p>;
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="articleDetailContainer">
       <h2>{article.titre}</h2>
+      <div className="articleDetailContent">
       <img
-        src={`http://localhost:5000/uploads/${article.image}`}
+        src={`http://localhost:5050/uploads/${article.image}`}
         alt={article.titre}
         style={{ maxWidth: '400px', borderRadius: '8px' }}
       />
+      <div className='articleDetailInfo'>
       <p><strong>Prix :</strong> {article.prix} €</p>
       <p><strong>Description :</strong> {article.description}</p>
       <p><strong>État :</strong> {article.etat}</p>
+      </div>
+      </div>
     </div>
   );
 }
