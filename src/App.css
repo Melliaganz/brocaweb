@@ -3,11 +3,11 @@
 :root {
   --primary: #1c120d;
   --secondary: rgb(153, 107, 77);
-  --background: #EDD1BF;
+  --background: #edd1bf;
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
 }
-.App{
+.App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -27,8 +27,11 @@ a {
   color: initial;
   text-decoration: none;
 }
-header{position: fixed ;
-left: 0;}
+header {
+  position: fixed;
+  left: 0;
+  z-index: 99;
+}
 .headerContainer {
   display: flex;
   flex-direction: row;
@@ -95,4 +98,49 @@ left: 0;}
   color: var(--secondary);
   font-weight: bolder;
   letter-spacing: 1ch;
+}
+
+.footer {
+  background-color: #222;
+  color: #fff;
+  position: relative;
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+  bottom: 0;
+  width: 100vw;
+  margin-top: auto;
+}
+
+.footerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footerLinks a {
+  color: #ddd;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footerLinks a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footerCopyright {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.lienGithub:hover{
+  cursor: pointer;
+  text-decoration: underline;
 }

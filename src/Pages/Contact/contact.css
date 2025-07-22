@@ -1,0 +1,16 @@
+.contactContainer{
+    margin-top: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.textContact{
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: var(--blank_002);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

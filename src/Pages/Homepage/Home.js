@@ -26,7 +26,9 @@ function Home() {
     fetchArticles();
   }, []);
 
-  if (loading) return <div>Chargement des articles...</div>;
+  if (loading) return <div style={{marginTop: "2rem"}}>
+    <span className="loader"></span>
+    Chargement des articles...</div>;
   if (error) return <div>Erreur : {error}</div>;
 
   return (
@@ -40,7 +42,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5050/uploads/${article.image}`}
+              src={`http://localhost:5000/uploads/${article.image}`}
               alt={article.titre}
             />
             <h3>{article.titre}</h3>
@@ -61,7 +63,7 @@ function Home() {
             className="articleCard"
           >
               <img
-                src={`http://localhost:5050/uploads/${article.image}`}
+                src={`http://localhost:5000/uploads/${article.image}`}
                 alt={article.titre}
               />
               <h3>{article.titre}</h3>

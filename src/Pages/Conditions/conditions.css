@@ -1,0 +1,12 @@
+.conditionContainer{
+    margin-top: 10rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.conditionText{
+    background-color: var(--blank_002);
+    padding: 2rem;
+    border-radius: 10px;
+}

@@ -9,6 +9,10 @@ import Register from "./Pages/Register/Register";
 import Login from "./Pages/Login/Login";
 import { AuthProvider } from "./Services/AuthContext";
 import CreateArticle from "./Pages/CreateArticle/CreateArticle";
+import Conditions from './Pages/Conditions/Conditions';
+import Mentions from './Pages/Mentions/Mentions';
+import Contact from './Pages/Contact/Contact';
+import APropos from './Pages/Apropos/Apropos';
 
 function App() {
   return (
@@ -23,6 +27,11 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin/create-article" element={<CreateArticle />} />
+
+            <Route path="/conditions" element={<Conditions />} />
+            <Route path="/mentions-legales" element={<Mentions />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/a-propos" element={<APropos />} />
           </Routes>
 
           <Footer />

@@ -32,7 +32,7 @@ function ArticleDetail() {
       <h2>{article.titre}</h2>
       <div className="articleDetailContent">
       <img
-        src={`http://localhost:5050/uploads/${article.image}`}
+        src={`http://localhost:5000/uploads/${article.image}`}
         alt={article.titre}
         style={{ maxWidth: '400px', borderRadius: '8px' }}
       />

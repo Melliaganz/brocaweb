@@ -1,0 +1,16 @@
+.aProposContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10rem;
+}
+
+.aProposText{
+    background-color: var(--blank_002);
+    padding: 2rem;
+    line-break: auto;
+    max-width: 50rem;
+    text-align: center;
+    border-radius: 10px;
+}

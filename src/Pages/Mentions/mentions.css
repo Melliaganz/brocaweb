@@ -1,0 +1,14 @@
+.mentionContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 10rem;
+}
+.textMentions{
+    display: flex;
+    align-items: center;
+    background-color: var(--blank_002);
+    padding: 2rem;
+    border-radius: 10px;
+}
