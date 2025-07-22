@@ -7,7 +7,7 @@ import "../App.css";
 const menuReducer = (state) => !state;
 
 function Navbar() {
-  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, user} = useContext(AuthContext);
   const firstMenuItemRef = useRef(null);
   const [menuOpen, toggleMenu] = useReducer(menuReducer, false);
   const navigate = useNavigate();
@@ -18,11 +18,11 @@ function Navbar() {
     }
   }, [menuOpen]);
 
-  const handleLogout = () => {
+ const handleLogout = React.useCallback(() => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
     navigate("/");
-  };
+  }, [setIsAuthenticated, navigate]);
 
   const { texts, menuItems } = useMemo(() => {
     const baseItems = [
@@ -35,40 +35,43 @@ function Navbar() {
       },
     ];
 
-    const authItems = isAuthenticated
-      ? [
-          {
+const authItems = isAuthenticated
+  ? [
+      ...(user?.role === 'admin'
+        ? [{
             id: "Create",
             href: "/admin/create-article",
             text: "Créer un article",
             icon: <AddBox />,
             title: "Créer un article",
-          },
-          {
-            id: "Logout",
-            href: "#",
-            text: "Déconnexion",
-            icon: <Logout />,
-            title: "Déconnexion",
-            onClick: handleLogout,
-          },
-        ]
-      : [
-          {
-            id: "Login",
-            href: "/login",
-            text: "Connexion",
-            icon: <Login />,
-            title: "Connexion",
-          },
-          {
-            id: "Register",
-            href: "/register",
-            text: "Créer un compte",
-            icon: <PersonAdd />,
-            title: "Créer un compte",
-          },
-        ];
+          }]
+        : []),
+      {
+        id: "Logout",
+        href: "#",
+        text: "Déconnexion",
+        icon: <Logout />,
+        title: "Déconnexion",
+        onClick: handleLogout,
+      },
+    ]
+  : [
+      {
+        id: "Login",
+        href: "/login",
+        text: "Connexion",
+        icon: <Login />,
+        title: "Connexion",
+      },
+      {
+        id: "Register",
+        href: "/register",
+        text: "Créer un compte",
+        icon: <PersonAdd />,
+        title: "Créer un compte",
+      },
+    ];
+
 
     return {
       texts: {
@@ -77,7 +80,7 @@ function Navbar() {
       },
       menuItems: [...baseItems, ...authItems],
     };
-  }, [isAuthenticated]);
+  }, [handleLogout, isAuthenticated, user]);
 
   return (
     <header className="header">

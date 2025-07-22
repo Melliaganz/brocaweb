@@ -3,6 +3,7 @@
 :root {
   --primary: #1c120d;
   --secondary: rgb(153, 107, 77);
+  --background: #EDD1BF;
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
 }
@@ -12,7 +13,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--blank_002);
+  background-color: var(--background);
   font-family: "Plus Jakarta Sans", sans-serif;
   font-optical-sizing: auto;
 }
@@ -80,7 +81,6 @@ a {
   display: none;
 }
 .footerCopyright {
-  position: absolute bottom center;
   display: flex;
   justify-content: center;
   align-items: center;
