@@ -41,7 +41,7 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="inputs"
         />
         <input
           type="password"
@@ -49,7 +49,7 @@ function Login() {
           value={motDePasse}
           onChange={(e) => setMotDePasse(e.target.value)}
           required
-          style={{ display: "block", width: "100%", marginBottom: "1rem" }}
+          className="inputs"
         />
         <button type="submit" disabled={loading} className="btn">
           {loading ? "Connexion..." : "Se connecter"}

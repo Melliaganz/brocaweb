@@ -11,8 +11,8 @@
   padding: 10px;
   border-radius: 25px;
   border: none;
-  background-color: var(--secondary);
-  color: white;
+  background-color: #EDD1BF;
+  color: var(--secondary);
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -23,4 +23,12 @@
 }
 .btn:active {
   transform: translateY(2px);
+}
+.inputs {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 25px;
+  padding: 10px;
+  border-width: 1px;
 }
