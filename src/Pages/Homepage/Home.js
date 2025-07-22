@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { getArticles } from '../../Services/api';
 import './home.css';
 import { useEffect, useState } from 'react';
@@ -32,24 +33,28 @@ function Home() {
       <h1>Publications récentes</h1>
       <div className="articlesGrid">
         {articles.slice(0, 5).map((article) => (
+          <Link to ={`/article/${article._id}`} key={article._id} className="articleCard">
           <div key={article._id} className="articleCard">
             <img src={`http://localhost:5000/uploads/${article.image}`} alt={article.titre} />
             <h3>{article.titre}</h3>
             <p>{article.description}</p>
             <p><strong>{article.prix} €</strong></p>
           </div>
+          </Link>
         ))}
       </div>
 
       <h2>Tout le catalogue</h2>
       <div className="articlesGrid">
         {articles.map((article) => (
+          <Link to={`/article/${article._id}`} key={article._id} className="articleCard">
           <div key={article._id} className="articleCard">
             <img src={`http://localhost:5000/uploads/${article.image}`} alt={article.titre} />
             <h3>{article.titre}</h3>
             <p>{article.description}</p>
             <p><strong>{article.prix} €</strong></p>
           </div>
+          </Link>
         ))}
       </div>
     </div>
