@@ -10,26 +10,28 @@ function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { setIsAuthenticated, setUser } = useContext(AuthContext);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setMessage('');
 
-    try {
-      const data = await login(email, motDePasse);
-      localStorage.setItem("token", data.token);
-      setMessage("Connexion réussie");
-      navigate("/");
-    } catch (err) {
-      setMessage(err.message);
-    } finally {
-      setIsAuthenticated(true);
+  try {
+    const data = await login(email, motDePasse);
+    localStorage.setItem('token', data.token);
 
-      setLoading(false);
-    }
-  };
+    const payload = JSON.parse(atob(data.token.split('.')[1]));
+    setIsAuthenticated(true);
+    setUser({ id: payload.id, role: payload.role });
+
+    navigate('/');
+  } catch (err) {
+    setMessage(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="loginContainer">
