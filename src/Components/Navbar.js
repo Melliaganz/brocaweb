@@ -1,21 +1,16 @@
 import { Home, Garage, AddBox, Logout, Login, PersonAdd } from "@mui/icons-material";
-import React, { useEffect, useMemo, useRef, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useRef, useReducer, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Services/AuthContext";
 import "../App.css";
 
 const menuReducer = (state) => !state;
 
 function Navbar() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
   const firstMenuItemRef = useRef(null);
   const [menuOpen, toggleMenu] = useReducer(menuReducer, false);
   const navigate = useNavigate();
-
-  // Vérifie si un token est présent
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  }, []);
 
   useEffect(() => {
     if (menuOpen && firstMenuItemRef.current) {
