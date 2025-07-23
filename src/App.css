@@ -2,7 +2,7 @@
 
 :root {
   --primary: #1c120d;
-  --secondary: rgb(153, 107, 77);
+  --secondary: #996b4d;
   --background: #edd1bf;
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
@@ -140,7 +140,57 @@ header {
   color: #aaa;
 }
 
-.lienGithub:hover{
+.lienGithub:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+.searchForm {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  background-color: inherit;
+}
+.searchFormContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  border: 2px solid var(--secondary);
+  border-radius: 125px;
+  box-shadow: 3px 3px 2px 0px #e2e2e2;
+  transition: 0.3s ease;
+}
+.searchForm input {
+  font-size: 17px;
+  width: 100%;
+  /* padding-left: 35px; */
+  margin-left: 1rem;
+  outline: none;
+  /* background: #ffffff; */
+  color: #000000;
+  border: transparent;
+  transition: 0.3s ease;
+}
+.searchForm:focus {
+  background: #f2f2f2;
+  border: 1px solid var(--background);
+  border-radius: 10px;
+}
+.searchForm button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  color: var(--blank_002);
+  border-radius: 0px 20px 20px 0px;
+  cursor: pointer;
+  background-color: var(--secondary);
+  border-left: 1px solid var(--primary);
+}
+
+.searchForm button:hover {
+  background-color: var(--blank_002);
 }

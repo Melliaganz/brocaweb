@@ -26,9 +26,21 @@ function Home() {
     fetchArticles();
   }, []);
 
-  if (loading) return <div style={{marginTop: "2rem"}}>
-    <span className="loader"></span>
-    Chargement des articles...</div>;
+  if (loading)
+    return (
+      <div
+        style={{
+          marginTop: "10rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <span className="loader"></span>
+        Chargement des articles...
+      </div>
+    );
   if (error) return <div>Erreur : {error}</div>;
 
   return (
@@ -45,9 +57,8 @@ function Home() {
               src={`http://localhost:5000/uploads/${article.image}`}
               alt={article.titre}
             />
-            <h3>{article.titre}</h3>
-            <p>{article.description}</p>
-            <p>
+            <h3 className="titreArticle">{article.titre}</h3>
+            <p className="articlePrix">
               <strong>{article.prix} €</strong>
             </p>
           </Link>
@@ -62,15 +73,14 @@ function Home() {
             key={article._id}
             className="articleCard"
           >
-              <img
-                src={`http://localhost:5000/uploads/${article.image}`}
-                alt={article.titre}
-              />
-              <h3>{article.titre}</h3>
-              <p>{article.description}</p>
-              <p>
-                <strong>{article.prix} €</strong>
-              </p>
+            <img
+              src={`http://localhost:5000/uploads/${article.image}`}
+              alt={article.titre}
+            />
+            <h3 className="titreArticle">{article.titre}</h3>
+            <p className="articlePrix">
+              <strong>{article.prix} €</strong>
+            </p>
           </Link>
         ))}
       </div>
