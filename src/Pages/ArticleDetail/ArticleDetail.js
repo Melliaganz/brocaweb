@@ -51,7 +51,9 @@ function ArticleDetail() {
         <div className="imagesGallery">
           <div className="mainImageContainer">
             <img
-              src={`http://localhost:5000/uploads/${article.images[0]}`}
+              src={`http://localhost:5000/uploads/${
+                article.images[article.mainImageIndex || 0]
+              }`}
               alt={article.titre}
               className="mainImage"
             />
@@ -59,17 +61,20 @@ function ArticleDetail() {
 
           {article.images.length > 1 && (
             <div className="thumbnailRow">
-              {article.images.slice(1).map((img, i) => (
-                <img
-                  key={i}
-                  src={`http://localhost:5000/uploads/${img}`}
-                  alt={`Miniature ${i + 1}`}
-                  className="thumbnailImage"
-                  onClick={() =>
-                    setSelectedImage(`http://localhost:5000/uploads/${img}`)
-                  }
-                />
-              ))}
+              {article.images.map(
+                (img, i) =>
+                  i !== (article.mainImageIndex || 0) && (
+                    <img
+                      key={i}
+                      src={`http://localhost:5000/uploads/${img}`}
+                      alt={`Miniature ${i + 1}`}
+                      className="thumbnailImage"
+                      onClick={() =>
+                        setSelectedImage(`http://localhost:5000/uploads/${img}`)
+                      }
+                    />
+                  )
+              )}
             </div>
           )}
         </div>

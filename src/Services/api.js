@@ -84,3 +84,19 @@ export const deleteArticle = async (id) => {
   if (!res.ok) throw new Error(data.message || 'Erreur lors de la suppression de l’article');
   return data;
 };
+
+// Modification (admin)
+export const updateArticle = async (id, formData) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData, // formData peut contenir existingImages[], mainImageIndex, etc.
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Erreur lors de la mise à jour de l'article");
+  return data;
+};

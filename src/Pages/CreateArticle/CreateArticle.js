@@ -3,7 +3,6 @@ import { createArticle } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Services/AuthContext";
 import "./createArticle.css";
-import { Close } from "@mui/icons-material";
 
 function CreateArticle() {
   const [formData, setFormData] = useState({
@@ -17,6 +16,7 @@ function CreateArticle() {
   const [images, setImages] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mainImageIndex, setMainImageIndex] = useState(null);
   const { isAuthenticated, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -40,13 +40,12 @@ function CreateArticle() {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-
-    if (files.length > 5) {
-      setMessage("Vous ne pouvez télécharger que 5 images maximum.");
+    if (images.length + files.length > 5) {
+      setMessage("Limite de 5 images maximum.");
       return;
     }
-
-    setImages(files);
+    setImages((prev) => [...prev, ...files]);
+    if (mainImageIndex === null && files.length > 0) setMainImageIndex(0);
   };
 
   if (images.length > 5) {
@@ -54,6 +53,17 @@ function CreateArticle() {
     setLoading(false);
     return;
   }
+  const isFormValid = () => {
+    return (
+      formData.titre.trim() !== "" &&
+      formData.description.trim() !== "" &&
+      formData.prix !== "" &&
+      formData.etat !== "" &&
+      formData.categorie !== "" &&
+      images.length > 0 &&
+      images.length <= 5
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +76,7 @@ function CreateArticle() {
     payload.append("prix", formData.prix);
     payload.append("etat", formData.etat);
     payload.append("categorie", formData.categorie);
+    payload.append("mainImageIndex", mainImageIndex);
 
     images.forEach((img) => {
       payload.append("images", img); // même champ "images" pour chaque fichier
@@ -90,13 +101,32 @@ function CreateArticle() {
     }
   };
   const handleRemoveImage = (index) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    const newImages = images.filter((_, i) => i !== index);
+
+    setImages(newImages);
+
+    if (mainImageIndex === index) {
+      setMainImageIndex(0);
+    } else if (index < mainImageIndex) {
+      setMainImageIndex((prev) => prev - 1);
+    }
   };
+
+  // const handleAddImage = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+  //   if (images.length >= 5) {
+  //     setMessage("Limite de 5 images maximum.");
+  //     return;
+  //   }
+  //   setImages((prev) => [...prev, file]);
+  //   if (mainImageIndex === null) setMainImageIndex(0);
+  // };
 
   return (
     <div className="createArticleContainer">
       <h2>Créer un article</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: "500px" }}>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="titre"
@@ -126,37 +156,37 @@ function CreateArticle() {
           required
           className="inputs"
         />
+        <div className="selectInput">
+          <select
+            name="etat"
+            value={formData.etat}
+            onChange={handleChange}
+            required
+            className="inputs"
+          >
+            <option value="">Etat</option>
+            <option value="Neuf">Neuf</option>
+            <option value="Très bon état">Très bon état</option>
+            <option value="Bon état">Bon état</option>
+            <option value="Usé">Usé</option>
+            <option value="À réparer">À réparer</option>
+          </select>
 
-        <select
-          name="etat"
-          value={formData.etat}
-          onChange={handleChange}
-          required
-          className="inputs"
-        >
-          <option value="">-- Sélectionner un état --</option>
-          <option value="Neuf">Neuf</option>
-          <option value="Très bon état">Très bon état</option>
-          <option value="Bon état">Bon état</option>
-          <option value="Usé">Usé</option>
-          <option value="À réparer">À réparer</option>
-        </select>
-
-        <select
-          name="categorie"
-          value={formData.categorie}
-          onChange={handleChange}
-          required
-          className="inputs"
-        >
-          <option value="">-- Sélectionner une catégorie --</option>
-          <option value="Électronique">Électronique</option>
-          <option value="Meubles">Meubles</option>
-          <option value="Vêtements">Vêtements</option>
-          <option value="Jeux / Jouets">Jeux / Jouets</option>
-          <option value="Autre">Autre</option>
-        </select>
-
+          <select
+            name="categorie"
+            value={formData.categorie}
+            onChange={handleChange}
+            required
+            className="inputs"
+          >
+            <option value="">Catégorie</option>
+            <option value="Électronique">Électronique</option>
+            <option value="Meubles">Meubles</option>
+            <option value="Vêtements">Vêtements</option>
+            <option value="Jeux / Jouets">Jeux / Jouets</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
         <input
           type="file"
           accept="image/*"
@@ -175,17 +205,28 @@ function CreateArticle() {
               <div key={idx} className="previewItem">
                 <img
                   src={URL.createObjectURL(img)}
-                  alt={`Prévisualisation ${idx}`}
+                  alt={`Preview ${idx}`}
+                  onClick={() => setMainImageIndex(idx)}
+                  style={{
+                    border:
+                      idx === mainImageIndex
+                        ? "2px solid var(--primary)"
+                        : "1px solid #ccc",
+                    cursor: "pointer",
+                  }}
                 />
                 <button type="button" onClick={() => handleRemoveImage(idx)}>
                   X
                 </button>
+                {idx === mainImageIndex && (
+                  <span className="mainLabel">Image principale</span>
+                )}
               </div>
             ))}
           </div>
         )}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={!isFormValid() || loading}>
           {loading ? "Création..." : "Créer l’article"}
         </button>
       </form>

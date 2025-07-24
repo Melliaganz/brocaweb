@@ -50,7 +50,7 @@ function SearchResults() {
               className="articleCard"
             >
               <img
-                src={`http://localhost:5000/uploads/${article.images[0]}`}
+                src={`http://localhost:5000/uploads/${article.images[article.mainImageIndex || [0]]}`}
                 alt={article.titre}
               />
               <h3 className="titreArticle">{article.titre}</h3>

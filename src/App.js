@@ -15,6 +15,8 @@ import Contact from "./Pages/Contact/Contact";
 import APropos from "./Pages/Apropos/Apropos";
 import SearchResults from "./Pages/SearchResults/SearchResults";
 import Page404 from "./Pages/Page404/Page404";
+import EditArticle from "./Pages/EditArticle/EditArticle";
+import CategoriePage from "./Pages/CategoriePage";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
             <Route path="/mentions-legales" element={<Mentions />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/a-propos" element={<APropos />} />
+            <Route path="admin/edit-article/:id" element={<EditArticle />}/>
+            <Route path ="/categorie/:categorie" element={<CategoriePage/>} />
           </Routes>
 
           <Footer />

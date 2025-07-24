@@ -139,7 +139,7 @@ header {
 }
 
 .footerLinks a:hover {
-  color: var(--blank_002);
+  color: var(--primary);
   text-decoration: underline;
 }
 

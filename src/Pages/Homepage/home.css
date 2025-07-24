@@ -107,6 +107,12 @@
   height: 12px;
   border-radius: 50%;
 }
+.sortControls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin: 1rem 0;
+}
 
 @keyframes rotation {
   0% {
