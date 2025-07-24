@@ -1,10 +1,15 @@
 .loginContainer {
+  padding: 2rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 80vw;
+  background-color: var(--blank_002);
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 10rem;
-  margin-bottom: 2rem;
+  border-radius: 10px 10px 0px 0px;
 }
 .btn {
   width: 100%;
@@ -31,9 +36,9 @@
   padding-left: 35px;
   outline: none;
   background: #ffffff;
-  color: #000000;
-  border: 1px solid var(--secondary);
-  border-radius: 5px;
+  color: var(--secondary);
+  border: none;
+  border-radius: 10px;
   box-shadow: 3px 3px 2px 0px #e2e2e2;
   transition: 0.3s ease;
 }
@@ -43,5 +48,6 @@
   border-radius: 10px;
 }
 .inputs::placeholder {
-	color: #DDDDDD;
+	color: var(--secondary);
+  font-weight:lighter;
 }

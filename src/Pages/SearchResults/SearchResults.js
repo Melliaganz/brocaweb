@@ -1,43 +1,64 @@
-import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { getArticles } from "../../Services/api";
-import "./searchResults.css";
+import "../Homepage/home.css"; 
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function SearchResults() {
-  const [results, setResults] = useState([]);
+  const query = useQuery();
+  const search = query.get("q")?.toLowerCase() || "";
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const query = new URLSearchParams(useLocation().search).get("q") || "";
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      const all = await getArticles();
-      const filtered = all.filter((a) =>
-        a.titre.toLowerCase().includes(query.toLowerCase()) ||
-        (a.categorie && a.categorie.toLowerCase().includes(query.toLowerCase()))
-      );
-      setResults(filtered);
-      setLoading(false);
+    const fetchAndFilter = async () => {
+      try {
+        const allArticles = await getArticles();
+        const filtered = allArticles.filter((article) =>
+          article.titre.toLowerCase().includes(search) ||
+          (article.categorie && article.categorie.toLowerCase().includes(search))
+        );
+        setArticles(filtered);
+      } catch (err) {
+        setError("Impossible de récupérer les articles.");
+      } finally {
+        setLoading(false);
+      }
     };
-    fetch();
-  }, [query]);
 
-  if (loading) return <div style={{ padding: "2rem" }}>Chargement...</div>;
+    fetchAndFilter();
+  }, [search]);
+
+  if (loading) return <div className="homeContainer">Chargement...</div>;
+  if (error) return <div className="homeContainer">Erreur : {error}</div>;
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Résultats pour “{query}”</h2>
-      {results.length === 0 && <p>Aucun article trouvé.</p>}
-      <div className="articlesGrid">
-        {results.map((article) => (
-          <div key={article._id} className="articleCard">
-            <img src={`http://localhost:5000/uploads/${article.image}`} alt={article.titre} />
-            <h3>{article.titre}</h3>
-            <p>{article.description}</p>
-            <p><strong>{article.prix} €</strong></p>
-          </div>
-        ))}
-      </div>
+    <div className="homeContainer">
+      <h2>Résultats pour "{search}"</h2>
+      {articles.length === 0 ? (
+        <p>Aucun article trouvé.</p>
+      ) : (
+        <div className="articlesGrid">
+          {articles.map((article) => (
+            <Link
+              key={article._id}
+              to={`/article/${article._id}`}
+              className="articleCard"
+            >
+              <img
+                src={`http://localhost:5000/uploads/${article.images[0]}`}
+                alt={article.titre}
+              />
+              <h3 className="titreArticle">{article.titre}</h3>
+              <p className="articlePrix"><strong>{article.prix} €</strong></p>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

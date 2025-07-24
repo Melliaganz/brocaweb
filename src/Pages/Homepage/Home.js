@@ -17,7 +17,25 @@ function Home() {
         );
         setArticles(sorted);
       } catch (err) {
-        setError(err.message);
+       if (err.response) {
+        switch (err.response.status){
+          case 404:
+            setError("Aucun article trouvé (erreur 404");
+            break;
+          case 500:
+            setError("Erreur interne du serveur. Veuillez réessayer plus tard");
+            break;
+          case 401:
+            setError("Non autorisé. Veuillez vous connecter.");
+            break;
+          default: 
+          setError(`Erreur inconnue : ${err.response.status}`);
+        }
+       } else if (err.request) {
+        setError("Le serveur ne répond pas. Vérifiez votre connexion.")
+       } else {
+        setError(`${err.message}`)
+       }
       } finally {
         setLoading(false);
       }
@@ -28,20 +46,12 @@ function Home() {
 
   if (loading)
     return (
-      <div
-        style={{
-          marginTop: "10rem",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-        }}
-      >
+      <div className="homeContainer">
         <span className="loader"></span>
         Chargement des articles...
       </div>
     );
-  if (error) return <div>Erreur : {error}</div>;
+  if (error) return <div className="homeContainer">Erreur : {error}</div>;
 
   return (
     <div className="homeContainer">
@@ -54,13 +64,15 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5000/uploads/${article.image}`}
+              src={`http://localhost:5000/uploads/${article.images[0]}`}
               alt={article.titre}
             />
-            <h3 className="titreArticle">{article.titre}</h3>
-            <p className="articlePrix">
-              <strong>{article.prix} €</strong>
-            </p>
+            <div className="descriptifArticle">
+              <h3 className="titreArticle">{article.titre}</h3>
+              <p className="articlePrix">
+                <strong>{article.prix} €</strong>
+              </p>
+            </div>
           </Link>
         ))}
       </div>
@@ -74,7 +86,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5000/uploads/${article.image}`}
+              src={`http://localhost:5000/uploads/${article.images[0]}`}
               alt={article.titre}
             />
             <h3 className="titreArticle">{article.titre}</h3>

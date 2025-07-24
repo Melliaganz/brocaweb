@@ -1,13 +1,30 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { getArticleById } from '../../Services/api';
-import './articleDetail.css';
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getArticleById, deleteArticle } from "../../Services/api";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../Services/AuthContext";
+import "./articleDetail.css";
+import { Close, Delete, Done, Edit } from "@mui/icons-material";
 
 function ArticleDetail() {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleDelete = async () => {
+    try {
+      await deleteArticle(id);
+      navigate("/");
+    } catch (err) {
+      setError("Erreur lors de la suppression");
+    }
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -31,17 +48,96 @@ function ArticleDetail() {
     <div className="articleDetailContainer">
       <h2>{article.titre}</h2>
       <div className="articleDetailContent">
-      <img
-        src={`http://localhost:5000/uploads/${article.image}`}
-        alt={article.titre}
-        style={{ maxWidth: '400px', borderRadius: '8px' }}
-      />
-      <div className='articleDetailInfo'>
-      <p><strong>Prix :</strong> {article.prix} €</p>
-      <p><strong>Description :</strong> {article.description}</p>
-      <p><strong>État :</strong> {article.etat}</p>
+        <div className="imagesGallery">
+          <div className="mainImageContainer">
+            <img
+              src={`http://localhost:5000/uploads/${article.images[0]}`}
+              alt={article.titre}
+              className="mainImage"
+            />
+          </div>
+
+          {article.images.length > 1 && (
+            <div className="thumbnailRow">
+              {article.images.slice(1).map((img, i) => (
+                <img
+                  key={i}
+                  src={`http://localhost:5000/uploads/${img}`}
+                  alt={`Miniature ${i + 1}`}
+                  className="thumbnailImage"
+                  onClick={() =>
+                    setSelectedImage(`http://localhost:5000/uploads/${img}`)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="articleDetailInfo">
+          {user?.role === "admin" && (
+            <div className="articleActions">
+              <button
+                className="editBtn"
+                onClick={() => navigate(`/admin/edit-article/${id}`)}
+              >
+                <Edit /> Modifier
+              </button>
+              <button
+                className="deleteBtn"
+                onClick={() => setShowConfirm(true)}
+              >
+                <Delete /> Supprimer
+              </button>
+            </div>
+          )}
+          {showConfirm && (
+            <div className="confirmModal">
+              <div className="confirmBox">
+                <p>Confirmer la suppression de cet article ?</p>
+                <div className="confirmActions">
+                  <button className="buttonValidate" onClick={handleDelete}>
+                    <Done /> Oui, supprimer
+                  </button>
+                  <button
+                    className="buttonCancel"
+                    onClick={() => setShowConfirm(false)}
+                  >
+                    <Close /> Annuler
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="descriptionArticleDetail">
+            <p>
+              <strong>Prix :</strong> {article.prix} €
+            </p>
+            <p>
+              <strong>Description :</strong> {article.description}
+            </p>
+            <p>
+              <strong>État :</strong> {article.etat}
+            </p>
+            <p>
+              <strong>Catégorie:</strong> {article.categorie}
+            </p>
+          </div>
+        </div>
       </div>
-      </div>
+      {selectedImage && (
+        <div className="modalOverlay" onClick={() => setSelectedImage(null)}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="closeModalBtn"
+              onClick={() => setSelectedImage(null)}
+            >
+              <Close />
+            </button>
+            <img src={selectedImage} alt="Zoom" className="modalImage" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

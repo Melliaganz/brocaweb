@@ -14,6 +14,7 @@ import Mentions from "./Pages/Mentions/Mentions";
 import Contact from "./Pages/Contact/Contact";
 import APropos from "./Pages/Apropos/Apropos";
 import SearchResults from "./Pages/SearchResults/SearchResults";
+import Page404 from "./Pages/Page404/Page404";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Navbar />
 
           <Routes>
+            <Route path="*" element={<Page404 />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/" element={<Home />} />
             <Route path="/article/:id" element={<ArticleDetail />} />
