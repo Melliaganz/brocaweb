@@ -1,0 +1,13 @@
+.checkoutContainer {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 80vw;
+  background-color: var(--blank_002);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10rem;
+  border-radius: 10px 10px 0px 0px;
+}
