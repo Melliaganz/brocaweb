@@ -11,6 +11,7 @@ function CreateArticle() {
     prix: "",
     etat: "",
     categorie: "",
+    quantite: 1,
   });
 
   const [images, setImages] = useState([]);
@@ -77,6 +78,7 @@ function CreateArticle() {
     payload.append("etat", formData.etat);
     payload.append("categorie", formData.categorie);
     payload.append("mainImageIndex", mainImageIndex);
+    payload.append("quantite", formData.quantite);
 
     images.forEach((img) => {
       payload.append("images", img); // même champ "images" pour chaque fichier
@@ -186,6 +188,16 @@ function CreateArticle() {
             <option value="Jeux / Jouets">Jeux / Jouets</option>
             <option value="Autre">Autre</option>
           </select>
+          <input
+            type="number"
+            name="quantite"
+            placeholder="Quantité"
+            min={1}
+            value={formData.quantite}
+            onChange={handleChange}
+            required
+            className="inputs"
+          />
         </div>
         <input
           type="file"

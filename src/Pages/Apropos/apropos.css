@@ -11,6 +11,7 @@
     padding: 2rem;
     line-break: auto;
     max-width: 50rem;
-    text-align: center;
+    text-align: start;
     border-radius: 10px;
+    margin-bottom: -2rem;
 }

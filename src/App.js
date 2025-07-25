@@ -1,13 +1,18 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import { AuthProvider } from "./Services/AuthContext";
+import { CartProvider } from "./Services/CartContext";
+
+/* Components */
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
+
+/* Pages */
 import Home from "./Pages/Homepage/Home";
 import ArticleDetail from "./Pages/ArticleDetail/ArticleDetail";
 import Register from "./Pages/Register/Register";
 import Login from "./Pages/Login/Login";
-import { AuthProvider } from "./Services/AuthContext";
 import CreateArticle from "./Pages/CreateArticle/CreateArticle";
 import Conditions from "./Pages/Conditions/Conditions";
 import Mentions from "./Pages/Mentions/Mentions";
@@ -16,11 +21,14 @@ import APropos from "./Pages/Apropos/Apropos";
 import SearchResults from "./Pages/SearchResults/SearchResults";
 import Page404 from "./Pages/Page404/Page404";
 import EditArticle from "./Pages/EditArticle/EditArticle";
-import CategoriePage from "./Pages/CategoriePage";
+import CategoriePage from "./Pages/CategoriePage/CategoriePage";
+import Checkout from "./Pages/Checkout/Checkout";
+
 
 function App() {
   return (
     <AuthProvider>
+      <CartProvider >
       <Router>
         <div className="App">
           <Navbar />
@@ -39,11 +47,14 @@ function App() {
             <Route path="/a-propos" element={<APropos />} />
             <Route path="admin/edit-article/:id" element={<EditArticle />}/>
             <Route path ="/categorie/:categorie" element={<CategoriePage/>} />
+            <Route path="/checkout" element={<Checkout />} />
+
           </Routes>
 
           <Footer />
         </div>
       </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

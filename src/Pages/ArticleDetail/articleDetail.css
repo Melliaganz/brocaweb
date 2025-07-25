@@ -73,17 +73,16 @@
   justify-content: center;
   gap: 10px;
   /* transition: 0.5s ease */
-
 }
-.editBtn:hover{
+.editBtn:hover {
   background-color: #4caf50;
   color: hsl(0, 0%, 100%);
   box-shadow: #4caf50;
   transform: translateY(-5px);
   transition: 100ms ease;
 }
-.editBtn:active{
-    transform: translateY(5px);
+.editBtn:active {
+  transform: translateY(5px);
   transition: 100ms ease;
 }
 .editBtn svg {
@@ -103,7 +102,7 @@
   color: hsl(0, 0%, 100%);
   box-shadow: #f44336;
   transform: translateY(-5px);
-  transition: 100ms ease
+  transition: 100ms ease;
 }
 .confirmModal {
   display: flex;
@@ -140,8 +139,36 @@
   color: hsl(0, 0%, 100%);
   box-shadow: #4caf50;
 }
-.descriptionArticleDetail{
+.descriptionArticleDetail {
   display: flex;
   flex-direction: column;
   align-items: start;
+}
+.articleButtonDetail button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 0;
+  background-color: var(--blank_001);
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 12px;
+  transition: all 0.5s ease;
+  gap: 10px;
+}
+.articleButtonDetail button:hover {
+  background-color: var(--secondary);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(153, 107, 77) 0px 7px 29px 0px;
+}
+.articleButtonDetail button:active {
+  /* letter-spacing: 3px; */
+  background-color: var(--secondary);
+  color: hsl(0, 0%, 100%);
+  transform: translateY(10px);
+  transition: 100ms;
 }

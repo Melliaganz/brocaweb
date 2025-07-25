@@ -4,8 +4,9 @@ import { getArticleById, deleteArticle } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Services/AuthContext";
+import { CartContext } from "../../Services/CartContext";
 import "./articleDetail.css";
-import { Close, Delete, Done, Edit } from "@mui/icons-material";
+import { Close, Delete, Done, Edit, ShoppingCart } from "@mui/icons-material";
 
 function ArticleDetail() {
   const { id } = useParams();
@@ -13,6 +14,7 @@ function ArticleDetail() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
+  const { addToCart } = useContext(CartContext);
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -125,8 +127,16 @@ function ArticleDetail() {
               <strong>État :</strong> {article.etat}
             </p>
             <p>
-              <strong>Catégorie:</strong> {article.categorie}
+              <strong>Catégorie :</strong> {article.categorie}
             </p>
+            <p>
+              <strong>Quantité :</strong> {article.quantite}
+            </p>
+          </div>
+          <div className="articleButtonDetail">
+            <button onClick={() => addToCart(article, 1)}>
+             <ShoppingCart /> Ajouter au panier
+            </button>
           </div>
         </div>
       </div>

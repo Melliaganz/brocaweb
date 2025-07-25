@@ -100,3 +100,19 @@ export const updateArticle = async (id, formData) => {
   if (!res.ok) throw new Error(data.message || "Erreur lors de la mise à jour de l'article");
   return data;
 };
+export const placeOrder = async (items) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_BASE_URL}/orders`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ items }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Erreur lors de la commande");
+  return data;
+};

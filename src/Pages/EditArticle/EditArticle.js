@@ -15,6 +15,7 @@ function EditArticle() {
     prix: "",
     etat: "",
     categorie: "",
+    quantite: "",
   });
   const [existingImages, setExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
@@ -32,7 +33,9 @@ function EditArticle() {
           prix: article.prix,
           etat: article.etat,
           categorie: article.categorie,
+          quantite: article.quantite ?? 1,
         });
+
         setExistingImages(article.images);
         setMainImageIndex(article.mainImageIndex || 0);
       } catch (err) {
@@ -43,11 +46,11 @@ function EditArticle() {
     };
     fetchData();
   }, [id]);
-useEffect(() => {
-  if (!user || user.role !== "admin") {
-    navigate("/");
-  }
-}, [user, navigate]);
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,9 +96,9 @@ useEffect(() => {
     }
 
     const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) =>
-      form.append(key, value)
-    );
+    form.append("quantite", formData.quantite);
+
+    Object.entries(formData).forEach(([key, value]) => form.append(key, value));
 
     existingImages.forEach((img) => form.append("existingImages[]", img));
     form.append("mainImageIndex", mainImageIndex);
@@ -173,6 +176,16 @@ useEffect(() => {
             <option value="Jeux / Jouets">Jeux / Jouets</option>
             <option value="Autre">Autre</option>
           </select>
+          <input
+            type="number"
+            name="quantite"
+            placeholder="Quantité"
+            min={1}
+            value={formData.quantite}
+            onChange={handleChange}
+            required
+            className="inputs"
+          />
         </div>
 
         <p>Images actuelles :</p>
@@ -188,7 +201,10 @@ useEffect(() => {
                   cursor: "pointer",
                 }}
               />
-              <button type="button" onClick={() => handleRemoveExistingImage(idx)}>
+              <button
+                type="button"
+                onClick={() => handleRemoveExistingImage(idx)}
+              >
                 X
               </button>
             </div>
@@ -215,7 +231,10 @@ useEffect(() => {
                       cursor: "pointer",
                     }}
                   />
-                  <button type="button" onClick={() => handleRemoveNewImage(idx)}>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveNewImage(idx)}
+                  >
                     X
                   </button>
                 </div>

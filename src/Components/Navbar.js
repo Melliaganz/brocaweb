@@ -6,6 +6,7 @@ import {
   Login,
   PersonAdd,
   Search,
+  ShoppingCart,
 } from "@mui/icons-material";
 import React, {
   useEffect,
@@ -41,7 +42,7 @@ function Navbar() {
     navigate("/");
   }, [setIsAuthenticated, navigate]);
 
-   const handleSearch = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -79,6 +80,13 @@ function Navbar() {
             title: "Déconnexion",
             onClick: handleLogout,
           },
+          {
+            id: "Cart",
+            href:"/checkout",
+            text: <ShoppingCart />,
+            icon: null,
+            title: "Panier",
+          }
         ]
       : [
           {
@@ -114,13 +122,15 @@ function Navbar() {
         </h1>
         <form className="searchForm" onSubmit={handleSearch}>
           <div className="searchFormContainer">
-          <input
-            type="text"
-            placeholder="Rechercher un article..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit"><Search /></button>
+            <input
+              type="text"
+              placeholder="Rechercher un article..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit">
+              <Search />
+            </button>
           </div>
         </form>
         <button
