@@ -132,7 +132,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://${API_BASE_URL_IMG}/uploads/${
+              src={`${API_BASE_URL_IMG}/uploads/${
                 article.images[article.mainImageIndex || 0]
               }`}
               alt={article.titre}
@@ -155,7 +155,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://${API_BASE_URL_IMG}/uploads/${
+              src={`${API_BASE_URL_IMG}/uploads/${
                 article.images[article.mainImageIndex || 0]
               }`}
               alt={article.titre}
