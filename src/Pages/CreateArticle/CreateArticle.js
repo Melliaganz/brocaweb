@@ -17,10 +17,24 @@ function CreateArticle() {
   const [images, setImages] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mainImageIndex, setMainImageIndex] = useState(null);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const [mainImageIndex, setMainImageIndex] = useState(0);
   const { isAuthenticated, user } = useContext(AuthContext);
+
+  const maxFiles = 5;
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Generate URLs only when images change
+    const objectUrls = images.map((img) => URL.createObjectURL(img));
+    setPreviewUrls(objectUrls);
+
+    // Cleanup: Revoke URLs to free memory
+    return () => {
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [images]);
   // Autorisation admin
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -35,18 +49,20 @@ function CreateArticle() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value ?? "",
     }));
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 5) {
+    if (images.length + files.length > maxFiles) {
       setMessage("Limite de 5 images maximum.");
       return;
     }
     setImages((prev) => [...prev, ...files]);
-    if (mainImageIndex === null && files.length > 0) setMainImageIndex(0);
+    if (images.length === 0 && files.length > 0) {
+      setMainImageIndex(0);
+    }
   };
 
   if (images.length > 5) {
@@ -62,7 +78,7 @@ function CreateArticle() {
       formData.etat !== "" &&
       formData.categorie !== "" &&
       images.length > 0 &&
-      images.length <= 5
+      images.length <= maxFiles
     );
   };
 
@@ -77,7 +93,7 @@ function CreateArticle() {
     payload.append("prix", formData.prix);
     payload.append("etat", formData.etat);
     payload.append("categorie", formData.categorie);
-    payload.append("mainImageIndex", mainImageIndex);
+    payload.append("mainImageIndex", mainImageIndex || 0);
     payload.append("quantite", formData.quantite);
 
     images.forEach((img) => {
@@ -93,6 +109,7 @@ function CreateArticle() {
         prix: "",
         etat: "",
         categorie: "",
+        quantite: 1,
       });
       setImages([]);
       navigate("/");
@@ -114,17 +131,6 @@ function CreateArticle() {
     }
   };
 
-  // const handleAddImage = (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-  //   if (images.length >= 5) {
-  //     setMessage("Limite de 5 images maximum.");
-  //     return;
-  //   }
-  //   setImages((prev) => [...prev, file]);
-  //   if (mainImageIndex === null) setMainImageIndex(0);
-  // };
-
   return (
     <div className="createArticleContainer">
       <h2>Créer un article</h2>
@@ -133,7 +139,7 @@ function CreateArticle() {
           type="text"
           name="titre"
           placeholder="Titre"
-          value={formData.titre}
+          value={formData.titre ?? ""}
           onChange={handleChange}
           required
           className="inputs"
@@ -153,7 +159,7 @@ function CreateArticle() {
           type="number"
           name="prix"
           placeholder="Prix (€)"
-          value={formData.prix}
+          value={formData.prix ?? ""}
           onChange={handleChange}
           required
           className="inputs"
@@ -193,7 +199,7 @@ function CreateArticle() {
             name="quantite"
             placeholder="Quantité"
             min={1}
-            value={formData.quantite}
+            value={formData.quantite ?? ""}
             onChange={handleChange}
             required
             className="inputs"
@@ -205,38 +211,38 @@ function CreateArticle() {
           multiple
           onChange={handleImageChange}
           className="inputs"
-          max={5}
+          max={maxFiles}
         />
         <p style={{ fontSize: "0.9rem", color: "gray" }}>
-          {images.length}/5 images sélectionnées
+          {images.length}/{maxFiles} images sélectionnées
         </p>
-
-        {images.length > 0 && (
-          <div className="previewGrid">
-            {images.map((img, idx) => (
-              <div key={idx} className="previewItem">
-                <img
-                  src={URL.createObjectURL(img)}
-                  alt={`Preview ${idx}`}
-                  onClick={() => setMainImageIndex(idx)}
-                  style={{
-                    border:
-                      idx === mainImageIndex
-                        ? "2px solid var(--primary)"
-                        : "1px solid #ccc",
-                    cursor: "pointer",
-                  }}
-                />
-                <button type="button" onClick={() => handleRemoveImage(idx)}>
-                  X
-                </button>
-                {idx === mainImageIndex && (
-                  <span className="mainLabel">Image principale</span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        <div stytle={{ display: "flex", gap: "10px", flexWrap: "wrap" , flexDirection:"row"}} className="previewContainer">
+          {previewUrls.map((url, idx) => (
+            <div key={idx} className="previewItem">
+              <img
+                src={url}
+                alt={`Preview ${idx}`}
+                onClick={() => setMainImageIndex(idx)}
+                width={300}
+                height={200}
+                style={{
+                  border:
+                    idx === mainImageIndex
+                      ? "2px solid blue"
+                      : "1px solid #ccc",
+                  cursor: "pointer",
+                }}
+              />
+              <button type="button" onClick={() => handleRemoveImage(idx)}>
+                X
+              </button>
+            </div>
+          ))}
+        </div>
+        <p style={{ textAlign: "center", fontSize: "0.9rem", color: "gray" }}>
+          Cliquer sur une des photos pour en faire la photo principale de
+          l'article
+        </p>
 
         <button type="submit" disabled={!isFormValid() || loading}>
           {loading ? "Création..." : "Créer l’article"}

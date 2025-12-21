@@ -32,13 +32,24 @@ function Home() {
         );
     }
   }, [articles, sortOption]);
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         const data = await getArticles();
-        const sorted = data.sort(
+        if (data && data.length > 0) {
+          console.log("Premier article reçu :", data[0].titre);
+        } else {
+          console.log("Aucun article en base de données.");
+        }
+        const availableArticles = data.filter(
+          (article) => article.quantite > 0
+        );
+
+        const sorted = availableArticles.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
+
         setArticles(sorted);
 
         const categoryMap = {};
@@ -125,6 +136,8 @@ function Home() {
                 article.images[article.mainImageIndex || 0]
               }`}
               alt={article.titre}
+              width={300}
+              height={200}
             />
             <div className="descriptifArticle">
               <h3 className="titreArticle"> Catégorie : {categorie}</h3>

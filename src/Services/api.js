@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = "http://localhost:5000/api";
 
 /**
  * Authentification
@@ -7,26 +7,26 @@ const API_BASE_URL = 'http://localhost:5000/api';
 // Inscription
 export const register = async ({ nom, email, motDePasse }) => {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nom, email, motDePasse }),
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nom, email, motDePasse: motDePasse }),
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de l’inscription');
+  if (!res.ok) throw new Error(data.message || "Erreur lors de l’inscription");
   return data;
 };
 
 // Connexion
 export const login = async (email, motDePasse) => {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, motDePasse }),
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, motDePasse: motDePasse }),
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de la connexion');
+  if (!res.ok) throw new Error(data.message || "Erreur lors de la connexion");
   return data;
 };
 
@@ -38,7 +38,10 @@ export const login = async (email, motDePasse) => {
 export const getArticles = async () => {
   const res = await fetch(`${API_BASE_URL}/articles`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de la récupération des articles');
+  if (!res.ok)
+    throw new Error(
+      data.message || "Erreur lors de la récupération des articles"
+    );
   return data;
 };
 
@@ -46,7 +49,10 @@ export const getArticles = async () => {
 export const getArticleById = async (id) => {
   const res = await fetch(`${API_BASE_URL}/articles/${id}`);
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de la récupération de l’article');
+  if (!res.ok)
+    throw new Error(
+      data.message || "Erreur lors de la récupération de l’article"
+    );
   return data;
 };
 
@@ -56,9 +62,9 @@ export const getArticleById = async (id) => {
 
 // Création (admin)
 export const createArticle = async (formData) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles`, {
-    method: 'POST',
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -66,30 +72,34 @@ export const createArticle = async (formData) => {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de la création de l’article');
+  if (!res.ok)
+    throw new Error(data.message || "Erreur lors de la création de l’article");
   return data;
 };
 
 // Suppression (admin)
 export const deleteArticle = async (id) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Erreur lors de la suppression de l’article');
+  if (!res.ok)
+    throw new Error(
+      data.message || "Erreur lors de la suppression de l’article"
+    );
   return data;
 };
 
 // Modification (admin)
 export const updateArticle = async (id, formData) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -97,7 +107,10 @@ export const updateArticle = async (id, formData) => {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Erreur lors de la mise à jour de l'article");
+  if (!res.ok)
+    throw new Error(
+      data.message || "Erreur lors de la mise à jour de l'article"
+    );
   return data;
 };
 export const placeOrder = async (items) => {
@@ -114,5 +127,21 @@ export const placeOrder = async (items) => {
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Erreur lors de la commande");
+  return data;
+};
+
+export const getAllOrders = async () => {
+  const token = localStorage.getItem("token");
+  
+  const res = await fetch(`${API_BASE_URL}/orders`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Erreur lors de la récupération des commandes");
   return data;
 };

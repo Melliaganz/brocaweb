@@ -9,5 +9,15 @@
     "not firefox <= 137",
     "not ios_saf <= 11.2",
     "not opera <= 117"
-  ]
+  ],
+  "hints": {
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "backdrop-filter"
+        ]
+      }
+    ]
+  }
 }

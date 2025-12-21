@@ -23,7 +23,7 @@ function Register() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -31,12 +31,15 @@ function Register() {
     try {
       const data = await register(formData);
       localStorage.setItem("token", data.token);
+      
+      setIsAuthenticated(true); 
+      
       setMessage("Compte créé avec succès");
       navigate("/");
     } catch (err) {
-      setMessage(err.message);
+      // On capture l'erreur proprement
+      setMessage(err.response?.data?.message || err.message || "Une erreur est survenue");
     } finally {
-      setIsAuthenticated(true);
       setLoading(false);
     }
   };

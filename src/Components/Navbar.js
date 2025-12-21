@@ -7,6 +7,7 @@ import {
   PersonAdd,
   Search,
   ShoppingCart,
+  ReceiptLong
 } from "@mui/icons-material";
 import React, {
   useEffect,
@@ -70,6 +71,13 @@ function Navbar() {
                   icon: <AddBox />,
                   title: "Créer un article",
                 },
+                {
+              id: "AdminOrders", // <-- Nouvel item pour les commandes
+              href: "/admin/orders",
+              text: "Commandes clients",
+              icon: <ReceiptLong />,
+              title: "Gestion des commandes",
+            },
               ]
             : []),
           {
@@ -82,11 +90,12 @@ function Navbar() {
           },
           {
             id: "Cart",
-            href:"/checkout",
-            text: <ShoppingCart />,
-            icon: null,
+            href: "/checkout",
+            text: null,
+            icon: <ShoppingCart />,
+            ariaLabel: "Voir mon panier",
             title: "Panier",
-          }
+          },
         ]
       : [
           {
@@ -128,7 +137,7 @@ function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit">
+            <button type="submit" aria-label="Rechercher">
               <Search />
             </button>
           </div>
@@ -145,16 +154,17 @@ function Navbar() {
         <nav
           className={`navContainer ${menuOpen ? "open" : ""}`}
           role="navigation"
-          aria-hidden={!menuOpen}
         >
           <ul role="menu">
             {menuItems.map(
-              ({ id, href, text, icon, title, onClick }, index) => (
-                <li key={id} role="menuitem">
+              ({ id, href, text, icon, title, onClick, ariaLabel }, index) => (
+                <li key={id} role="none">
                   <a
                     href={href}
+                    role="menuitem"
                     title={"Bouton " + title}
                     ref={index === 0 ? firstMenuItemRef : null}
+                    aria-label={text ? undefined : ariaLabel || title}
                     onClick={(e) => {
                       if (onClick) {
                         e.preventDefault();
@@ -162,7 +172,7 @@ function Navbar() {
                       }
                     }}
                   >
-                    {icon} {text}
+                    {React.cloneElement(icon, { "aria-hidden": "true" })} {text}
                   </a>
                 </li>
               )

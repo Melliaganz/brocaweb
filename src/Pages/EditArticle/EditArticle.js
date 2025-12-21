@@ -28,15 +28,15 @@ function EditArticle() {
       try {
         const article = await getArticleById(id);
         setFormData({
-          titre: article.titre,
-          description: article.description,
-          prix: article.prix,
-          etat: article.etat,
-          categorie: article.categorie,
+          titre: article.titre || "",
+          description: article.description || "",
+          prix: article.prix || "",
+          etat: article.etat || "",
+          categorie: article.categorie || "",
           quantite: article.quantite ?? 1,
         });
 
-        setExistingImages(article.images);
+        setExistingImages(article.images || []);
         setMainImageIndex(article.mainImageIndex || 0);
       } catch (err) {
         setMessage("Erreur de chargement");
@@ -90,28 +90,40 @@ function EditArticle() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const totalImages = existingImages.length + newImages.length;
-    if (totalImages > 5) {
-      setMessage("Limite de 5 images dépassée");
+
+    if (totalImages === 0) {
+      setMessage("Au moins une image est requise.");
       return;
     }
 
     const form = new FormData();
-    form.append("quantite", formData.quantite);
 
-    Object.entries(formData).forEach(([key, value]) => form.append(key, value));
-
-    existingImages.forEach((img) => form.append("existingImages[]", img));
+    form.append("titre", formData.titre);
+    form.append("description", formData.description);
+    form.append("prix", formData.prix);
+    form.append("etat", formData.etat);
+    form.append("categorie", formData.categorie);
+    form.append("quantite", Number(formData.quantite) || 1);
     form.append("mainImageIndex", mainImageIndex);
 
-    newImages.forEach((img) => {
-      form.append("newImages", img);
+    existingImages.forEach((img) => {
+      form.append("existingImages", img);
+    });
+
+    newImages.forEach((file) => {
+      form.append("newImages", file);
     });
 
     try {
+      setLoading(true);
       await updateArticle(id, form);
       navigate(`/article/${id}`);
     } catch (err) {
-      setMessage("Erreur lors de la mise à jour");
+      setMessage(
+        err.response?.data?.message || "Erreur lors de la mise à jour"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,7 +136,7 @@ function EditArticle() {
         <input
           type="text"
           name="titre"
-          value={formData.titre}
+          value={formData.titre || ""}
           onChange={handleChange}
           className="inputs"
           required
@@ -196,6 +208,8 @@ function EditArticle() {
                 src={`http://localhost:5000/uploads/${img}`}
                 alt=""
                 onClick={() => setMainImageIndex(idx)}
+                width={300}
+                height={200}
                 style={{
                   border: idx === mainImageIndex ? "2px solid green" : "none",
                   cursor: "pointer",

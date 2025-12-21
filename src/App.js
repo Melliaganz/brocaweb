@@ -23,37 +23,46 @@ import Page404 from "./Pages/Page404/Page404";
 import EditArticle from "./Pages/EditArticle/EditArticle";
 import CategoriePage from "./Pages/CategoriePage/CategoriePage";
 import Checkout from "./Pages/Checkout/Checkout";
-
+import AdminOrders from "./Pages/Orders/AdminOrders";
 
 function App() {
   return (
     <AuthProvider>
-      <CartProvider >
-      <Router>
-        <div className="App">
-          <Navbar />
-
-          <Routes>
-            <Route path="*" element={<Page404 />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/article/:id" element={<ArticleDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin/create-article" element={<CreateArticle />} />
-            <Route path="/conditions" element={<Conditions />} />
-            <Route path="/mentions-legales" element={<Mentions />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/a-propos" element={<APropos />} />
-            <Route path="admin/edit-article/:id" element={<EditArticle />}/>
-            <Route path ="/categorie/:categorie" element={<CategoriePage/>} />
-            <Route path="/checkout" element={<Checkout />} />
-
-          </Routes>
-
-          <Footer />
-        </div>
-      </Router>
+      <CartProvider>
+        <Router>
+          <div className="App">
+            <Navbar />
+            <main id="main-content">
+              <Routes>
+                <Route path="*" element={<Page404 />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/article/:id" element={<ArticleDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route
+                  path="/admin/create-article"
+                  element={<CreateArticle />}
+                />
+                <Route path="/conditions" element={<Conditions />} />
+                <Route path="/mentions-legales" element={<Mentions />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/a-propos" element={<APropos />} />
+                <Route
+                  path="admin/edit-article/:id"
+                  element={<EditArticle />}
+                />
+                <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route
+                  path="/categorie/:categorie"
+                  element={<CategoriePage />}
+                />
+                <Route path="/checkout" element={<Checkout />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
       </CartProvider>
     </AuthProvider>
   );

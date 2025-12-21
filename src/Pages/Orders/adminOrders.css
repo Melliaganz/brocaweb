@@ -1,0 +1,80 @@
+.adminOrdersContainer {
+  padding: 2rem;
+  flex: 1;
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.ordersTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.statCard{
+    width: 25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;}
+
+.ordersTable th, .ordersTable td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.ordersTable th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+}
+
+.clientInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.clientInfo span {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.itemsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.priceTotal {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Styles des Badges de Statut */
+.statusBadge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.statusBadge.payé { background: #e8f5e9; color: #2e7d32; }
+.statusBadge.enattente { background: #fff3e0; color: #ef6c00; }
+.statusBadge.annulée { background: #f8f9fa; color: #c62828; }
+
+.noOrders {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}

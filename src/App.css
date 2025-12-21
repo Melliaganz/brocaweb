@@ -3,6 +3,7 @@
 :root {
   --primary: #1c120d;
   --secondary: #996b4d;
+  --secondary-dark: #63412a;
   --background: #eee4dd;
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
@@ -11,17 +12,19 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  max-width: 100%;
-  overflow-x: hidden;
+  width: 100%;
+}
+main {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 body {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
   background-color: var(--background);
   font-family: "Plus Jakarta Sans", sans-serif;
-  font-optical-sizing: auto;
+  overflow-x: hidden;
 }
 a {
   color: initial;
@@ -29,8 +32,10 @@ a {
 }
 header {
   position: fixed;
+  top: 0;
   left: 0;
-  z-index: 99;
+  width: 100%;
+  z-index: 1000;
 }
 .headerContainer {
   display: flex;
@@ -133,7 +138,7 @@ header {
 }
 
 .footerLinks a {
-  color: var(--secondary);
+  color: var(--secondary-dark);
   text-decoration: none;
   font-size: 0.9rem;
 }
@@ -145,7 +150,7 @@ header {
 
 .footerCopyright {
   font-size: 0.8rem;
-  color: var(--secondary);
+  color: var(--secondary-dark);
 }
 
 .lienGithub:hover {

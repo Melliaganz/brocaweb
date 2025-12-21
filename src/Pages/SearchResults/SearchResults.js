@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getArticles } from "../../Services/api";
-import "../Homepage/home.css"; 
+import "../Homepage/home.css";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -18,9 +18,11 @@ function SearchResults() {
     const fetchAndFilter = async () => {
       try {
         const allArticles = await getArticles();
-        const filtered = allArticles.filter((article) =>
-          article.titre.toLowerCase().includes(search) ||
-          (article.categorie && article.categorie.toLowerCase().includes(search))
+        const filtered = allArticles.filter(
+          (article) =>
+            article.titre.toLowerCase().includes(search) ||
+            (article.categorie &&
+              article.categorie.toLowerCase().includes(search))
         );
         setArticles(filtered);
       } catch (err) {
@@ -50,11 +52,18 @@ function SearchResults() {
               className="articleCard"
             >
               <img
-                src={`http://localhost:5000/uploads/${article.images[article.mainImageIndex || [0]]}`}
+                src={`http://localhost:5000/uploads/${
+                  article.images[article.mainImageIndex || [0]]
+                }`}
                 alt={article.titre}
+                width={300}
+                height={200}
+                style={{ height: "auto" }}
               />
               <h3 className="titreArticle">{article.titre}</h3>
-              <p className="articlePrix"><strong>{article.prix} €</strong></p>
+              <p className="articlePrix">
+                <strong>{article.prix} €</strong>
+              </p>
             </Link>
           ))}
         </div>

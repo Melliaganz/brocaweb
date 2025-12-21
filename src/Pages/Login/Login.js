@@ -12,26 +12,34 @@ function Login() {
   const navigate = useNavigate();
   const { setIsAuthenticated, setUser } = useContext(AuthContext);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMessage('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
-  try {
-    const data = await login(email, motDePasse);
-    localStorage.setItem('token', data.token);
+    try {
+      const data = await login(email, motDePasse);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
 
-    const payload = JSON.parse(atob(data.token.split('.')[1]));
-    setIsAuthenticated(true);
-    setUser({ id: payload.id, role: payload.role });
+        const base64Url = data.token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const payload = JSON.parse(window.atob(base64));
 
-    navigate('/');
-  } catch (err) {
-    setMessage(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+        setIsAuthenticated(true);
+        setUser({ id: payload.id, role: payload.role });
+
+        navigate("/");
+      }
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.message ||
+        "Identifiants invalides ou erreur serveur";
+      setMessage(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="loginContainer">

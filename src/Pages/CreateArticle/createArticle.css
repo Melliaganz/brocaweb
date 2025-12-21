@@ -46,7 +46,12 @@
   position: relative;
   width: 100px;
   height: 100px;
-  margin-bottom: 5rem;
+}
+.previewContainer{
+  display:flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .previewItem img {
   width: 100%;
@@ -115,7 +120,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1000000;
 }
 
 .modalContent {

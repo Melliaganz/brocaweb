@@ -6,18 +6,36 @@ import { useContext } from "react";
 import { AuthContext } from "../../Services/AuthContext";
 import { CartContext } from "../../Services/CartContext";
 import "./articleDetail.css";
-import { Close, Delete, Done, Edit, ShoppingCart } from "@mui/icons-material";
+import {
+  Add,
+  Close,
+  Delete,
+  Done,
+  Edit,
+  Remove,
+  ShoppingCart,
+} from "@mui/icons-material";
 
 function ArticleDetail() {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
-  const { addToCart } = useContext(CartContext);
-  const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [quantitySelected, setQuantitySelected] = useState(1);
+  const [showNotification, setShowNotification] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [lastAddedQty, setLastAddedQty] = useState(0);
+
+  const { user } = useContext(AuthContext);
+  const { addToCart, cartItems } = useContext(CartContext);
+
+  const itemInCart = (cartItems || []).find((item) => item._id === id);
+  const quantityInCart = itemInCart ? itemInCart.quantity : 0;
+  const availableStock = article ? article.quantite - quantityInCart : 0;
+
+  const navigate = useNavigate();
 
   const handleDelete = async () => {
     try {
@@ -27,6 +45,39 @@ function ArticleDetail() {
       setError("Erreur lors de la suppression");
     }
   };
+
+  const handleQuantityChange = (val) => {
+    const value = parseInt(val);
+    if (isNaN(value) || value < 1) {
+      setQuantitySelected(1);
+    } else if (value > availableStock) {
+      setQuantitySelected(availableStock);
+    } else {
+      setQuantitySelected(value);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (!article || availableStock <= 0) return;
+
+    setLastAddedQty(quantitySelected);
+
+    addToCart(article, quantitySelected);
+    setShowNotification(true);
+
+    const remainingAfterAdd = availableStock - quantitySelected;
+    setQuantitySelected(remainingAfterAdd > 0 ? 1 : 0);
+
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 2500);
+  };
+
+  useEffect(() => {
+    if (article) {
+      setCurrentImageIndex(article.mainImageIndex || 0);
+    }
+  }, [article]);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -48,16 +99,35 @@ function ArticleDetail() {
 
   return (
     <div className="articleDetailContainer">
+      {showNotification && (
+        <div className="cart-modal-overlay">
+          <div className="cart-modal-content">
+            <div className="cart-modal-icon">
+              <Done style={{ fontSize: "3rem", color: "#4caf50" }} />
+            </div>
+            <h3>Ajouté au panier !</h3>
+            <p>
+              <strong>{lastAddedQty} x</strong> {article.titre}
+            </p>
+            <button
+              onClick={() => setShowNotification(false)}
+              className="close-modal-btn"
+            >
+              Continuer mes achats
+            </button>
+          </div>
+        </div>
+      )}
       <h2>{article.titre}</h2>
       <div className="articleDetailContent">
         <div className="imagesGallery">
           <div className="mainImageContainer">
             <img
-              src={`http://localhost:5000/uploads/${
-                article.images[article.mainImageIndex || 0]
-              }`}
+              src={`http://localhost:5000/uploads/${article.images[currentImageIndex]}`}
               alt={article.titre}
               className="mainImage"
+              width={300}
+              height={200}
             />
           </div>
 
@@ -70,10 +140,10 @@ function ArticleDetail() {
                       key={i}
                       src={`http://localhost:5000/uploads/${img}`}
                       alt={`Miniature ${i + 1}`}
-                      className="thumbnailImage"
-                      onClick={() =>
-                        setSelectedImage(`http://localhost:5000/uploads/${img}`)
-                      }
+                      className={`thumbnailImage ${
+                        i === currentImageIndex ? "activeThumb" : ""
+                      }`}
+                      onClick={() => setCurrentImageIndex(i)}
                     />
                   )
               )}
@@ -130,12 +200,52 @@ function ArticleDetail() {
               <strong>Catégorie :</strong> {article.categorie}
             </p>
             <p>
-              <strong>Quantité :</strong> {article.quantite}
+              <strong>Quantité disponible:</strong>{" "}
+              {article.quantite !== availableStock
+                ? availableStock
+                : article.quantite}
             </p>
           </div>
+          {quantityInCart > 0 && (
+            <p style={{ color: "#666", fontSize: "0.9rem" }}>
+              (Vous en avez déjà {quantityInCart} dans votre panier)
+            </p>
+          )}
+          <div className="purchaseActions">
+            <div className="quantitySelector">
+              <button
+                className="qtyBtn"
+                onClick={() => handleQuantityChange(quantitySelected - 1)}
+                disabled={quantitySelected <= 1}
+              >
+                <Remove />
+              </button>
+
+              <input
+                type="number"
+                value={quantitySelected}
+                onChange={(e) => handleQuantityChange(e.target.value)}
+                className="qtyInput"
+              />
+
+              <button
+                className="qtyBtn"
+                onClick={() => handleQuantityChange(quantitySelected + 1)}
+                disabled={quantitySelected >= availableStock}
+              >
+                <Add />
+              </button>
+            </div>
+            {quantitySelected >= article.quantite && (
+              <span className="stockLimitLabel">Limite de stock atteinte</span>
+            )}
+          </div>
           <div className="articleButtonDetail">
-            <button onClick={() => addToCart(article, 1)}>
-             <ShoppingCart /> Ajouter au panier
+            <button onClick={handleAddToCart} disabled={availableStock <= 0}>
+              <ShoppingCart />
+              {article.quantite === 0
+                ? "Rupture de stock"
+                : "Ajouter au panier"}
             </button>
           </div>
         </div>

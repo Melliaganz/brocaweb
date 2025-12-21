@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Footer() {
+  const anneeActuelle = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="footerContent">
@@ -12,7 +14,17 @@ export default function Footer() {
           <Link to="/a-propos">À propos</Link>
         </div>
         <div className="footerCopyright">
-          ©2025 <a href="https://github.com/Melliaganz" alt="Melliaganz" title="Github Melliaganz" style={{color: 'inherit'}} className="lienGithub">Melliaganz</a>. Tous droits réservés.
+          ©{anneeActuelle}{" "}
+          <a
+            href="https://github.com/Melliaganz"
+            alt="Melliaganz"
+            title="Github Melliaganz"
+            style={{ color: "inherit" }}
+            className="lienGithub"
+          >
+            Melliaganz
+          </a>
+          . Tous droits réservés.
         </div>
       </div>
     </footer>

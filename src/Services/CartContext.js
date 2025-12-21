@@ -16,14 +16,17 @@ export const CartProvider = ({ children }) => {
   const addToCart = (article, quantity = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item._id === article._id);
+      const currentQtyInCart = existing ? existing.quantity : 0;
+
+      const newTotalQty = currentQtyInCart + quantity;
+      const finalQty = Math.min(newTotalQty, article.quantite);
+
       if (existing) {
         return prev.map((item) =>
-          item._id === article._id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+          item._id === article._id ? { ...item, quantity: finalQty } : item
         );
       }
-      return [...prev, { ...article, quantity }];
+      return [...prev, { ...article, quantity: finalQty }];
     });
   };
 
@@ -35,7 +38,7 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, clearCart }}
+      value={{ cartItems, addToCart, removeFromCart, clearCart, setCartItems }}
     >
       {children}
     </CartContext.Provider>
