@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.REACT_APP_API_IMG_URL
+export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 /**

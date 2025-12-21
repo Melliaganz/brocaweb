@@ -75,7 +75,7 @@ function CategoriePage() {
             className="articleCard"
           >
             <img
-              src={`http://${API_BASE_URL}/uploads/${article.images[article.mainImageIndex || 0]}`}
+              src={`http://${API_BASE_URL_IMG}/uploads/${article.images[article.mainImageIndex || 0]}`}
               alt={article.titre}
             />
             <h3 className="titreArticle">{article.titre}</h3>

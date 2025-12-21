@@ -52,7 +52,7 @@ function SearchResults() {
               className="articleCard"
             >
               <img
-                src={`http://${API_BASE_URL}/uploads/${
+                src={`http://${API_BASE_URL_IMG}/uploads/${
                   article.images[article.mainImageIndex || [0]]
                 }`}
                 alt={article.titre}

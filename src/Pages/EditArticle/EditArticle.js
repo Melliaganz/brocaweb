@@ -205,7 +205,7 @@ function EditArticle() {
           {existingImages.map((img, idx) => (
             <div key={idx} className="previewItem">
               <img
-                src={`http://${API_BASE_URL}/uploads/${img}`}
+                src={`http://${API_BASE_URL_IMG}/uploads/${img}`}
                 alt=""
                 onClick={() => setMainImageIndex(idx)}
                 width={300}

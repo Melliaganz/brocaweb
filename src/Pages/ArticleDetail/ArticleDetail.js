@@ -123,7 +123,7 @@ function ArticleDetail() {
         <div className="imagesGallery">
           <div className="mainImageContainer">
             <img
-              src={`http://${API_BASE_URL}/uploads/${article.images[currentImageIndex]}`}
+              src={`http://${API_BASE_URL_IMG}/uploads/${article.images[currentImageIndex]}`}
               alt={article.titre}
               className="mainImage"
               width={300}
@@ -138,7 +138,7 @@ function ArticleDetail() {
                   i !== (article.mainImageIndex || 0) && (
                     <img
                       key={i}
-                      src={`http://${API_BASE_URL}/uploads/${img}`}
+                      src={`http://${API_BASE_URL_IMG}/uploads/${img}`}
                       alt={`Miniature ${i + 1}`}
                       className={`thumbnailImage ${
                         i === currentImageIndex ? "activeThumb" : ""
