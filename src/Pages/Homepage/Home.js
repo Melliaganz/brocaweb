@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getArticles } from "../../Services/api";
+import { API_BASE_URL, getArticles } from "../../Services/api";
 import "./home.css";
 import { useEffect, useState } from "react";
 import { useMemo } from "react";
@@ -132,7 +132,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5000/uploads/${
+              src={`http://${API_BASE_URL}/uploads/${
                 article.images[article.mainImageIndex || 0]
               }`}
               alt={article.titre}
@@ -155,7 +155,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5000/uploads/${
+              src={`http://${API_BASE_URL}/uploads/${
                 article.images[article.mainImageIndex || 0]
               }`}
               alt={article.titre}

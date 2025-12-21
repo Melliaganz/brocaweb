@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getArticleById, deleteArticle } from "../../Services/api";
+import { getArticleById, deleteArticle, API_BASE_URL } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Services/AuthContext";
@@ -123,7 +123,7 @@ function ArticleDetail() {
         <div className="imagesGallery">
           <div className="mainImageContainer">
             <img
-              src={`http://localhost:5000/uploads/${article.images[currentImageIndex]}`}
+              src={`http://${API_BASE_URL}/uploads/${article.images[currentImageIndex]}`}
               alt={article.titre}
               className="mainImage"
               width={300}
@@ -138,7 +138,7 @@ function ArticleDetail() {
                   i !== (article.mainImageIndex || 0) && (
                     <img
                       key={i}
-                      src={`http://localhost:5000/uploads/${img}`}
+                      src={`http://${API_BASE_URL}/uploads/${img}`}
                       alt={`Miniature ${i + 1}`}
                       className={`thumbnailImage ${
                         i === currentImageIndex ? "activeThumb" : ""

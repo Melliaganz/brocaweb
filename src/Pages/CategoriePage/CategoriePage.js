@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
-import { getArticles } from "../../Services/api";
+import { API_BASE_URL, getArticles } from "../../Services/api";
 
 function CategoriePage() {
   const { categorie } = useParams();
@@ -75,7 +75,7 @@ function CategoriePage() {
             className="articleCard"
           >
             <img
-              src={`http://localhost:5000/uploads/${article.images[article.mainImageIndex || 0]}`}
+              src={`http://${API_BASE_URL}/uploads/${article.images[article.mainImageIndex || 0]}`}
               alt={article.titre}
             />
             <h3 className="titreArticle">{article.titre}</h3>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getArticleById, updateArticle } from "../../Services/api";
+import { API_BASE_URL, getArticleById, updateArticle } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
 import "./editArticle.css"; // Réutilisation du même style
 
@@ -205,7 +205,7 @@ function EditArticle() {
           {existingImages.map((img, idx) => (
             <div key={idx} className="previewItem">
               <img
-                src={`http://localhost:5000/uploads/${img}`}
+                src={`http://${API_BASE_URL}/uploads/${img}`}
                 alt=""
                 onClick={() => setMainImageIndex(idx)}
                 width={300}
