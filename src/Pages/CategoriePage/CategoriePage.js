@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
-import { API_BASE_URL, getArticles } from "../../Services/api";
+import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
 
 function CategoriePage() {
   const { categorie } = useParams();

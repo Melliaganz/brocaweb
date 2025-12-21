@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL, getArticleById, updateArticle } from "../../Services/api";
+import { API_BASE_URL_IMG, getArticleById, updateArticle } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
 import "./editArticle.css"; // Réutilisation du même style
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { API_BASE_URL, getArticles } from "../../Services/api";
+import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
 import "../Homepage/home.css";
 
 function useQuery() {

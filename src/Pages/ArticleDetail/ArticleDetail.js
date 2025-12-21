@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getArticleById, deleteArticle, API_BASE_URL } from "../../Services/api";
+import { getArticleById, deleteArticle, API_BASE_URL_IMG } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Services/AuthContext";
