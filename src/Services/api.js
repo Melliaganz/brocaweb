@@ -1,148 +1,103 @@
-export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL
+export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL;
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-/**
- * Authentification
- */
+const getAuthHeaders = (isFormData = false) => {
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+  return headers;
+};
 
-// Inscription
+const handleResponse = async (res) => {
+  const data = await res.json();
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  }
+  if (!res.ok) throw new Error(data.message || "Une erreur est survenue");
+  return data;
+};
+
 export const register = async ({ nom, email, motDePasse }) => {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nom, email, motDePasse: motDePasse }),
+    body: JSON.stringify({ nom, email, motDePasse }),
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Erreur lors de l’inscription");
-  return data;
+  return handleResponse(res);
 };
 
-// Connexion
 export const login = async (email, motDePasse) => {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, motDePasse: motDePasse }),
+    body: JSON.stringify({ email, motDePasse }),
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Erreur lors de la connexion");
-  return data;
+  return handleResponse(res);
 };
 
-/**
- * Articles (public)
- */
+export const adminCreateUser = async (userData) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/create-user`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(userData),
+  });
+  return handleResponse(res);
+};
 
-// Tous les articles
 export const getArticles = async () => {
   const res = await fetch(`${API_BASE_URL}/articles`);
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(
-      data.message || "Erreur lors de la récupération des articles"
-    );
-  return data;
+  return handleResponse(res);
 };
 
-// Article par ID
 export const getArticleById = async (id) => {
   const res = await fetch(`${API_BASE_URL}/articles/${id}`);
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(
-      data.message || "Erreur lors de la récupération de l’article"
-    );
-  return data;
+  return handleResponse(res);
 };
 
-/**
- * Articles (admin)
- */
-
-// Création (admin)
 export const createArticle = async (formData) => {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData, // formData doit contenir titre, description, prix, état, image
+    headers: getAuthHeaders(true),
+    body: formData,
   });
-
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(data.message || "Erreur lors de la création de l’article");
-  return data;
+  return handleResponse(res);
 };
 
-// Suppression (admin)
 export const deleteArticle = async (id) => {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
-
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(
-      data.message || "Erreur lors de la suppression de l’article"
-    );
-  return data;
+  return handleResponse(res);
 };
 
-// Modification (admin)
 export const updateArticle = async (id, formData) => {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formData, // formData peut contenir existingImages[], mainImageIndex, etc.
+    headers: getAuthHeaders(true),
+    body: formData,
   });
-
-  const data = await res.json();
-  if (!res.ok)
-    throw new Error(
-      data.message || "Erreur lors de la mise à jour de l'article"
-    );
-  return data;
+  return handleResponse(res);
 };
-export const placeOrder = async (items) => {
-  const token = localStorage.getItem("token");
 
+export const placeOrder = async (items) => {
   const res = await fetch(`${API_BASE_URL}/orders`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({ items }),
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Erreur lors de la commande");
-  return data;
+  return handleResponse(res);
 };
 
 export const getAllOrders = async () => {
-  const token = localStorage.getItem("token");
-  
   const res = await fetch(`${API_BASE_URL}/orders`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Erreur lors de la récupération des commandes");
-  return data;
+  return handleResponse(res);
 };

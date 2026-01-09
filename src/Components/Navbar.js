@@ -49,6 +49,7 @@ function Navbar() {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
   const { texts, menuItems } = useMemo(() => {
     const baseItems = [
       {
@@ -65,19 +66,26 @@ function Navbar() {
           ...(user?.role === "admin"
             ? [
                 {
-                  id: "Create",
+                  id: "CreateArticle",
                   href: "/admin/create-article",
                   text: "Créer un article",
                   icon: <AddBox />,
                   title: "Créer un article",
                 },
                 {
-              id: "AdminOrders", // <-- Nouvel item pour les commandes
-              href: "/admin/orders",
-              text: "Commandes clients",
-              icon: <ReceiptLong />,
-              title: "Gestion des commandes",
-            },
+                  id: "CreateUser",
+                  href: "/admin/create-user",
+                  text: "Créer un utilisateur",
+                  icon: <PersonAdd />,
+                  title: "Créer un utilisateur",
+                },
+                {
+                  id: "AdminOrders",
+                  href: "/admin/orders",
+                  text: "Commandes clients",
+                  icon: <ReceiptLong />,
+                  title: "Gestion des commandes",
+                },
               ]
             : []),
           {
@@ -104,13 +112,6 @@ function Navbar() {
             text: "Connexion",
             icon: <Login />,
             title: "Connexion",
-          },
-          {
-            id: "Register",
-            href: "/register",
-            text: "Créer un compte",
-            icon: <PersonAdd />,
-            title: "Créer un compte",
           },
         ];
 

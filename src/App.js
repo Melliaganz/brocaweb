@@ -4,11 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./Services/AuthContext";
 import { CartProvider } from "./Services/CartContext";
 
-/* Components */
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
 
-/* Pages */
 import Home from "./Pages/Homepage/Home";
 import ArticleDetail from "./Pages/ArticleDetail/ArticleDetail";
 import Register from "./Pages/Register/Register";
@@ -39,7 +37,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/article/:id" element={<ArticleDetail />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                
+                <Route path="/admin/create-user" element={<Register />} />
+                
                 <Route
                   path="/admin/create-article"
                   element={<CreateArticle />}
