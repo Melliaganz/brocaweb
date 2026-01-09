@@ -1,0 +1,143 @@
+.userManagementContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.headerList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top:10rem
+}
+
+.headerList h2 {
+  color: #333;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.btnAddUser {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #28a745;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btnAddUser:hover {
+  background-color: #218838;
+}
+
+.errorMsg {
+  color: #dc3545;
+  background-color: #f8d7da;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.userTable th, 
+.userTable td {
+  padding: 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.userTable th {
+  background-color: #f8f9fa;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.userTable tr:hover {
+  background-color: #fafafa;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.badge.admin {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+
+.badge.user {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+
+.btnDelete {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 5px;
+}
+
+.btnDelete:hover:not(:disabled) {
+  color: #a71d2a;
+  transform: scale(1.1);
+}
+
+.btnDelete:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .userManagementContainer {
+    padding: 1rem;
+  }
+
+  .userTable thead {
+    display: none;
+  }
+
+  .userTable tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  .userTable td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border: none;
+  }
+
+  .userTable td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #666;
+  }
+}
