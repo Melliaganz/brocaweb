@@ -22,6 +22,7 @@ import EditArticle from "./Pages/EditArticle/EditArticle";
 import CategoriePage from "./Pages/CategoriePage/CategoriePage";
 import Checkout from "./Pages/Checkout/Checkout";
 import AdminOrders from "./Pages/Orders/AdminOrders";
+import UserManagement from "./Pages/Admin/UserManagement";
 
 function App() {
   return (
@@ -37,9 +38,12 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/article/:id" element={<ArticleDetail />} />
                 <Route path="/login" element={<Login />} />
-                
+
                 <Route path="/admin/create-user" element={<Register />} />
-                
+                <Route
+                  path="/admin/user-management"
+                  element={<UserManagement />}
+                />
                 <Route
                   path="/admin/create-article"
                   element={<CreateArticle />}

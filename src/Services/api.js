@@ -101,3 +101,18 @@ export const getAllOrders = async () => {
   });
   return handleResponse(res);
 };
+export const getAllUsers = async () => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const deleteUser = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};

@@ -4,10 +4,10 @@ import {
   AddBox,
   Logout,
   Login,
-  PersonAdd,
   Search,
   ShoppingCart,
-  ReceiptLong
+  ReceiptLong,
+  Person
 } from "@mui/icons-material";
 import React, {
   useEffect,
@@ -73,11 +73,11 @@ function Navbar() {
                   title: "Créer un article",
                 },
                 {
-                  id: "CreateUser",
-                  href: "/admin/create-user",
-                  text: "Créer un utilisateur",
-                  icon: <PersonAdd />,
-                  title: "Créer un utilisateur",
+                  id: "ManageUser",
+                  href: "/admin/user-management",
+                  text: "Gérer les utilisateurs",
+                  icon: <Person />,
+                  title: "Gérer les utilisateur",
                 },
                 {
                   id: "AdminOrders",
@@ -137,6 +137,7 @@ function Navbar() {
               placeholder="Rechercher un article..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              name="rechercher"
             />
             <button type="submit" aria-label="Rechercher">
               <Search />
