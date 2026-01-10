@@ -1,21 +1,116 @@
-.conditionContainer{
-    margin-top: 10rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.conditionText{
-  padding: 2rem;
+.conditionContainer {
+  margin: 10rem auto 4rem auto;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  width: 50vw;
+  align-items: center;
+  max-width: 900px;
+  width: 90%;
+}
+
+.conditionHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.conditionHeader h2 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin: 1rem 0;
+}
+
+.lastUpdate {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.conditionText {
+  padding: 3rem;
   background-color: var(--blank_002);
-  margin-bottom: -1rem;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 2rem;
-  border-radius: 10px 10px 0px 0px;
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+}
+
+.conditionSection {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  color: var(--secondary-dark);
+}
+
+.sectionIcon {
+  color: var(--secondary);
+}
+
+.conditionSection h3 {
+  font-size: 1.3rem;
+  margin: 0;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+  flex: 1;
+}
+
+.conditionSection p {
+  color: #444;
+  text-align: justify;
+}
+
+.conditionSection ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.conditionSection li {
+  padding: 10px 0;
+  padding-left: 25px;
+  position: relative;
+  color: #555;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.conditionSection li::before {
+  content: "•";
+  color: var(--secondary);
+  font-weight: bold;
+  position: absolute;
+  left: 5px;
+  font-size: 1.2rem;
+}
+
+.conditionFooter {
+  margin-top: 3rem;
+  text-align: center;
+  color: #666;
+}
+
+.conditionFooter a {
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.conditionFooter a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .conditionContainer {
+    margin-top: 7rem;
+  }
+  
+  .conditionText {
+    padding: 1.5rem;
+  }
+  
+  .conditionHeader h2 {
+    font-size: 1.6rem;
+  }
 }

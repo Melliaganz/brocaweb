@@ -1,80 +1,168 @@
 .adminOrdersContainer {
-  padding: 2rem;
-  flex: 1;
-  margin-top: 5rem;
+  padding: 3rem;
+  max-width: 1200px;
+  margin: 10rem auto 4rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  background-color: var(--blank_002);
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.adminHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.adminHeader h1 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin-top: 10px;
+}
+
+.headerIcon {
+  font-size: 3rem !important;
+  color: var(--primary);
+}
+
+/* --- Stats Grid --- */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
+.statCard {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f0f0f0;
+}
+
+.statIconWrapper {
+  background: var(--blank_001);
+  color: var(--secondary);
+  width: 60px;
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  border-radius: 12px;
+}
+
+.statInfo h3 {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statNumber {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--secondary-dark);
+  margin: 5px 0 0 0;
+}
+
+/* --- Table Section --- */
+.tableSection {
+  width: 100%;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
 }
 
 .tableWrapper {
+  width: 100%;
   overflow-x: auto;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .ordersTable {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
-}
-.statCard{
-    width: 25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;}
-
-.ordersTable th, .ordersTable td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+  min-width: 800px;
 }
 
 .ordersTable th {
-  background-color: #f8f9fa;
+  background-color: #fafafa;
+  padding: 18px 15px;
+  text-align: left;
+  font-size: 0.9rem;
   color: #333;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.ordersTable td {
+  padding: 20px 15px;
+  border-bottom: 1px solid #f5f5f5;
+  vertical-align: middle;
+}
+
+.dateCell {
   font-weight: 600;
+  color: #777;
 }
 
-.clientInfo {
+.clientName {
+  font-weight: bold;
+  color: var(--secondary-dark);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
 
-.clientInfo span {
-  font-size: 0.85rem;
-  color: #666;
+.clientEmail {
+  font-size: 0.8rem;
+  color: #999;
 }
 
 .itemsList {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: 0.9rem;
+}
+
+.itemsList li {
+  font-size: 0.85rem;
+  color: #555;
 }
 
 .priceTotal {
-  font-weight: bold;
-  color: #2c3e50;
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 1.1rem;
 }
 
-/* Styles des Badges de Statut */
+/* --- Status Badges --- */
 .statusBadge {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.75rem;
   font-weight: bold;
-  text-transform: uppercase;
 }
 
 .statusBadge.payé { background: #e8f5e9; color: #2e7d32; }
 .statusBadge.enattente { background: #fff3e0; color: #ef6c00; }
-.statusBadge.annulée { background: #f8f9fa; color: #c62828; }
+.statusBadge.annulée { background: #ffebee; color: #c62828; }
 
-.noOrders {
-  text-align: center;
-  padding: 3rem;
-  color: #666;
+@media (max-width: 768px) {
+  .adminOrdersContainer { width: 95%; padding: 1.5rem; margin-top: 8rem; }
+  .statsGrid { grid-template-columns: 1fr; }
 }

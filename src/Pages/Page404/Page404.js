@@ -1,15 +1,23 @@
-import { Handyman } from "@mui/icons-material";
-import "../Homepage/home.css";
+import { Construction, Home } from "@mui/icons-material";
+import "./page404.css";
 import { Link } from "react-router-dom";
 
 function Page404() {
   return (
-    <div className="homeContainer" style={{gap: 10}}>
-        <Handyman />
-      <h3 style={{fontSize:"40px", marginTop: "2rem"}}>Page404</h3>
-      <p>La page demandé n'existe pas</p>
-
-      <Link to="/" alt="Accueil" title="Accueil" className="btnAccueil">Retourner a la page d'accueil</Link>
+    <div className="notFoundContainer">
+      <div className="notFoundContent">
+        <div className="iconWrapper">
+          <Construction className="notFoundIcon" />
+          <span className="errorCode">404</span>
+        </div>
+        <h1>Oups ! Page introuvable</h1>
+        <p>
+          Il semble que la page que vous cherchez n'existe pas ou a été déplacée.
+        </p>
+        <Link to="/" className="btnBackHome">
+          <Home /> Retourner à l'accueil
+        </Link>
+      </div>
     </div>
   );
 }

@@ -13,11 +13,21 @@ const getAuthHeaders = (isFormData = false) => {
 };
 
 const handleResponse = async (res) => {
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    data = { message: "Erreur de lecture des données serveur." };
+  }
+
   if (res.status === 401) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    // On évite la redirection brutale si on est déjà sur login
+    if (window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
   }
+
   if (!res.ok) throw new Error(data.message || "Une erreur est survenue");
   return data;
 };

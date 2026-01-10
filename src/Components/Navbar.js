@@ -15,10 +15,10 @@ import React, {
   useRef,
   useReducer,
   useContext,
+  useState
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../Services/AuthContext";
-
 import "../App.css";
 
 const menuReducer = (state) => !state;
@@ -27,8 +27,7 @@ function Navbar() {
   const { isAuthenticated, setIsAuthenticated, user } = useContext(AuthContext);
   const firstMenuItemRef = useRef(null);
   const [menuOpen, toggleMenu] = useReducer(menuReducer, false);
-  const [searchQuery, setSearchQuery] = React.useState("");
-
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,17 +39,19 @@ function Navbar() {
   const handleLogout = React.useCallback(() => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
+    if (menuOpen) toggleMenu();
     navigate("/");
-  }, [setIsAuthenticated, navigate]);
+  }, [setIsAuthenticated, navigate, menuOpen]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      if (menuOpen) toggleMenu();
     }
   };
 
-  const { texts, menuItems } = useMemo(() => {
+  const menuItems = useMemo(() => {
     const baseItems = [
       {
         id: "Accueil",
@@ -68,26 +69,33 @@ function Navbar() {
                 {
                   id: "CreateArticle",
                   href: "/admin/create-article",
-                  text: "Créer un article",
+                  text: "Créer",
                   icon: <AddBox />,
                   title: "Créer un article",
                 },
                 {
                   id: "ManageUser",
                   href: "/admin/user-management",
-                  text: "Gérer les utilisateurs",
+                  text: "Utilisateurs",
                   icon: <Person />,
-                  title: "Gérer les utilisateur",
+                  title: "Gérer les utilisateurs",
                 },
                 {
                   id: "AdminOrders",
                   href: "/admin/orders",
-                  text: "Commandes clients",
+                  text: "Commandes",
                   icon: <ReceiptLong />,
                   title: "Gestion des commandes",
                 },
               ]
             : []),
+          {
+            id: "Cart",
+            href: "/checkout",
+            text: "Panier",
+            icon: <ShoppingCart />,
+            title: "Panier",
+          },
           {
             id: "Logout",
             href: "#",
@@ -95,14 +103,6 @@ function Navbar() {
             icon: <Logout />,
             title: "Déconnexion",
             onClick: handleLogout,
-          },
-          {
-            id: "Cart",
-            href: "/checkout",
-            text: null,
-            icon: <ShoppingCart />,
-            ariaLabel: "Voir mon panier",
-            title: "Panier",
           },
         ]
       : [
@@ -115,21 +115,18 @@ function Navbar() {
           },
         ];
 
-    return {
-      texts: {
-        accueil: "Accueil",
-        titre: "BrocaWeb",
-      },
-      menuItems: [...baseItems, ...authItems],
-    };
+    return [...baseItems, ...authItems];
   }, [handleLogout, isAuthenticated, user]);
 
   return (
     <header className="header">
       <div className="headerContainer">
-        <h1 className="titreHeader">
-          <Garage /> {texts.titre}
-        </h1>
+        <Link to="/" style={{textDecoration: 'none', color: 'inherit'}}>
+          <h1 className="titreHeader">
+            <Garage /> BrocaWeb
+          </h1>
+        </Link>
+
         <form className="searchForm" onSubmit={handleSearch}>
           <div className="searchFormContainer">
             <input
@@ -144,41 +141,37 @@ function Navbar() {
             </button>
           </div>
         </form>
+
         <button
           className="hamburger"
           onClick={toggleMenu}
           aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          aria-expanded={menuOpen}
-          aria-haspopup
         >
-          {menuOpen ? "✖" : "☰"}
+          {menuOpen ? "✕" : "☰"}
         </button>
-        <nav
-          className={`navContainer ${menuOpen ? "open" : ""}`}
-          role="navigation"
-        >
+
+        <nav className={`navContainer ${menuOpen ? "open" : ""}`}>
           <ul role="menu">
-            {menuItems.map(
-              ({ id, href, text, icon, title, onClick, ariaLabel }, index) => (
-                <li key={id} role="none">
-                  <a
-                    href={href}
-                    role="menuitem"
-                    title={"Bouton " + title}
-                    ref={index === 0 ? firstMenuItemRef : null}
-                    aria-label={text ? undefined : ariaLabel || title}
-                    onClick={(e) => {
-                      if (onClick) {
-                        e.preventDefault();
-                        onClick();
-                      }
-                    }}
-                  >
-                    {React.cloneElement(icon, { "aria-hidden": "true" })} {text}
-                  </a>
-                </li>
-              )
-            )}
+            {menuItems.map((item, index) => (
+              <li key={item.id} role="none">
+                <Link
+                  to={item.href}
+                  className="navLink"
+                  title={"Bouton " + item.title}
+                  ref={index === 0 ? firstMenuItemRef : null}
+                  onClick={(e) => {
+                    if (item.onClick) {
+                      e.preventDefault();
+                      item.onClick();
+                    } else if (menuOpen) {
+                      toggleMenu();
+                    }
+                  }}
+                >
+                  {React.cloneElement(item.icon, { "aria-hidden": "true" })} {item.text}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>

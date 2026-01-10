@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
 import "./home.css";
 import { useEffect, useState, useMemo } from "react";
+import { Sort, Category, ShoppingBag, Inventory } from "@mui/icons-material";
 
 function Home() {
   const [articles, setArticles] = useState([]);
@@ -12,31 +13,19 @@ function Home() {
 
   const getImageUrl = (imageName) => {
     if (!imageName) return "/placeholder.jpg";
-    if (imageName.startsWith("http")) {
-      return imageName;
-    }
+    if (imageName.startsWith("http")) return imageName;
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
 
   const sortedArticles = useMemo(() => {
     const sorted = [...articles];
-
     switch (sortOption) {
-      case "priceAsc":
-        return sorted.sort((a, b) => a.prix - b.prix);
-      case "priceDesc":
-        return sorted.sort((a, b) => b.prix - a.prix);
-      case "alphaAsc":
-        return sorted.sort((a, b) => a.titre.localeCompare(b.titre));
-      case "alphaDesc":
-        return sorted.sort((a, b) => b.titre.localeCompare(a.titre));
-      case "categorie":
-        return sorted.sort((a, b) => a.categorie.localeCompare(b.categorie));
-      case "recent":
-      default:
-        return sorted.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
+      case "priceAsc": return sorted.sort((a, b) => a.prix - b.prix);
+      case "priceDesc": return sorted.sort((a, b) => b.prix - a.prix);
+      case "alphaAsc": return sorted.sort((a, b) => a.titre.localeCompare(b.titre));
+      case "alphaDesc": return sorted.sort((a, b) => b.titre.localeCompare(a.titre));
+      case "categorie": return sorted.sort((a, b) => a.categorie.localeCompare(b.categorie));
+      default: return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
   }, [articles, sortOption]);
 
@@ -44,123 +33,103 @@ function Home() {
     const fetchArticles = async () => {
       try {
         const data = await getArticles();
-        const availableArticles = data.filter(
-          (article) => article.quantite > 0
-        );
-
-        const sorted = availableArticles.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-
-        setArticles(sorted);
+        // Filtrage des articles disponibles
+        const availableArticles = data.filter((article) => article.quantite > 0);
+        setArticles(availableArticles);
 
         const categoryMap = {};
-        for (const article of sorted) {
+        const sortedForCats = [...availableArticles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        for (const article of sortedForCats) {
           if (!categoryMap[article.categorie]) {
             categoryMap[article.categorie] = article;
           }
         }
         setRecentByCategory(categoryMap);
       } catch (err) {
-        if (err.response) {
-          switch (err.response.status) {
-            case 404:
-              setError("Aucun article trouvé (erreur 404)");
-              break;
-            case 500:
-              setError("Erreur interne du serveur.");
-              break;
-            case 401:
-              setError("Non autorisé. Veuillez vous connecter.");
-              break;
-            default:
-              setError(`Erreur inconnue : ${err.response.status}`);
-          }
-        } else {
-          setError(`${err.message}`);
-        }
+        setError("Erreur de connexion au catalogue.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchArticles();
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="homeContainer">
         <span className="loader"></span>
-        Chargement des articles...
+        <p>Chargement des pépites...</p>
       </div>
     );
-  if (error) return <div className="homeContainer">Erreur : {error}</div>;
-  if (!articles.length)
+  }
+
+  if (error) {
     return (
       <div className="homeContainer">
-        <h2>Aucun article n’est actuellement en vente.</h2>
+        <p className="message error">{error}</p>
       </div>
     );
+  }
 
   return (
     <div className="homeContainer">
-      <h1>Publications récentes</h1>
-      <div className="sortControls">
-        <label htmlFor="sort">Trier par :</label>
-        <select
-          id="sort"
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-        >
-          <option value="recent">Plus récents</option>
-          <option value="priceAsc">Prix croissant</option>
-          <option value="priceDesc">Prix décroissant</option>
-          <option value="alphaAsc">A → Z</option>
-          <option value="alphaDesc">Z → A</option>
-          <option value="categorie">Catégorie</option>
-        </select>
-      </div>
+      {articles.length === 0 ? (
+        <div className="emptyState">
+          <Inventory style={{ fontSize: "4rem", color: "var(--secondary)", opacity: 0.5 }} />
+          <h2>Aucun article disponible</h2>
+          <p>Revenez plus tard pour découvrir nos nouveautés.</p>
+        </div>
+      ) : (
+        <>
+          <h1 className="mainTitle">Découvrez nos trésors</h1>
+          
+          <div className="sortControls">
+            <Sort style={{ color: "var(--secondary)" }} />
+            <label htmlFor="sort">Trier par :</label>
+            <select id="sort" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+              <option value="recent">Plus récents</option>
+              <option value="priceAsc">Prix croissant</option>
+              <option value="priceDesc">Prix décroissant</option>
+              <option value="alphaAsc">A → Z</option>
+              <option value="alphaDesc">Z → A</option>
+              <option value="categorie">Catégorie</option>
+            </select>
+          </div>
 
-      <h2>Catégories</h2>
-      <div className="articlesGrid">
-        {Object.entries(recentByCategory).map(([categorie, article]) => (
-          <Link
-            to={`/categorie/${categorie}`}
-            key={article._id}
-            className="articleCard"
-          >
-            <img
-              src={getImageUrl(article.images[article.mainImageIndex || 0])}
-              alt={article.titre}
-              width={300}
-              height={200}
-            />
-            <div className="descriptifArticle">
-              <h3 className="titreArticle"> Catégorie : {categorie}</h3>
-            </div>
-          </Link>
-        ))}
-      </div>
+          <div className="sectionHeader">
+            <Category className="sectionIcon" />
+            <h2>Par catégories</h2>
+          </div>
+          
+          <div className="articlesGrid">
+            {Object.entries(recentByCategory).map(([categorie, article]) => (
+              <Link to={`/categorie/${categorie}`} key={article._id} className="articleCard categoryCard">
+                <img src={getImageUrl(article.images[article.mainImageIndex || 0])} alt={categorie} />
+                <div className="cardInfo">
+                  <h3 className="titreArticle">{categorie}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
 
-      <h2>Tout le catalogue</h2>
-      <div className="articlesGrid">
-        {sortedArticles.map((article) => (
-          <Link
-            to={`/article/${article._id}`}
-            key={article._id}
-            className="articleCard"
-          >
-            <img
-              src={getImageUrl(article.images[article.mainImageIndex || 0])}
-              alt={article.titre}
-            />
-            <h3 className="titreArticle">{article.titre}</h3>
-            <p className="articlePrix">
-              <strong>{article.prix} €</strong>
-            </p>
-          </Link>
-        ))}
-      </div>
+          <div className="sectionHeader" style={{ marginTop: "3rem" }}>
+            <ShoppingBag className="sectionIcon" />
+            <h2>Tout le catalogue</h2>
+          </div>
+
+          <div className="articlesGrid">
+            {sortedArticles.map((article) => (
+              <Link to={`/article/${article._id}`} key={article._id} className="articleCard">
+                <img src={getImageUrl(article.images[article.mainImageIndex || 0])} alt={article.titre} />
+                <div className="cardInfo">
+                  <h3 className="titreArticle">{article.titre}</h3>
+                  <p className="articlePrix">{article.prix} €</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

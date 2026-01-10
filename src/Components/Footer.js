@@ -14,13 +14,14 @@ export default function Footer() {
           <Link to="/a-propos">À propos</Link>
         </div>
         <div className="footerCopyright">
-          ©{anneeActuelle}{" "}
+          © {anneeActuelle}{" "}
           <a
             href="https://github.com/Melliaganz"
-            alt="Melliaganz"
+            target="_blank"
+            rel="noopener noreferrer"
             title="Github Melliaganz"
-            style={{ color: "inherit" }}
             className="lienGithub"
+            style={{ color: "inherit" }}
           >
             Melliaganz
           </a>

@@ -22,24 +22,19 @@ function CreateArticle() {
   const { isAuthenticated, user } = useContext(AuthContext);
 
   const maxFiles = 5;
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Generate URLs only when images change
     const objectUrls = images.map((img) => URL.createObjectURL(img));
     setPreviewUrls(objectUrls);
 
-    // Cleanup: Revoke URLs to free memory
     return () => {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [images]);
-  // Autorisation admin
+
   useEffect(() => {
     if (!isAuthenticated) return;
-
-    // attendre que `user` soit défini
     if (user && user.role !== "admin") {
       navigate("/");
     }
@@ -65,11 +60,6 @@ function CreateArticle() {
     }
   };
 
-  if (images.length > 5) {
-    setMessage("Limite de 5 images dépassée.");
-    setLoading(false);
-    return;
-  }
   const isFormValid = () => {
     return (
       formData.titre.trim() !== "" &&
@@ -77,8 +67,7 @@ function CreateArticle() {
       formData.prix !== "" &&
       formData.etat !== "" &&
       formData.categorie !== "" &&
-      images.length > 0 &&
-      images.length <= maxFiles
+      images.length > 0
     );
   };
 
@@ -90,40 +79,33 @@ function CreateArticle() {
     const payload = new FormData();
     payload.append("titre", formData.titre);
     payload.append("description", formData.description);
-    payload.append("prix", formData.prix);
+    payload.append("prix", Number(formData.prix)); // Forcer le nombre
     payload.append("etat", formData.etat);
     payload.append("categorie", formData.categorie);
-    payload.append("mainImageIndex", mainImageIndex || 0);
-    payload.append("quantite", formData.quantite);
+    payload.append("mainImageIndex", mainImageIndex);
+    payload.append("quantite", Number(formData.quantite)); // Forcer le nombre
 
     images.forEach((img) => {
-      payload.append("images", img); // même champ "images" pour chaque fichier
+      payload.append("images", img);
     });
 
     try {
       await createArticle(payload);
       setMessage("Article créé avec succès !");
-      setFormData({
-        titre: "",
-        description: "",
-        prix: "",
-        etat: "",
-        categorie: "",
-        quantite: 1,
-      });
-      setImages([]);
-      navigate("/");
+      setTimeout(() => navigate("/"), 2000);
     } catch (err) {
-      setMessage(err.message);
+      console.error("[UPLOAD_ERROR]", err);
+      // Récupère le message précis du backend (Multer ou Controller)
+      const errorMsg = err.response?.data?.message || "Erreur lors de la création.";
+      setMessage(errorMsg);
     } finally {
       setLoading(false);
     }
   };
+
   const handleRemoveImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
-
     setImages(newImages);
-
     if (mainImageIndex === index) {
       setMainImageIndex(0);
     } else if (index < mainImageIndex) {
@@ -139,7 +121,7 @@ function CreateArticle() {
           type="text"
           name="titre"
           placeholder="Titre"
-          value={formData.titre ?? ""}
+          value={formData.titre}
           onChange={handleChange}
           required
           className="inputs"
@@ -159,11 +141,12 @@ function CreateArticle() {
           type="number"
           name="prix"
           placeholder="Prix (€)"
-          value={formData.prix ?? ""}
+          value={formData.prix}
           onChange={handleChange}
           required
           className="inputs"
         />
+
         <div className="selectInput">
           <select
             name="etat"
@@ -172,7 +155,7 @@ function CreateArticle() {
             required
             className="inputs"
           >
-            <option value="">Etat</option>
+            <option value="">État</option>
             <option value="Neuf">Neuf</option>
             <option value="Très bon état">Très bon état</option>
             <option value="Bon état">Bon état</option>
@@ -194,71 +177,71 @@ function CreateArticle() {
             <option value="Jeux / Jouets">Jeux / Jouets</option>
             <option value="Autre">Autre</option>
           </select>
+
           <input
             type="number"
             name="quantite"
             placeholder="Quantité"
             min={1}
-            value={formData.quantite ?? ""}
+            value={formData.quantite}
             onChange={handleChange}
             required
             className="inputs"
           />
         </div>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageChange}
-          className="inputs"
-          max={maxFiles}
-        />
-        <p style={{ fontSize: "0.9rem", color: "gray" }}>
-          {images.length}/{maxFiles} images sélectionnées
-        </p>
-        <div stytle={{ display: "flex", gap: "10px", flexWrap: "wrap" , flexDirection:"row"}} className="previewContainer">
+
+        <div className="fileInputContainer">
+          <input
+            type="file"
+            id="file-upload"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="fileInput"
+          />
+          <label htmlFor="file-upload" className="fileLabel">
+            Ajouter des photos ({images.length}/{maxFiles})
+          </label>
+        </div>
+
+        <div className="previewContainer">
           {previewUrls.map((url, idx) => (
-            <div key={idx} className="previewItem">
-              <img
-                src={url}
-                alt={`Preview ${idx}`}
-                onClick={() => setMainImageIndex(idx)}
-                width={300}
-                height={200}
-                style={{
-                  border:
-                    idx === mainImageIndex
-                      ? "2px solid blue"
-                      : "1px solid #ccc",
-                  cursor: "pointer",
-                }}
-              />
-              <button type="button" onClick={() => handleRemoveImage(idx)}>
-                X
+            <div 
+              key={idx} 
+              className={`previewItem ${idx === mainImageIndex ? "mainImage" : ""}`}
+              onClick={() => setMainImageIndex(idx)}
+            >
+              <img src={url} alt={`Preview ${idx}`} />
+              <button 
+                type="button" 
+                className="removeImgBtn" 
+                onClick={(e) => { e.stopPropagation(); handleRemoveImage(idx); }}
+              >
+                ×
               </button>
+              {idx === mainImageIndex && <span className="mainBadge">Principale</span>}
             </div>
           ))}
         </div>
-        <p style={{ textAlign: "center", fontSize: "0.9rem", color: "gray" }}>
-          Cliquer sur une des photos pour en faire la photo principale de
-          l'article
-        </p>
 
-        <button type="submit" disabled={!isFormValid() || loading}>
+        {images.length > 0 && (
+          <p className="hint">Cliquer sur une photo pour la définir comme principale</p>
+        )}
+
+        <button 
+          type="submit" 
+          className="submitBtn" 
+          disabled={!isFormValid() || loading}
+        >
           {loading ? "Création..." : "Créer l’article"}
         </button>
-      </form>
 
-      {message && (
-        <p
-          style={{
-            marginTop: "1rem",
-            color: message.includes("succès") ? "green" : "red",
-          }}
-        >
-          {message}
-        </p>
-      )}
+        {message && (
+          <p className={`message ${message.includes("succès") ? "success" : "error"}`}>
+            {message}
+          </p>
+        )}
+      </form>
     </div>
   );
 }

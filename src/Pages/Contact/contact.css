@@ -1,21 +1,187 @@
-.contactContainer{
-    margin-top: 10rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.contactContainer {
+  margin: 10rem auto 4rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 700px;
+  width: 90%;
+  box-sizing: border-box;
 }
-.textContact{
-  padding: 2rem;
+
+.contactHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.contactHeader h2 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin: 10px 0;
+}
+
+.contactHeader p {
+  color: #666;
+}
+
+.textContact {
+  padding: 2.5rem;
+  background-color: var(--blank_002);
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* --- Styles des champs --- */
+.inputGroup {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputGroup:focus-within {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.1); /* Optionnel : léger halo */
+}
+
+.inputIcon {
+  color: #aaa;
+  margin-right: 12px;
+  flex-shrink: 0; /* Empêche l'icône de s'écraser */
+}
+
+.inputGroup input,
+.inputGroup textarea {
+  border: none;
+  padding: 15px 0;
+  flex: 1; /* Prend tout l'espace restant dans l'inputGroup */
+  width: 100%;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  font-family: inherit;
+  color: #333;
+}
+
+/* Aligne le texte en haut pour la textarea */
+.inputGroup:has(textarea) {
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+.inputGroup textarea {
+  resize: none; /* Empêche l'utilisateur de déformer le layout */
+}
+
+/* --- Bouton d'envoi --- */
+.sendBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  width: 50vw;
-  background-color: var(--blank_002);
-  margin-bottom: -1rem;
-  margin-left: auto;
-  margin-right: auto;
+  gap: 10px;
+  transition: all 0.3s;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: black;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sendBtn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* --- Message de succès --- */
+.successContact {
+  text-align: center;
+  padding: 2rem 0;
+  animation: slideUp 0.4s ease-out;
+}
+
+.successIconCircle {
+  background: #4caf50;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.resetBtn {
+  margin-top: 1.5rem;
+  background: none;
+  border: 1px solid var(--secondary);
+  color: var(--secondary);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.resetBtn:hover {
+  background: var(--secondary);
+  color: white;
+}
+
+.contactInfoDirect {
   margin-top: 2rem;
-  border-radius: 10px 10px 0px 0px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.errorMessage {
+  color: #f44336;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .contactContainer {
+    margin-top: 7rem;
+  }
+  .textContact {
+    padding: 1.5rem;
+  }
 }

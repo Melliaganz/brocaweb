@@ -1,5 +1,6 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import { AuthProvider } from "./Services/AuthContext";
 import { CartProvider } from "./Services/CartContext";
@@ -24,44 +25,44 @@ import Checkout from "./Pages/Checkout/Checkout";
 import AdminOrders from "./Pages/Orders/AdminOrders";
 import UserManagement from "./Pages/Admin/UserManagement";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
           <div className="App">
             <Navbar />
             <main id="main-content">
               <Routes>
-                <Route path="*" element={<Page404 />} />
-                <Route path="/search" element={<SearchResults />} />
                 <Route path="/" element={<Home />} />
+                <Route path="/search" element={<SearchResults />} />
                 <Route path="/article/:id" element={<ArticleDetail />} />
                 <Route path="/login" element={<Login />} />
-
-                <Route path="/admin/create-user" element={<Register />} />
-                <Route
-                  path="/admin/user-management"
-                  element={<UserManagement />}
-                />
-                <Route
-                  path="/admin/create-article"
-                  element={<CreateArticle />}
-                />
+                
+                <Route path="/categorie/:categorie" element={<CategoriePage />} />
+                <Route path="/checkout" element={<Checkout />} />
+                
                 <Route path="/conditions" element={<Conditions />} />
                 <Route path="/mentions-legales" element={<Mentions />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/a-propos" element={<APropos />} />
-                <Route
-                  path="admin/edit-article/:id"
-                  element={<EditArticle />}
-                />
+
+                <Route path="/admin/create-user" element={<Register />} />
+                <Route path="/admin/user-management" element={<UserManagement />} />
+                <Route path="/admin/create-article" element={<CreateArticle />} />
+                <Route path="/admin/edit-article/:id" element={<EditArticle />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
-                <Route
-                  path="/categorie/:categorie"
-                  element={<CategoriePage />}
-                />
-                <Route path="/checkout" element={<Checkout />} />
+
+                <Route path="*" element={<Page404 />} />
               </Routes>
             </main>
             <Footer />

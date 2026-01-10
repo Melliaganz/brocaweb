@@ -1,7 +1,8 @@
 .userManagementContainer {
-  padding: 2rem;
+  padding: 2rem 1rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 10rem auto 2rem auto;
+  width: 95%;
 }
 
 .headerList {
@@ -10,45 +11,48 @@
   align-items: center;
   margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 10rem;
+  gap: 1.5rem;
 }
 
 .headerList h2 {
-  color: #333;
+  color: var(--primary);
   font-size: 1.8rem;
   margin: 0;
 }
 
+/* --- Bouton Ajouter --- */
 .btnAddUser {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: #28a745;
+  gap: 0.8rem;
+  background-color: var(--primary);
   color: white;
-  padding: 0.8rem 1.2rem;
+  padding: 0.8rem 1.5rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
 .btnAddUser:hover {
-  background-color: #218838;
+  background-color: var(--secondary);
+  transform: translateY(-2px);
 }
 
 .errorMsg {
   color: #dc3545;
-  background-color: #f8d7da;
+  background-color: #fce8e9;
   padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
 }
 
+/* --- Tableau --- */
 .userTable {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--blank_002);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -58,36 +62,23 @@
 .userTable td {
   padding: 1.2rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--blank_001);
 }
 
 .userTable th {
-  background-color: #f8f9fa;
-  color: #666;
-  font-weight: 600;
+  background-color: var(--background);
+  color: var(--secondary-dark);
+  font-weight: bold;
   text-transform: uppercase;
   font-size: 0.85rem;
 }
 
-.userTable tr:hover {
-  background-color: #fafafa;
-}
-
-/* --- Styles pour les inputs d'édition --- */
-.userTable input[type="text"],
-.userTable input[type="email"],
-.userTable select {
+/* --- Inputs & Selects --- */
+.userTable input, .userTable select {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--blank_001);
   border-radius: 4px;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.userTable input:focus,
-.userTable select:focus {
-  border-color: #007bff;
 }
 
 /* --- Badges --- */
@@ -96,17 +87,16 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: bold;
-  text-transform: capitalize;
 }
 
 .badge.admin {
-  background-color: #e3f2fd;
-  color: #0d47a1;
+  background-color: var(--secondary);
+  color: white;
 }
 
 .badge.user {
-  background-color: #f5f5f5;
-  color: #616161;
+  background-color: var(--blank_001);
+  color: var(--primary);
 }
 
 /* --- Boutons d'action --- */
@@ -115,81 +105,55 @@
   border: none;
   cursor: pointer;
   padding: 8px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: transform 0.2s;
 }
 
-.btnEdit {
-  color: #ffc107;
-}
-
-.btnEdit:hover {
-  background-color: #fff9e6;
-  transform: scale(1.1);
-}
-
-.btnSave {
-  color: #28a745;
-}
-
-.btnSave:hover {
-  background-color: #eafaf1;
-  transform: scale(1.1);
-}
-
-.btnCancel {
-  color: #6c757d;
-}
-
-.btnCancel:hover {
-  background-color: #f4f4f4;
-  transform: scale(1.1);
-}
-
-.btnDelete {
-  color: #dc3545;
-}
-
-.btnDelete:hover:not(:disabled) {
-  color: #a71d2a;
-  background-color: #fff5f5;
-  transform: scale(1.1);
-}
+.btnEdit { color: #ffc107; }
+.btnSave { color: #28a745; }
+.btnCancel { color: #6c757d; }
+.btnDelete { color: #dc3545; }
 
 .btnDelete:disabled {
   color: #ccc;
   cursor: not-allowed;
 }
 
-/* --- Responsive --- */
-@media (max-width: 768px) {
-  .userManagementContainer {
-    padding: 1rem;
-  }
+.btnEdit:hover, .btnSave:hover, .btnDelete:hover:not(:disabled) {
+  transform: scale(1.2);
+}
 
+/* --- Responsive --- */
+@media (max-width: 850px) {
   .userTable thead {
     display: none;
   }
 
   .userTable tr {
     display: block;
-    margin-bottom: 1rem;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--blank_001);
+    border-radius: 10px;
     padding: 1rem;
+    background: white;
   }
 
   .userTable td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .userTable td:last-child {
     border: none;
+    justify-content: center;
+    gap: 1.5rem;
   }
 
   .userTable td::before {
     content: attr(data-label);
     font-weight: bold;
-    color: #666;
+    color: var(--secondary-dark);
   }
 }

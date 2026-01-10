@@ -3,6 +3,7 @@ import { login } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { AuthContext } from "../../Services/AuthContext";
+import { Email, Lock, Login as LoginIcon } from "@mui/icons-material";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -43,29 +44,47 @@ function Login() {
 
   return (
     <div className="loginContainer">
-      <h2>Connexion</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="inputs"
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={motDePasse}
-          onChange={(e) => setMotDePasse(e.target.value)}
-          required
-          className="inputs"
-        />
+      <div className="loginHeader">
+        <LoginIcon style={{ fontSize: "3rem", color: "var(--primary)" }} />
+        <h2>Connexion</h2>
+        <p>Accédez à votre espace administrateur</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="loginForm">
+        <div className="inputGroup">
+          <Email className="inputIcon" />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="loginInput"
+            autoComplete="email"
+            name="email"
+          />
+        </div>
+
+        <div className="inputGroup">
+          <Lock className="inputIcon" />
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            value={motDePasse}
+            onChange={(e) => setMotDePasse(e.target.value)}
+            required
+            className="loginInput"
+            autoComplete="current-password"
+            name="password"
+          />
+        </div>
+
         <button type="submit" disabled={loading} className="btn">
           {loading ? "Connexion..." : "Se connecter"}
         </button>
       </form>
-      {message && <p style={{ marginTop: "1rem", color: "red" }}>{message}</p>}
+      
+      {message && <p className="errorMessage">{message}</p>}
     </div>
   );
 }

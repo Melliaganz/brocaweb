@@ -60,7 +60,7 @@ function UserManagement() {
 
   const handleSave = async (id) => {
     try {
-      const updatedUser = await updateUser(id, editFormData);
+      await updateUser(id, editFormData);
       setUsers(users.map((u) => (u._id === id ? { ...u, ...editFormData } : u)));
       setEditingId(null);
       alert("Utilisateur mis à jour");
@@ -96,7 +96,7 @@ function UserManagement() {
             <tr key={u._id}>
               {editingId === u._id ? (
                 <>
-                  <td>
+                  <td data-label="Nom">
                     <input
                       type="text"
                       name="nom"
@@ -104,7 +104,7 @@ function UserManagement() {
                       onChange={handleInputChange}
                     />
                   </td>
-                  <td>
+                  <td data-label="Email">
                     <input
                       type="email"
                       name="email"
@@ -112,13 +112,13 @@ function UserManagement() {
                       onChange={handleInputChange}
                     />
                   </td>
-                  <td>
+                  <td data-label="Rôle">
                     <select name="role" value={editFormData.role} onChange={handleInputChange}>
                       <option value="user">User</option>
                       <option value="admin">Admin</option>
                     </select>
                   </td>
-                  <td>
+                  <td data-label="Actions">
                     <button onClick={() => handleSave(u._id)} className="btnSave">
                       <Save />
                     </button>
@@ -129,20 +129,20 @@ function UserManagement() {
                 </>
               ) : (
                 <>
-                  <td>{u.nom}</td>
-                  <td>{u.email}</td>
-                  <td>
+                  <td data-label="Nom">{u.nom}</td>
+                  <td data-label="Email">{u.email}</td>
+                  <td data-label="Rôle">
                     <span className={`badge ${u.role}`}>{u.role}</span>
                   </td>
-                  <td>
+                  <td data-label="Actions">
                     <button onClick={() => handleEditClick(u)} className="btnEdit">
                       <Edit />
                     </button>
                     <button
                       onClick={() => handleDelete(u._id)}
                       className="btnDelete"
-                      disabled={u._id === user.id}
-                      title={u._id === user.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
+                      disabled={u._id === user?.id}
+                      title={u._id === user?.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
                     >
                       <DeleteForever />
                     </button>

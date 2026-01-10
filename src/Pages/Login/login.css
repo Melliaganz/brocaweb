@@ -1,53 +1,121 @@
 .loginContainer {
-  padding: 2rem;
+  padding: 3rem 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 80vw;
+  width: 90%;
+  max-width: 450px;
   background-color: var(--blank_002);
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10rem;
-  border-radius: 10px 10px 0px 0px;
+  margin: 12rem auto 4rem auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
 }
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.loginHeader h2 {
+  color: var(--primary);
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+.loginHeader p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.loginForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* --- Groupes d'input avec icônes --- */
+.inputGroup {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputGroup:focus-within {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(153, 107, 77, 0.1);
+}
+
+.inputIcon {
+  color: #aaa;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.loginInput {
+  border: none;
+  padding: 15px 0;
+  flex: 1;
+  width: 100%;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  font-family: inherit;
+  color: var(--secondary);
+}
+
+.loginInput::placeholder {
+  color: #aaa;
+  font-weight: lighter;
+}
+
+/* --- Bouton --- */
 .btn {
   width: 100%;
-  padding: 10px;
-  border-radius: 25px;
+  padding: 16px;
+  border-radius: 12px;
   border: none;
-  background-color: #edd1bf;
-  color: var(--secondary);
+  background-color: var(--primary);
+  color: white;
   font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
 }
-.btn:hover {
-  background-color: var(--blank_001);
-  color: var(--primary);
+
+.btn:hover:not(:disabled) {
+  background-color: black;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
-.btn:active {
-  transform: translateY(2px);
+
+.btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
-.inputs {
-  font-size: 18px;
-  padding: 5px 10px;
-  width: 100%;
-  padding-left: 35px;
-  outline: none;
-  background: #ffffff;
-  color: var(--secondary);
-  border: none;
-  border-radius: 10px;
-  box-shadow: 3px 3px 2px 0px #e2e2e2;
-  transition: 0.3s ease;
+
+.errorMessage {
+  margin-top: 1.5rem;
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9rem;
 }
-.inputs:focus {
-  background: #f2f2f2;
-  border: 1px solid var(--background);
-  border-radius: 10px;
-}
-.inputs::placeholder {
-	color: var(--secondary);
-  font-weight:lighter;
+
+@media (max-width: 500px) {
+  .loginContainer {
+    margin-top: 8rem;
+    padding: 2rem 1.5rem;
+  }
 }

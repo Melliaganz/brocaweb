@@ -1,28 +1,28 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
+import { SearchOff, ShoppingBag, ArrowBack } from "@mui/icons-material";
+import "../Homepage/home.css";
 
 function CategoriePage() {
   const { categorie } = useParams();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [sortOption, setSortOption] = useState("recent");
 
   const getImageUrl = (imageName) => {
     if (!imageName) return "/placeholder.jpg";
-    if (imageName.startsWith("http")) {
-      return imageName;
-    }
+    if (imageName.startsWith("http")) return imageName;
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
+        setLoading(true);
         const data = await getArticles();
         const filtered = data.filter(
-          (a) => a.categorie.toLowerCase() === categorie.toLowerCase()
+          (a) => a.categorie.toLowerCase() === categorie.toLowerCase() && a.quantite > 0
         );
         setArticles(filtered);
       } catch (err) {
@@ -34,65 +34,64 @@ function CategoriePage() {
     fetchArticles();
   }, [categorie]);
 
-  const sortedArticles = useMemo(() => {
-    const sorted = [...articles];
+  if (loading) {
+    return (
+      <div className="homeContainer">
+        <span className="loader"></span>
+        <p>Chargement de la catégorie...</p>
+      </div>
+    );
+  }
 
-    switch (sortOption) {
-      case "priceAsc":
-        return sorted.sort((a, b) => a.prix - b.prix);
-      case "priceDesc":
-        return sorted.sort((a, b) => b.prix - a.prix);
-      case "alphaAsc":
-        return sorted.sort((a, b) => a.titre.localeCompare(b.titre));
-      case "alphaDesc":
-        return sorted.sort((a, b) => b.titre.localeCompare(a.titre));
-      case "recent":
-      default:
-        return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-  }, [articles, sortOption]);
-
-  if (loading) return <p>Chargement...</p>;
-  if (error) return <p>{error}</p>;
-  if (!articles.length) return <p>Aucun article trouvé dans cette catégorie.</p>;
+  if (error) {
+    return (
+      <div className="homeContainer">
+        <p className="message error">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="homeContainer">
-      <h2>Articles de la catégorie : {categorie}</h2>
-
-      <div className="sortControls">
-        <label htmlFor="sort">Trier par :</label>
-        <select
-          id="sort"
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-        >
-          <option value="recent">Plus récents</option>
-          <option value="priceAsc">Prix croissant</option>
-          <option value="priceDesc">Prix décroissant</option>
-          <option value="alphaAsc">A → Z</option>
-          <option value="alphaDesc">Z → A</option>
-        </select>
+      <div className="sectionHeader" style={{ justifyContent: 'space-between', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <ShoppingBag className="sectionIcon" />
+          <h2 style={{ textTransform: 'capitalize' }}>{categorie}</h2>
+        </div>
+        <Link to="/" className="backLink" style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: 'var(--secondary)' }}>
+          <ArrowBack fontSize="small" /> Retour
+        </Link>
       </div>
 
-      <div className="articlesGrid">
-        {sortedArticles.map((article) => (
-          <Link
-            to={`/article/${article._id}`}
-            key={article._id}
-            className="articleCard"
-          >
-            <img
-              src={getImageUrl(article.images[article.mainImageIndex || 0])}
-              alt={article.titre}
-            />
-            <h3 className="titreArticle">{article.titre}</h3>
-            <p className="articlePrix">
-              <strong>{article.prix} €</strong>
-            </p>
+      {articles.length === 0 ? (
+        <div className="emptyState">
+          <SearchOff style={{ fontSize: "4rem", color: "var(--secondary)", opacity: 0.5 }} />
+          <h2>Aucun article disponible</h2>
+          <p>Désolé, il n'y a plus d'articles en stock dans la catégorie "{categorie}".</p>
+          <Link to="/" className="btn" style={{ maxWidth: '200px', marginTop: '1rem', textAlign: 'center', textDecoration: 'none' }}>
+            Voir tout le catalogue
           </Link>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="articlesGrid">
+          {articles.map((article) => (
+            <Link
+              key={article._id}
+              to={`/article/${article._id}`}
+              className="articleCard"
+            >
+              <img
+                src={getImageUrl(article.images[article.mainImageIndex || 0])}
+                alt={article.titre}
+              />
+              <div className="cardInfo">
+                <h3 className="titreArticle">{article.titre}</h3>
+                <p className="articlePrix">{article.prix} €</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

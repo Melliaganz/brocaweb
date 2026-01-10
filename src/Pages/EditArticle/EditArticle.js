@@ -2,7 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL_IMG, getArticleById, updateArticle } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
-import "./editArticle.css";
+import "../CreateArticle/createArticle.css";
+import { CloudUpload } from "@mui/icons-material";
 
 function EditArticle() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ function EditArticle() {
     categorie: "",
     quantite: "",
   });
+  
   const [existingImages, setExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
@@ -25,9 +27,7 @@ function EditArticle() {
 
   const getImageUrl = (imageName) => {
     if (!imageName) return "/placeholder.jpg";
-    if (imageName.startsWith("http")) {
-      return imageName;
-    }
+    if (imageName.startsWith("http")) return imageName;
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
 
@@ -43,11 +43,10 @@ function EditArticle() {
           categorie: article.categorie || "",
           quantite: article.quantite ?? 1,
         });
-
         setExistingImages(article.images || []);
         setMainImageIndex(article.mainImageIndex || 0);
       } catch (err) {
-        setMessage("Erreur de chargement");
+        setMessage("Erreur de chargement de l'article.");
       } finally {
         setLoading(false);
       }
@@ -63,22 +62,18 @@ function EditArticle() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleNewImageChange = (e) => {
     const files = Array.from(e.target.files);
     const total = existingImages.length + newImages.length + files.length;
-
     if (total > 5) {
       setMessage("Limite de 5 images dépassée");
       return;
     }
-
     setNewImages((prev) => [...prev, ...files]);
+    setMessage("");
   };
 
   const handleRemoveExistingImage = (index) => {
@@ -98,69 +93,59 @@ function EditArticle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const totalImages = existingImages.length + newImages.length;
-
-    if (totalImages === 0) {
+    if (existingImages.length + newImages.length === 0) {
       setMessage("Au moins une image est requise.");
       return;
     }
 
     const form = new FormData();
-
-    form.append("titre", formData.titre);
-    form.append("description", formData.description);
-    form.append("prix", formData.prix);
-    form.append("etat", formData.etat);
-    form.append("categorie", formData.categorie);
-    form.append("quantite", Number(formData.quantite) || 1);
+    Object.keys(formData).forEach(key => form.append(key, formData[key]));
     form.append("mainImageIndex", mainImageIndex);
-
-    existingImages.forEach((img) => {
-      form.append("existingImages", img);
-    });
-
-    newImages.forEach((file) => {
-      form.append("newImages", file);
-    });
+    existingImages.forEach((img) => form.append("existingImages", img));
+    newImages.forEach((file) => form.append("newImages", file));
 
     try {
       setLoading(true);
       await updateArticle(id, form);
       navigate(`/article/${id}`);
     } catch (err) {
-      setMessage(
-        err.response?.data?.message || "Erreur lors de la mise à jour"
-      );
+      setMessage(err.response?.data?.message || "Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <p>Chargement...</p>;
+  if (loading) return <div className="createArticleContainer"><p>Chargement...</p></div>;
 
   return (
     <div className="createArticleContainer">
-      <h2>Modifier un article</h2>
+      <h2>Modifier l'article</h2>
+      
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="titre"
-          value={formData.titre || ""}
+          placeholder="Titre"
+          value={formData.titre}
           onChange={handleChange}
           className="inputs"
           required
         />
+        
         <textarea
           name="description"
+          placeholder="Description"
           value={formData.description}
           onChange={handleChange}
           className="inputs"
           rows={4}
           required
         />
+
         <input
           type="number"
           name="prix"
+          placeholder="Prix"
           value={formData.prix}
           onChange={handleChange}
           className="inputs"
@@ -168,13 +153,7 @@ function EditArticle() {
         />
 
         <div className="selectInput">
-          <select
-            name="etat"
-            value={formData.etat}
-            onChange={handleChange}
-            required
-            className="inputs"
-          >
+          <select name="etat" value={formData.etat} onChange={handleChange} className="inputs" required>
             <option value="">État</option>
             <option value="Neuf">Neuf</option>
             <option value="Très bon état">Très bon état</option>
@@ -183,13 +162,7 @@ function EditArticle() {
             <option value="À réparer">À réparer</option>
           </select>
 
-          <select
-            name="categorie"
-            value={formData.categorie}
-            onChange={handleChange}
-            required
-            className="inputs"
-          >
+          <select name="categorie" value={formData.categorie} onChange={handleChange} className="inputs" required>
             <option value="">Catégorie</option>
             <option value="Électronique">Électronique</option>
             <option value="Meubles">Meubles</option>
@@ -197,6 +170,7 @@ function EditArticle() {
             <option value="Jeux / Jouets">Jeux / Jouets</option>
             <option value="Autre">Autre</option>
           </select>
+
           <input
             type="number"
             name="quantite"
@@ -204,89 +178,65 @@ function EditArticle() {
             min={1}
             value={formData.quantite}
             onChange={handleChange}
-            required
             className="inputs"
+            required
           />
         </div>
 
-        <p>Images actuelles :</p>
-        <div className="previewGrid" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div className="previewContainer">
+          {/* Images existantes */}
           {existingImages.map((img, idx) => (
-            <div key={idx} className="previewItem">
-              <img
-                src={getImageUrl(img)}
-                alt=""
-                onClick={() => setMainImageIndex(idx)}
-                width={300}
-                height={200}
-                style={{
-                  border: idx === mainImageIndex ? "3px solid #28a745" : "1px solid #ccc",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                  borderRadius: "8px"
-                }}
-              />
-              <button
-                type="button"
-                className="btnRemoveImg"
-                onClick={() => handleRemoveExistingImage(idx)}
-              >
-                X
-              </button>
+            <div 
+              key={`ex-${idx}`} 
+              className={`previewItem ${idx === mainImageIndex ? "mainImage" : ""}`}
+              onClick={() => setMainImageIndex(idx)}
+            >
+              <img src={getImageUrl(img)} alt="" />
+              <button type="button" className="removeImgBtn" onClick={(e) => { e.stopPropagation(); handleRemoveExistingImage(idx); }}>×</button>
+              {idx === mainImageIndex && <div className="mainBadge">Principale</div>}
             </div>
           ))}
+
+          {/* Nouvelles images */}
+          {newImages.map((img, idx) => {
+            const globalIdx = existingImages.length + idx;
+            return (
+              <div 
+                key={`new-${idx}`} 
+                className={`previewItem ${globalIdx === mainImageIndex ? "mainImage" : ""}`}
+                onClick={() => setMainImageIndex(globalIdx)}
+              >
+                <img src={URL.createObjectURL(img)} alt="" />
+                <button type="button" className="removeImgBtn" onClick={(e) => { e.stopPropagation(); handleRemoveNewImage(idx); }}>×</button>
+                {globalIdx === mainImageIndex && <div className="mainBadge">Principale</div>}
+              </div>
+            );
+          })}
         </div>
 
-        {newImages.length > 0 && (
-          <>
-            <p>Nouvelles images :</p>
-            <div className="previewGrid" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {newImages.map((img, idx) => (
-                <div key={idx} className="previewItem">
-                  <img
-                    src={URL.createObjectURL(img)}
-                    alt=""
-                    onClick={() =>
-                      setMainImageIndex(existingImages.length + idx)
-                    }
-                    width={300}
-                    height={200}
-                    style={{
-                      border:
-                        existingImages.length + idx === mainImageIndex
-                          ? "3px solid #28a745"
-                          : "1px solid #ccc",
-                      cursor: "pointer",
-                      objectFit: "cover",
-                      borderRadius: "8px"
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="btnRemoveImg"
-                    onClick={() => handleRemoveNewImage(idx)}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+        <p className="hint">Cliquez sur une image pour la définir comme image principale</p>
 
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleNewImageChange}
-          className="inputs"
-        />
-        <p>{existingImages.length + newImages.length} / 5 images</p>
+        <div className="fileInputContainer">
+          <input
+            type="file"
+            id="file-upload"
+            className="fileInput"
+            accept="image/*"
+            multiple
+            onChange={handleNewImageChange}
+          />
+          <label htmlFor="file-upload" className="fileLabel">
+            <CloudUpload style={{ marginRight: "10px" }} />
+            Ajouter des photos ({existingImages.length + newImages.length} / 5)
+          </label>
+        </div>
 
-        <button type="submit">Valider les modifications</button>
+        <button type="submit" className="submitBtn" disabled={loading}>
+          {loading ? "Enregistrement..." : "Valider les modifications"}
+        </button>
       </form>
 
-      {message && <p style={{ color: "red" }}>{message}</p>}
+      {message && <p className={`message ${message.includes("Erreur") ? "error" : "success"}`}>{message}</p>}
     </div>
   );
 }

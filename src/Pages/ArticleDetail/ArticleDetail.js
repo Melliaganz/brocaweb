@@ -22,6 +22,7 @@ function ArticleDetail() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantitySelected, setQuantitySelected] = useState(1);
   const [showNotification, setShowNotification] = useState(false);
@@ -48,7 +49,11 @@ function ArticleDetail() {
   const handleDelete = async () => {
     try {
       await deleteArticle(id);
-      navigate("/");
+      setIsDeleted(true); // Active l'animation
+      setShowConfirm(false);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000); // Laisse le temps de voir l'animation
     } catch (err) {
       setError("Erreur lors de la suppression");
     }
@@ -67,31 +72,24 @@ function ArticleDetail() {
 
   const handleAddToCart = () => {
     if (!article || availableStock <= 0) return;
-
     setLastAddedQty(quantitySelected);
-
     addToCart(article, quantitySelected);
     setShowNotification(true);
-
     const remainingAfterAdd = availableStock - quantitySelected;
     setQuantitySelected(remainingAfterAdd > 0 ? 1 : 0);
-
     setTimeout(() => {
       setShowNotification(false);
     }, 2500);
   };
 
   useEffect(() => {
-    if (article) {
-      setCurrentImageIndex(article.mainImageIndex || 0);
-    }
-  }, [article]);
-
-  useEffect(() => {
     const fetchArticle = async () => {
       try {
         const data = await getArticleById(id);
         setArticle(data);
+        if (data && data.images && data.images.length > 0) {
+          setCurrentImageIndex(data.mainImageIndex || 0);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -107,6 +105,19 @@ function ArticleDetail() {
 
   return (
     <div className="articleDetailContainer">
+      {/* Modale de succès Suppression */}
+      {isDeleted && (
+        <div className="confirmModal">
+          <div className="confirmBox successAnim">
+            <div className="success-icon-circle">
+              <Done style={{ fontSize: "4rem", color: "#fff" }} />
+            </div>
+            <h3>Article supprimé !</h3>
+            <p>Redirection vers l'accueil...</p>
+          </div>
+        </div>
+      )}
+
       {showNotification && (
         <div className="cart-modal-overlay">
           <div className="cart-modal-content">
@@ -134,28 +145,23 @@ function ArticleDetail() {
               src={getImageUrl(article.images[currentImageIndex])}
               alt={article.titre}
               className="mainImage"
-              width={300}
-              height={200}
               onClick={() => setSelectedImage(getImageUrl(article.images[currentImageIndex]))}
             />
           </div>
 
           {article.images.length > 1 && (
             <div className="thumbnailRow">
-              {article.images.map(
-                (img, i) =>
-                  i !== (article.mainImageIndex || 0) && (
-                    <img
-                      key={i}
-                      src={getImageUrl(img)}
-                      alt={`Miniature ${i + 1}`}
-                      className={`thumbnailImage ${
-                        i === currentImageIndex ? "activeThumb" : ""
-                      }`}
-                      onClick={() => setCurrentImageIndex(i)}
-                    />
-                  )
-              )}
+              {article.images.map((img, i) => (
+                <img
+                  key={i}
+                  src={getImageUrl(img)}
+                  alt={`Miniature ${i + 1}`}
+                  className={`thumbnailImage ${
+                    i === currentImageIndex ? "activeThumb" : ""
+                  }`}
+                  onClick={() => setCurrentImageIndex(i)}
+                />
+              ))}
             </div>
           )}
         </div>
@@ -217,7 +223,7 @@ function ArticleDetail() {
           </div>
           {quantityInCart > 0 && (
             <p style={{ color: "#666", fontSize: "0.9rem" }}>
-              (Vous en avez déjà {quantityInCart} dans votre panier)
+              ({quantityInCart} déjà dans votre panier)
             </p>
           )}
           <div className="purchaseActions">
@@ -235,6 +241,7 @@ function ArticleDetail() {
                 value={quantitySelected}
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 className="qtyInput"
+                name="quantity"
               />
 
               <button
@@ -245,14 +252,11 @@ function ArticleDetail() {
                 <Add />
               </button>
             </div>
-            {quantitySelected >= article.quantite && (
-              <span className="stockLimitLabel">Limite de stock atteinte</span>
-            )}
           </div>
           <div className="articleButtonDetail">
             <button onClick={handleAddToCart} disabled={availableStock <= 0}>
               <ShoppingCart />
-              {article.quantite === 0
+              {availableStock <= 0
                 ? "Rupture de stock"
                 : "Ajouter au panier"}
             </button>

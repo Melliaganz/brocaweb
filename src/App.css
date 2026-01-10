@@ -7,53 +7,83 @@
   --background: #eee4dd;
   --blank_002: #fcfaf7;
   --blank_001: #e5e8eb;
+  --primary-green: #4caf50;
+  --danger-red: #f44336;
+  --transition-fast: 100ms ease;
 }
+
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
 }
+
 main {
   flex: 1;
   padding: 2rem;
   width: 100%;
   box-sizing: border-box;
+  margin-top: 80px; /* Espace pour le header fixed */
 }
+
 body {
   margin: 0;
   background-color: var(--background);
   font-family: "Plus Jakarta Sans", sans-serif;
   overflow-x: hidden;
 }
+
 a {
   color: initial;
   text-decoration: none;
 }
+
+/* --- HEADER & NAVBAR --- */
 header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
+  background-color: #fff;
+  border-bottom: 2px solid var(--blank_001);
 }
+
 .headerContainer {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  background-color: #fff;
   width: 100vw;
-  border-bottom: 2px solid var(--blank_001);
+  height: 80px;
 }
-.headerContainer ul {
+
+.titreHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 30px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 2rem;
+  transition: all 0.5s ease;
+  gap: 10px;
+  margin: 0;
+}
+
+.navContainer ul {
   list-style: none;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  margin: 0;
+  padding: 0;
 }
-.headerContainer a {
+
+.navLink {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,95 +98,33 @@ header {
   font-size: 12px;
   transition: all 0.5s ease;
   gap: 10px;
+  color: var(--primary);
 }
-.headerContainer a:hover {
+
+.navLink:hover {
   letter-spacing: 3px;
   background-color: var(--secondary);
   color: hsl(0, 0%, 100%);
   box-shadow: rgb(153, 107, 77) 0px 7px 29px 0px;
 }
-.headerContainer a:active {
+
+.navLink:active {
   letter-spacing: 3px;
   background-color: var(--secondary);
   color: hsl(0, 0%, 100%);
   transform: translateY(10px);
   transition: 100ms;
 }
-.headerContainer button {
-  background-color: transparent;
-  border: none;
-}
 
-.titreHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px 30px;
-  cursor: pointer;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-size: 2rem;
-  transition: all 0.5s ease;
-  gap: 10px;
-}
 .hamburger {
   display: none;
-}
-.footerCopyright {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--secondary);
-  font-weight: bolder;
-  letter-spacing: 1ch;
-}
-
-.footer {
-  background-color: var(--blank_002);
-  color: var(--secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 2rem;
-  padding-top: 2rem;
-  /* width: 100vw; */
-  position: relative;
-  border-radius: 0px 0px 10px 10px;
-}
-
-.footerContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.footerLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.footerLinks a {
-  color: var(--secondary-dark);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.footerLinks a:hover {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
-.footerCopyright {
-  font-size: 0.8rem;
-  color: var(--secondary-dark);
-}
-
-.lienGithub:hover {
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
   cursor: pointer;
-  text-decoration: underline;
 }
+
+/* --- RECHERCHE --- */
 .searchForm {
   display: flex;
   align-items: center;
@@ -164,6 +132,7 @@ header {
   gap: 0.5rem;
   background-color: inherit;
 }
+
 .searchFormContainer {
   display: flex;
   align-items: center;
@@ -175,7 +144,9 @@ header {
   box-shadow: 3px 3px 2px 0px #e2e2e2;
   transition: 0.3s ease;
   background: #eee4dd;
+  overflow: hidden;
 }
+
 .searchForm input {
   font-size: 17px;
   width: 100%;
@@ -186,11 +157,7 @@ header {
   border: transparent;
   transition: 0.3s ease;
 }
-.searchForm:focus {
-  background: #f2f2f2;
-  border: 1px solid var(--background);
-  border-radius: 10px;
-}
+
 .searchForm button {
   display: flex;
   align-items: center;
@@ -198,13 +165,135 @@ header {
   padding: 0.7rem 1rem;
   border: none;
   color: var(--blank_002);
-  border-radius: 0px 5px 5px 0px;
   cursor: pointer;
   background-color: var(--secondary);
   border-left: 1px solid var(--primary);
+  transition: 0.3s;
 }
 
 .searchForm button:hover {
   background-color: var(--blank_002);
   color: var(--primary);
+}
+
+/* --- FOOTER --- */
+.footer {
+  background-color: var(--blank_002);
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem; /* Padding horizontal pour éviter que le texte touche les bords */
+  position: relative;
+  border-radius: 0px 0px 10px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* Un peu plus d'espace entre les liens et le copyright */
+  max-width: 1200px;
+  width: 100%;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; /* Permet de passer à la ligne sur mobile */
+  gap: 1.5rem;
+}
+
+.footerLinks a {
+  color: var(--secondary-dark);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footerLinks a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.footerCopyright {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; /* Pour que le copyright ne déborde pas sur très petits écrans */
+  color: var(--secondary-dark);
+  font-weight: bolder;
+  letter-spacing: 0.5ch; /* Réduit un peu par défaut pour plus de sécurité */
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.lienGithub:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1150px) {
+  .hamburger {
+    display: block;
+  }
+
+  .navContainer {
+    position: absolute;
+    top: 82px;
+    left: 0;
+    width: 100%;
+    background: white;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s ease;
+  }
+
+  .navContainer.open {
+    height: auto;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--blank_001);
+  }
+
+  .navContainer ul {
+    flex-direction: column;
+    padding-top: 1rem;
+    gap: 1rem;
+  }
+
+  .navLink {
+    width: 80%;
+  }
+
+  .searchForm {
+    display: none; /* Cache la recherche sur mobile pour simplifier le header */
+  }
+}
+@media (max-width: 768px) {
+  .footerLinks {
+    gap: 1rem;
+    padding: 0 10px;
+  }
+  
+  .footerCopyright {
+    letter-spacing: 0.3ch; /* On réduit l'espacement des lettres sur tablette */
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerLinks {
+    flex-direction: column; /* Liens les uns sous les autres sur petit téléphone */
+    gap: 0.8rem;
+    text-align: center;
+  }
+
+  .footerCopyright {
+    letter-spacing: 0.1ch; /* On retire presque l'espacement pour la lisibilité sur mobile */
+    font-size: 0.75rem;
+  }
 }

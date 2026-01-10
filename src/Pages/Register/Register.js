@@ -63,6 +63,7 @@ function Register() {
           value={formData.nom}
           onChange={handleChange}
           required
+          autoComplete="username"
         />
         <input
           type="email"
@@ -72,6 +73,7 @@ function Register() {
           onChange={handleChange}
           required
           className="inputs"
+          autoComplete="email"
         />
         <input
           type="password"
@@ -81,6 +83,7 @@ function Register() {
           onChange={handleChange}
           required
           className="inputs"
+          autoComplete="current-password"
         />
         
         <select 
