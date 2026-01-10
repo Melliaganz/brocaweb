@@ -4,8 +4,9 @@
   align-items: center;
   flex-direction: column;
   margin-top: 10rem;
-  padding: 0 1rem; /* Sécurité pour ne pas toucher les bords sur mobile */
+  padding: 0 1rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .aProposContainer h2 {
@@ -13,19 +14,22 @@
   margin-bottom: 2rem;
   font-size: 2rem;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .aProposText {
   background-color: var(--blank_002);
   padding: 2.5rem;
   max-width: 50rem;
-  width: 100%; /* S'adapte à l'écran si l'écran est plus petit que 50rem */
-  text-align: justify; /* Plus élégant pour du texte long */
+  width: 100%;
+  text-align: justify;
   border-radius: 12px;
-  line-height: 1.6; /* Améliore le confort de lecture */
+  line-height: 1.8;
   color: var(--primary);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--blank_001);
+  font-size: 1.1rem;
 }
 
 /* --- Media Queries --- */
@@ -40,6 +44,8 @@
 
   .aProposText {
     padding: 1.5rem;
-    text-align: left; /* Le justify rend parfois mal sur écran très étroit */
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 }

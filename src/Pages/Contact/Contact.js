@@ -71,7 +71,7 @@ export default function Contact() {
                 type="text"
                 name="name"
                 placeholder="Votre nom"
-                autoComplete="current-name"
+                autoComplete="name"
                 required
               />
             </div>
