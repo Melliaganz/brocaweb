@@ -1,7 +1,9 @@
 import { useState, useContext, useEffect } from "react";
-import { createArticle } from "../../Services/api";
+import { createArticle, getCategories } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Services/AuthContext";
+import CategoryManager from "../CategoryManager/CategoryManager"; // Import du composant
+import { AddCircleOutline } from "@mui/icons-material";
 import "./createArticle.css";
 
 function CreateArticle() {
@@ -15,22 +17,34 @@ function CreateArticle() {
   });
 
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const [showCatManager, setShowCatManager] = useState(false); // État pour la modale
 
+  const { isAuthenticated, user } = useContext(AuthContext);
   const maxFiles = 5;
   const navigate = useNavigate();
+
+  const fetchCats = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error("Erreur chargement catégories", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCats();
+  }, []);
 
   useEffect(() => {
     const objectUrls = images.map((img) => URL.createObjectURL(img));
     setPreviewUrls(objectUrls);
-
-    return () => {
-      objectUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
+    return () => objectUrls.forEach((url) => URL.revokeObjectURL(url));
   }, [images]);
 
   useEffect(() => {
@@ -42,10 +56,7 @@ function CreateArticle() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value ?? "",
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value ?? "" }));
   };
 
   const handleImageChange = (e) => {
@@ -55,9 +66,7 @@ function CreateArticle() {
       return;
     }
     setImages((prev) => [...prev, ...files]);
-    if (images.length === 0 && files.length > 0) {
-      setMainImageIndex(0);
-    }
+    if (images.length === 0 && files.length > 0) setMainImageIndex(0);
   };
 
   const isFormValid = () => {
@@ -79,23 +88,19 @@ function CreateArticle() {
     const payload = new FormData();
     payload.append("titre", formData.titre);
     payload.append("description", formData.description);
-    payload.append("prix", Number(formData.prix)); // Forcer le nombre
+    payload.append("prix", Number(formData.prix));
     payload.append("etat", formData.etat);
     payload.append("categorie", formData.categorie);
     payload.append("mainImageIndex", mainImageIndex);
-    payload.append("quantite", Number(formData.quantite)); // Forcer le nombre
+    payload.append("quantite", Number(formData.quantite));
 
-    images.forEach((img) => {
-      payload.append("images", img);
-    });
+    images.forEach((img) => payload.append("images", img));
 
     try {
       await createArticle(payload);
       setMessage("Article créé avec succès !");
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
-      console.error("[UPLOAD_ERROR]", err);
-      // Récupère le message précis du backend (Multer ou Controller)
       const errorMsg = err.response?.data?.message || "Erreur lors de la création.";
       setMessage(errorMsg);
     } finally {
@@ -106,11 +111,8 @@ function CreateArticle() {
   const handleRemoveImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
-    if (mainImageIndex === index) {
-      setMainImageIndex(0);
-    } else if (index < mainImageIndex) {
-      setMainImageIndex((prev) => prev - 1);
-    }
+    if (mainImageIndex === index) setMainImageIndex(0);
+    else if (index < mainImageIndex) setMainImageIndex((prev) => prev - 1);
   };
 
   return (
@@ -147,7 +149,7 @@ function CreateArticle() {
           className="inputs"
         />
 
-        <div className="selectInput">
+        <div className="selectInputGroup">
           <select
             name="etat"
             value={formData.etat}
@@ -163,20 +165,30 @@ function CreateArticle() {
             <option value="À réparer">À réparer</option>
           </select>
 
-          <select
-            name="categorie"
-            value={formData.categorie}
-            onChange={handleChange}
-            required
-            className="inputs"
-          >
-            <option value="">Catégorie</option>
-            <option value="Électronique">Électronique</option>
-            <option value="Meubles">Meubles</option>
-            <option value="Vêtements">Vêtements</option>
-            <option value="Jeux / Jouets">Jeux / Jouets</option>
-            <option value="Autre">Autre</option>
-          </select>
+          <div className="categorySelectorContainer">
+            <select
+              name="categorie"
+              value={formData.categorie}
+              onChange={handleChange}
+              required
+              className="inputs selectWithBtn"
+            >
+              <option value="">Catégorie</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <button 
+              type="button" 
+              className="manageCatsBtn"
+              onClick={() => setShowCatManager(true)}
+              title="Gérer les catégories"
+            >
+              <AddCircleOutline />
+            </button>
+          </div>
 
           <input
             type="number"
@@ -224,10 +236,6 @@ function CreateArticle() {
           ))}
         </div>
 
-        {images.length > 0 && (
-          <p className="hint">Cliquer sur une photo pour la définir comme principale</p>
-        )}
-
         <button 
           type="submit" 
           className="submitBtn" 
@@ -242,6 +250,15 @@ function CreateArticle() {
           </p>
         )}
       </form>
+
+      {showCatManager && (
+        <div className="modalOverlay" onClick={() => { setShowCatManager(false); fetchCats(); }}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <button className="closeModal" onClick={() => { setShowCatManager(false); fetchCats(); }}>×</button>
+            <CategoryManager />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

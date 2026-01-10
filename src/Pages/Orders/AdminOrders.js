@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { getAllOrders } from "../../Services/api";
+import { getAllOrders, updateOrderStatus, API_BASE_URL_IMG } from "../../Services/api";
 import "./adminOrders.css";
 import { 
   BarChart, 
   ReceiptLong, 
   Euro, 
   ShoppingBasket, 
-  Person 
+  Person,
+  ImageNotSupported
 } from "@mui/icons-material";
 
 function AdminOrders() {
@@ -15,25 +16,38 @@ function AdminOrders() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const data = await getAllOrders();
-        const ordersArray = Array.isArray(data) ? data : data.orders;
-        const sortedOrders = ordersArray.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setOrders(sortedOrders);
-      } catch (err) {
-        setError("Impossible de récupérer les commandes.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchOrders();
   }, []);
 
+  const fetchOrders = async () => {
+    try {
+      const data = await getAllOrders();
+      const ordersArray = Array.isArray(data) ? data : data.orders;
+      const sortedOrders = ordersArray.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setOrders(sortedOrders);
+    } catch (err) {
+      setError("Impossible de récupérer les commandes.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      // Mise à jour locale de l'état pour éviter un rechargement complet
+      setOrders(orders.map(order => 
+        order._id === orderId ? { ...order, status: newStatus } : order
+      ));
+    } catch (err) {
+      alert("Erreur lors de la mise à jour du statut.");
+    }
+  };
+
   const stats = {
-    totalRevenue: orders.reduce((acc, curr) => acc + curr.totalPrice, 0),
+    totalRevenue: orders.reduce((acc, curr) => acc + (curr.totalPrice || 0), 0),
     totalOrders: orders.length,
     itemsSold: orders.reduce(
       (acc, curr) =>
@@ -115,17 +129,32 @@ function AdminOrders() {
                     <td>
                       <ul className="itemsList">
                         {order.items.map((item, idx) => (
-                          <li key={idx}>
-                            <strong>{item.quantity}x</strong> {item.titre}
+                          <li key={idx} className="adminOrderItem">
+                            {item.article?.images?.[0] ? (
+                              <img 
+                                src={`${API_BASE_URL_IMG}/${item.article.images[0]}`} 
+                                alt="" 
+                                className="adminOrderThumb"
+                              />
+                            ) : (
+                              <ImageNotSupported className="adminOrderThumb placeholder" />
+                            )}
+                            <span><strong>{item.quantity}x</strong> {item.titre}</span>
                           </li>
                         ))}
                       </ul>
                     </td>
                     <td className="priceTotal">{order.totalPrice} €</td>
                     <td>
-                      <span className={`statusBadge ${order.status.toLowerCase().replace(/\s/g, "")}`}>
-                        {order.status}
-                      </span>
+                      <select 
+                        className={`statusSelect ${order.status.toLowerCase().replace(/\s/g, "")}`}
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                      >
+                        <option value="En cours">En cours</option>
+                        <option value="Traité">Traité</option>
+                        <option value="Livré">Livré</option>
+                      </select>
                     </td>
                   </tr>
                 ))}

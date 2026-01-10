@@ -143,3 +143,34 @@ export const deleteUser = async (id) => {
   });
   return handleResponse(res);
 };
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+  const res = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ status: newStatus }),
+  });
+  return handleResponse(res);
+};
+
+export const getCategories = async () => {
+  const res = await fetch(`${API_BASE_URL}/categories`);
+  return handleResponse(res);
+};
+
+export const createCategory = async (name) => {
+  const res = await fetch(`${API_BASE_URL}/categories`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ name }),
+  });
+  return handleResponse(res);
+};
+
+export const deleteCategory = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};

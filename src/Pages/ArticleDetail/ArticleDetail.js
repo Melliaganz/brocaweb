@@ -14,6 +14,7 @@ import {
   Edit,
   Remove,
   ShoppingCart,
+  Lock
 } from "@mui/icons-material";
 
 function ArticleDetail() {
@@ -26,10 +27,11 @@ function ArticleDetail() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantitySelected, setQuantitySelected] = useState(1);
   const [showNotification, setShowNotification] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lastAddedQty, setLastAddedQty] = useState(0);
 
-  const { user } = useContext(AuthContext);
+  const { user, isAuthenticated } = useContext(AuthContext);
   const { addToCart, cartItems } = useContext(CartContext);
 
   const itemInCart = (cartItems || []).find((item) => item._id === id);
@@ -49,11 +51,11 @@ function ArticleDetail() {
   const handleDelete = async () => {
     try {
       await deleteArticle(id);
-      setIsDeleted(true); // Active l'animation
+      setIsDeleted(true);
       setShowConfirm(false);
       setTimeout(() => {
         navigate("/");
-      }, 2000); // Laisse le temps de voir l'animation
+      }, 2000);
     } catch (err) {
       setError("Erreur lors de la suppression");
     }
@@ -71,6 +73,11 @@ function ArticleDetail() {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
     if (!article || availableStock <= 0) return;
     setLastAddedQty(quantitySelected);
     addToCart(article, quantitySelected);
@@ -105,6 +112,27 @@ function ArticleDetail() {
 
   return (
     <div className="articleDetailContainer">
+      {/* Modale d'Authentification requise */}
+      {showAuthModal && (
+        <div className="modalOverlay" onClick={() => setShowAuthModal(false)}>
+          <div className="confirmBox authModal" onClick={(e) => e.stopPropagation()}>
+            <div className="auth-icon-circle">
+              <Lock style={{ fontSize: "3rem", color: "#f44336" }} />
+            </div>
+            <h3>Connexion requise</h3>
+            <p>Veuillez vous connecter pour ajouter des articles au panier.</p>
+            <div className="confirmActions">
+              <button className="buttonValidate" onClick={() => navigate("/login")}>
+                Se connecter
+              </button>
+              <button className="buttonCancel" onClick={() => setShowAuthModal(false)}>
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modale de succès Suppression */}
       {isDeleted && (
         <div className="confirmModal">
@@ -137,6 +165,7 @@ function ArticleDetail() {
           </div>
         </div>
       )}
+
       <h2>{article.titre}</h2>
       <div className="articleDetailContent">
         <div className="imagesGallery">

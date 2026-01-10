@@ -22,7 +22,6 @@ export const CartProvider = ({ children }) => {
       const currentQtyInCart = existing ? existing.quantity : 0;
       const newTotalQty = currentQtyInCart + quantity;
       
-      // On s'assure de ne pas dépasser le stock réel
       const finalQty = Math.min(newTotalQty, article.quantite);
 
       if (existing) {
@@ -51,9 +50,10 @@ export const CartProvider = ({ children }) => {
     setCartItems((prev) => prev.filter((item) => item._id !== articleId));
   };
 
-  const clearCart = () => setCartItems([]);
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
-  // Calculs automatiques pour faciliter l'affichage
   const cartCount = useMemo(() => 
     cartItems.reduce((acc, item) => acc + item.quantity, 0), 
   [cartItems]);

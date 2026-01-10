@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getUserOrders } from "../../Services/api";
+import { getUserOrders, API_BASE_URL_IMG } from "../../Services/api";
 import "./UserOrders.css";
-import { ShoppingBag, AccessTime, CheckCircle, localShipping } from "@mui/icons-material";
+import { ShoppingBag, AccessTime, CheckCircle, LocalShipping, ImageNotSupported } from "@mui/icons-material";
 
 function UserOrders() {
   const [orders, setOrders] = useState([]);
@@ -24,9 +24,13 @@ function UserOrders() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Livré": return <CheckCircle style={{ color: "green" }} />;
-      case "Expédié": return <localShipping style={{ color: "blue" }} />;
-      default: return <AccessTime style={{ color: "orange" }} />;
+      case "Livré":
+        return <CheckCircle style={{ color: "#2e7d32" }} />;
+      case "Traité":
+        return <LocalShipping style={{ color: "#0288d1" }} />;
+      case "En cours":
+      default:
+        return <AccessTime style={{ color: "#ed6c02" }} />;
     }
   };
 
@@ -44,24 +48,39 @@ function UserOrders() {
           {orders.map((order) => (
             <div key={order._id} className="orderCard">
               <div className="orderHeader">
-                <span>Commande n° {order._id.slice(-8)}</span>
+                <span>Commande n° {order._id.slice(-8).toUpperCase()}</span>
                 <span className="orderDate">{new Date(order.createdAt).toLocaleDateString()}</span>
               </div>
               
               <div className="orderDetails">
                 <div className="orderItems">
-                  {order.articles.map((item, index) => (
-                    <p key={index}>{item.quantite}x {item.article.titre}</p>
+                  {order.items && order.items.map((item, index) => (
+                    <div key={index} className="orderItemRow" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                      {item.article?.images && item.article.images.length > 0 ? (
+                        <img 
+                          src={`${API_BASE_URL_IMG}/${item.article.images[0]}`} 
+                          alt={item.titre}
+                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                        />
+                      ) : (
+                        <div style={{ width: '40px', height: '40px', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px' }}>
+                          <ImageNotSupported style={{ fontSize: '20px', color: '#ccc' }} />
+                        </div>
+                      )}
+                      <p style={{ margin: 0 }}>
+                        <strong>{item.quantity}x</strong> {item.titre}
+                      </p>
+                    </div>
                   ))}
                 </div>
                 <div className="orderStatus">
-                  {getStatusIcon(order.statut)}
-                  <span>{order.statut}</span>
+                  {getStatusIcon(order.status)}
+                  <span>{order.status}</span>
                 </div>
               </div>
               
               <div className="orderFooter">
-                <strong>Total : {order.total} €</strong>
+                <strong>Total : {order.totalPrice.toFixed(2)} €</strong>
               </div>
             </div>
           ))}

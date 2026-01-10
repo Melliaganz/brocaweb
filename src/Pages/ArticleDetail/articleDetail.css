@@ -314,7 +314,63 @@
   margin-bottom: 1rem;
   animation: scaleBounce 0.5s ease-out;
 }
+/* Fond sombre derrière la modale */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
 
+/* Boîte de la modale */
+.authModal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.loginBtn {
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.closeBtn {
+  background-color: #edf2f7;
+  color: #4a5568;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 @keyframes scaleBounce {
   0% {
     transform: scale(0);

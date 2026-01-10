@@ -15,25 +15,35 @@ export function AuthProvider({ children }) {
 
         const currentTime = Date.now() / 1000;
         if (payload.exp && payload.exp < currentTime) {
-          localStorage.removeItem("token");
-          setIsAuthenticated(false);
-          setUser(null);
+          logout();
         } else {
           setIsAuthenticated(true);
-          setUser({ id: payload.id, role: payload.role });
+          setUser({ id: payload.id, role: payload.role, nom: payload.nom });
         }
       } catch (err) {
-        localStorage.removeItem("token");
-        setIsAuthenticated(false);
-        setUser(null);
+        logout();
       }
     }
     setLoading(false);
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("cart"); // Vide le panier du stockage local
+    setIsAuthenticated(false);
+    setUser(null);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, user, setUser, loading }}
+      value={{ 
+        isAuthenticated, 
+        setIsAuthenticated, 
+        user, 
+        setUser, 
+        loading, 
+        logout 
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>

@@ -47,7 +47,7 @@ function Login() {
       <div className="loginHeader">
         <LoginIcon style={{ fontSize: "3rem", color: "var(--primary)" }} />
         <h2>Connexion</h2>
-        <p>Accédez à votre espace administrateur</p>
+        <p>Accédez à votre espace</p>
       </div>
 
       <form onSubmit={handleSubmit} className="loginForm">

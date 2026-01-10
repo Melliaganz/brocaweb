@@ -1,17 +1,19 @@
 @font-face {
-  font-family: 'Plus Jakarta Sans';
+  font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../public/fonts/plus-jakarta-sans-v12-latin-regular.woff2') format('woff2');
+  src: url("../public/fonts/plus-jakarta-sans-v12-latin-regular.woff2")
+    format("woff2");
 }
 
 @font-face {
-  font-family: 'Plus Jakarta Sans';
+  font-family: "Plus Jakarta Sans";
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: url('../public/fonts/plus-jakarta-sans-v12-latin-800.woff2') format('woff2');
+  src: url("../public/fonts/plus-jakarta-sans-v12-latin-800.woff2")
+    format("woff2");
 }
 :root {
   --primary: #1c120d;
@@ -248,7 +250,28 @@ header {
   cursor: pointer;
   text-decoration: underline;
 }
+.cartIconContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
+.cartBadge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #ff4d4f;
+  color: white;
+  font-size: 0.5rem;
+  font-weight: bold;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 /* --- RESPONSIVE --- */
 @media (max-width: 1150px) {
   .hamburger {
@@ -291,7 +314,7 @@ header {
     gap: 1rem;
     padding: 0 10px;
   }
-  
+
   .footerCopyright {
     letter-spacing: 0.3ch; /* On réduit l'espacement des lettres sur tablette */
     padding: 0 15px;

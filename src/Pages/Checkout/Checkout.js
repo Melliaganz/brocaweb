@@ -81,7 +81,7 @@ function Checkout() {
             <p>Votre demande a bien été enregistrée.</p>
             <div className="modalButtons">
               <button className="btnHome" onClick={() => navigate("/")}><Home /> Accueil</button>
-              <button className="btnOrders" onClick={() => navigate("/profile")}><ShoppingBag /> Mes commandes</button>
+              <button className="btnOrders" onClick={() => navigate("/mes-commandes")}><ShoppingBag /> Mes commandes</button>
             </div>
           </div>
         </div>

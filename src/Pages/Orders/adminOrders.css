@@ -151,16 +151,34 @@
 }
 
 /* --- Status Badges --- */
-.statusBadge {
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: bold;
+.statusSelect {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
 }
 
-.statusBadge.payé { background: #e8f5e9; color: #2e7d32; }
-.statusBadge.enattente { background: #fff3e0; color: #ef6c00; }
-.statusBadge.annulée { background: #ffebee; color: #c62828; }
+.statusSelect.encours { background-color: #fff3e0; color: #ef6c00; border-color: #ffe0b2; }
+.statusSelect.traité { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+.statusSelect.livré { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+
+.adminOrderItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.adminOrderThumb {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #f0f0f0;
+}
 
 @media (max-width: 768px) {
   .adminOrdersContainer { width: 95%; padding: 1.5rem; margin-top: 8rem; }

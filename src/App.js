@@ -30,6 +30,7 @@ import Checkout from "./Pages/Checkout/Checkout";
 import AdminOrders from "./Pages/Orders/AdminOrders";
 import UserManagement from "./Pages/Admin/UserManagement";
 import UserOrders from "./Pages/UserOrder/UserOrder"
+import CategoryManager from "./Pages/CategoryManager/CategoryManager";
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -73,6 +74,9 @@ function App() {
                   path="/admin/create-article"
                   element={<CreateArticle />}
                 />
+                <Route
+                path ="/admin/category"
+                element={CategoryManager} />
                 <Route
                   path="/admin/edit-article/:id"
                   element={<EditArticle />}

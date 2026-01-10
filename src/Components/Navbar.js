@@ -19,12 +19,14 @@ import React, {
 } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../Services/AuthContext";
+import { CartContext } from "../Services/CartContext";
 import "../App.css";
 
 const menuReducer = (state) => !state;
 
 function Navbar() {
-  const { isAuthenticated, setIsAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated, logout, user } = useContext(AuthContext);
+  const { cartCount, clearCart } = useContext(CartContext);
   const firstMenuItemRef = useRef(null);
   const [menuOpen, toggleMenu] = useReducer(menuReducer, false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,11 +39,11 @@ function Navbar() {
   }, [menuOpen]);
 
   const handleLogout = React.useCallback(() => {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
+    logout(); // Nettoie Token + User + LocalStorage Cart via AuthContext
+    clearCart(); // Nettoie l'état du panier dans le CartContext
     if (menuOpen) toggleMenu();
     navigate("/");
-  }, [setIsAuthenticated, navigate, menuOpen]);
+  }, [logout, clearCart, navigate, menuOpen]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -101,7 +103,12 @@ function Navbar() {
             id: "Cart",
             href: "/checkout",
             text: "Panier",
-            icon: <ShoppingCart />,
+            icon: (
+              <div className="cartIconContainer">
+                <ShoppingCart />
+                {cartCount > 0 && <span className="cartBadge">{cartCount}</span>}
+              </div>
+            ),
             title: "Panier",
           },
           {
@@ -124,7 +131,7 @@ function Navbar() {
         ];
 
     return [...baseItems, ...authItems];
-  }, [handleLogout, isAuthenticated, user]);
+  }, [handleLogout, isAuthenticated, user, cartCount]);
 
   return (
     <header className="header">
@@ -178,7 +185,10 @@ function Navbar() {
                     }
                   }}
                 >
-                  {React.cloneElement(item.icon, { "aria-hidden": "true" })}
+                  {typeof item.icon === "object" && !item.icon.props?.className?.includes("cartIcon") 
+                    ? React.cloneElement(item.icon, { "aria-hidden": "true" })
+                    : item.icon
+                  }
                   <span>{item.text}</span>
                 </Link>
               </li>
