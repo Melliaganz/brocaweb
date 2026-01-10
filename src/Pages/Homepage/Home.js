@@ -20,12 +20,20 @@ function Home() {
   const sortedArticles = useMemo(() => {
     const sorted = [...articles];
     switch (sortOption) {
-      case "priceAsc": return sorted.sort((a, b) => a.prix - b.prix);
-      case "priceDesc": return sorted.sort((a, b) => b.prix - a.prix);
-      case "alphaAsc": return sorted.sort((a, b) => a.titre.localeCompare(b.titre));
-      case "alphaDesc": return sorted.sort((a, b) => b.titre.localeCompare(a.titre));
-      case "categorie": return sorted.sort((a, b) => a.categorie.localeCompare(b.categorie));
-      default: return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case "priceAsc":
+        return sorted.sort((a, b) => a.prix - b.prix);
+      case "priceDesc":
+        return sorted.sort((a, b) => b.prix - a.prix);
+      case "alphaAsc":
+        return sorted.sort((a, b) => a.titre.localeCompare(b.titre));
+      case "alphaDesc":
+        return sorted.sort((a, b) => b.titre.localeCompare(a.titre));
+      case "categorie":
+        return sorted.sort((a, b) => a.categorie.localeCompare(b.categorie));
+      default:
+        return sorted.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
     }
   }, [articles, sortOption]);
 
@@ -34,11 +42,15 @@ function Home() {
       try {
         const data = await getArticles();
         // Filtrage des articles disponibles
-        const availableArticles = data.filter((article) => article.quantite > 0);
+        const availableArticles = data.filter(
+          (article) => article.quantite > 0
+        );
         setArticles(availableArticles);
 
         const categoryMap = {};
-        const sortedForCats = [...availableArticles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedForCats = [...availableArticles].sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
         for (const article of sortedForCats) {
           if (!categoryMap[article.categorie]) {
             categoryMap[article.categorie] = article;
@@ -75,18 +87,28 @@ function Home() {
     <div className="homeContainer">
       {articles.length === 0 ? (
         <div className="emptyState">
-          <Inventory style={{ fontSize: "4rem", color: "var(--secondary)", opacity: 0.5 }} />
+          <Inventory
+            style={{
+              fontSize: "4rem",
+              color: "var(--secondary)",
+              opacity: 0.5,
+            }}
+          />
           <h2>Aucun article disponible</h2>
           <p>Revenez plus tard pour découvrir nos nouveautés.</p>
         </div>
       ) : (
         <>
           <h1 className="mainTitle">Découvrez nos trésors</h1>
-          
+
           <div className="sortControls">
             <Sort style={{ color: "var(--secondary)" }} />
             <label htmlFor="sort">Trier par :</label>
-            <select id="sort" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+            <select
+              id="sort"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
               <option value="recent">Plus récents</option>
               <option value="priceAsc">Prix croissant</option>
               <option value="priceDesc">Prix décroissant</option>
@@ -100,11 +122,20 @@ function Home() {
             <Category className="sectionIcon" />
             <h2>Par catégories</h2>
           </div>
-          
+
           <div className="articlesGrid">
             {Object.entries(recentByCategory).map(([categorie, article]) => (
-              <Link to={`/categorie/${categorie}`} key={article._id} className="articleCard categoryCard">
-                <img src={getImageUrl(article.images[article.mainImageIndex || 0])} alt={categorie} />
+              <Link
+                to={`/categorie/${categorie}`}
+                key={article._id}
+                className="articleCard categoryCard"
+              >
+                <img
+                  src={getImageUrl(article.images[article.mainImageIndex || 0])}
+                  alt={categorie}
+                  fetchpriority={index < 2 ? "high" : "low"}
+                  loading={index < 2 ? "eager" : "lazy"}
+                />
                 <div className="cardInfo">
                   <h3 className="titreArticle">{categorie}</h3>
                 </div>
@@ -119,8 +150,17 @@ function Home() {
 
           <div className="articlesGrid">
             {sortedArticles.map((article) => (
-              <Link to={`/article/${article._id}`} key={article._id} className="articleCard">
-                <img src={getImageUrl(article.images[article.mainImageIndex || 0])} alt={article.titre} />
+              <Link
+                to={`/article/${article._id}`}
+                key={article._id}
+                className="articleCard"
+              >
+                <img
+                  src={getImageUrl(article.images[article.mainImageIndex || 0])}
+                  alt={article.titre}
+                  fetchpriority={index < 2 ? "high" : "low"}
+                  loading={index < 2 ? "eager" : "lazy"}
+                />
                 <div className="cardInfo">
                   <h3 className="titreArticle">{article.titre}</h3>
                   <p className="articlePrix">{article.prix} €</p>
