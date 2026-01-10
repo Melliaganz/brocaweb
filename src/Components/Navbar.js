@@ -135,8 +135,9 @@ function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               name="rechercher"
+              aria-label="Rechercher un article"
             />
-            <button type="submit" aria-label="Rechercher">
+            <button type="submit" aria-label="Lancer la recherche">
               <Search />
             </button>
           </div>
@@ -145,19 +146,20 @@ function Navbar() {
         <button
           className="hamburger"
           onClick={toggleMenu}
-          aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? "Fermer le menu de navigation" : "Ouvrir le menu de navigation"}
         >
           {menuOpen ? "✕" : "☰"}
         </button>
 
-        <nav className={`navContainer ${menuOpen ? "open" : ""}`}>
-          <ul role="menu">
+        <nav className={`navContainer ${menuOpen ? "open" : ""}`} aria-label="Navigation principale">
+          <ul>
             {menuItems.map((item, index) => (
-              <li key={item.id} role="none">
+              <li key={item.id}>
                 <Link
                   to={item.href}
                   className="navLink"
-                  title={"Bouton " + item.title}
+                  title={item.title}
                   ref={index === 0 ? firstMenuItemRef : null}
                   onClick={(e) => {
                     if (item.onClick) {
@@ -168,7 +170,8 @@ function Navbar() {
                     }
                   }}
                 >
-                  {React.cloneElement(item.icon, { "aria-hidden": "true" })} {item.text}
+                  {React.cloneElement(item.icon, { "aria-hidden": "true" })}
+                  <span>{item.text}</span>
                 </Link>
               </li>
             ))}

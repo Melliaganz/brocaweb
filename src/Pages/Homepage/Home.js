@@ -11,8 +11,13 @@ function Home() {
   const [error, setError] = useState("");
   const [sortOption, setSortOption] = useState("recent");
 
-  const getImageUrl = (imageName) => {
+  const getImageUrl = (imageName, width = 500) => {
     if (!imageName) return "/placeholder.jpg";
+    
+    if (imageName.startsWith("https://res.cloudinary.com")) {
+      return imageName.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_scale/`);
+    }
+
     if (imageName.startsWith("http")) return imageName;
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
@@ -41,7 +46,6 @@ function Home() {
     const fetchArticles = async () => {
       try {
         const data = await getArticles();
-        // Filtrage des articles disponibles
         const availableArticles = data.filter(
           (article) => article.quantite > 0
         );
@@ -65,6 +69,21 @@ function Home() {
     };
     fetchArticles();
   }, []);
+
+  useEffect(() => {
+    if (sortedArticles.length > 0) {
+      const imagesToPreload = sortedArticles.slice(0, 2);
+      imagesToPreload.forEach((article) => {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.href = getImageUrl(article.images[article.mainImageIndex || 0], 300);
+        link.crossOrigin = "anonymous"; // Important pour le preload aussi
+        link.fetchPriority = "high";
+        document.head.appendChild(link);
+      });
+    }
+  }, [sortedArticles]);
 
   if (loading) {
     return (
@@ -131,10 +150,15 @@ function Home() {
                 className="articleCard categoryCard"
               >
                 <img
-                  src={getImageUrl(article.images[article.mainImageIndex || 0])}
+                  src={getImageUrl(article.images[article.mainImageIndex || 0], 300)}
+                  srcSet={`
+                    ${getImageUrl(article.images[article.mainImageIndex || 0], 300)} 1x,
+                    ${getImageUrl(article.images[article.mainImageIndex || 0], 600)} 2x
+                  `}
                   alt={categorie}
-                  fetchpriority={index < 2 ? "high" : "low"}
-                  loading={index < 2 ? "eager" : "lazy"}
+                  crossOrigin="anonymous"
+                  fetchpriority="low"
+                  loading="lazy"
                 />
                 <div className="cardInfo">
                   <h3 className="titreArticle">{categorie}</h3>
@@ -149,15 +173,20 @@ function Home() {
           </div>
 
           <div className="articlesGrid">
-            {sortedArticles.map((article) => (
+            {sortedArticles.map((article, index) => (
               <Link
                 to={`/article/${article._id}`}
                 key={article._id}
                 className="articleCard"
               >
                 <img
-                  src={getImageUrl(article.images[article.mainImageIndex || 0])}
+                  src={getImageUrl(article.images[article.mainImageIndex || 0], 300)}
+                  srcSet={`
+                    ${getImageUrl(article.images[article.mainImageIndex || 0], 300)} 1x,
+                    ${getImageUrl(article.images[article.mainImageIndex || 0], 600)} 2x
+                  `}
                   alt={article.titre}
+                  crossOrigin="anonymous"
                   fetchpriority={index < 2 ? "high" : "low"}
                   loading={index < 2 ? "eager" : "lazy"}
                 />
