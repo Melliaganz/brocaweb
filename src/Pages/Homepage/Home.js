@@ -13,11 +13,12 @@ function Home() {
 
   const getImageUrl = (imageName, width = 500) => {
     if (!imageName) return "/placeholder.jpg";
-    
     if (imageName.startsWith("https://res.cloudinary.com")) {
-      return imageName.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_scale/`);
+      return imageName.replace(
+        "/upload/",
+        `/upload/f_auto,q_auto,w_${width},c_scale/`
+      );
     }
-
     if (imageName.startsWith("http")) return imageName;
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
@@ -72,16 +73,25 @@ function Home() {
 
   useEffect(() => {
     if (sortedArticles.length > 0) {
-      const imagesToPreload = sortedArticles.slice(0, 2);
-      imagesToPreload.forEach((article) => {
-        const link = document.createElement("link");
-        link.rel = "preload";
-        link.as = "image";
-        link.href = getImageUrl(article.images[article.mainImageIndex || 0], 300);
-        link.crossOrigin = "anonymous"; // Important pour le preload aussi
-        link.fetchPriority = "high";
-        document.head.appendChild(link);
-      });
+      const firstArticle = sortedArticles[0];
+      const mainImg = firstArticle.images[firstArticle.mainImageIndex || 0];
+
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = getImageUrl(mainImg, 300);
+      link.imageSrcset = `${getImageUrl(mainImg, 300)} 1x, ${getImageUrl(
+        mainImg,
+        600
+      )} 2x`;
+      link.imageSizes = "233px"; // Correspond à la largeur réelle de l'image dans ta grille CSS
+      link.crossOrigin = "anonymous";
+      link.fetchPriority = "high";
+      document.head.appendChild(link);
+
+      return () => {
+        if (document.head.contains(link)) document.head.removeChild(link);
+      };
     }
   }, [sortedArticles]);
 
@@ -144,26 +154,35 @@ function Home() {
 
           <div className="articlesGrid">
             {Object.entries(recentByCategory).map(([categorie, article]) => (
-              <Link
-                to={`/categorie/${categorie}`}
-                key={article._id}
-                className="articleCard categoryCard"
-              >
-                <img
-                  src={getImageUrl(article.images[article.mainImageIndex || 0], 300)}
-                  srcSet={`
-                    ${getImageUrl(article.images[article.mainImageIndex || 0], 300)} 1x,
-                    ${getImageUrl(article.images[article.mainImageIndex || 0], 600)} 2x
-                  `}
-                  alt={categorie}
-                  crossOrigin="anonymous"
-                  fetchpriority="low"
-                  loading="lazy"
-                />
-                <div className="cardInfo">
-                  <h3 className="titreArticle">{categorie}</h3>
-                </div>
-              </Link>
+              <div key={categorie} className="articleCard categoryCard">
+                <Link
+                  to={`/categorie/${encodeURIComponent(categorie)}`}
+                  key={article._id}
+                  className="articleCard categoryCard"
+                >
+                  {" "}
+                  <img
+                    src={getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      300
+                    )}
+                    srcSet={`${getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      300
+                    )} 1x, ${getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      600
+                    )} 2x`}
+                    sizes="233px"
+                    alt={categorie}
+                    crossOrigin="anonymous"
+                    loading="lazy"
+                  />
+                  <div className="cardInfo">
+                    <h3 className="titreArticle">{categorie}</h3>
+                  </div>
+                </Link>
+              </div>
             ))}
           </div>
 
@@ -174,27 +193,32 @@ function Home() {
 
           <div className="articlesGrid">
             {sortedArticles.map((article, index) => (
-              <Link
-                to={`/article/${article._id}`}
-                key={article._id}
-                className="articleCard"
-              >
-                <img
-                  src={getImageUrl(article.images[article.mainImageIndex || 0], 300)}
-                  srcSet={`
-                    ${getImageUrl(article.images[article.mainImageIndex || 0], 300)} 1x,
-                    ${getImageUrl(article.images[article.mainImageIndex || 0], 600)} 2x
-                  `}
-                  alt={article.titre}
-                  crossOrigin="anonymous"
-                  fetchpriority={index < 2 ? "high" : "low"}
-                  loading={index < 2 ? "eager" : "lazy"}
-                />
-                <div className="cardInfo">
-                  <h3 className="titreArticle">{article.titre}</h3>
-                  <p className="articlePrix">{article.prix} €</p>
-                </div>
-              </Link>
+              <div key={article._id} className="articleCard">
+                <Link to={`/article/${article._id}`}>
+                  <img
+                    src={getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      300
+                    )}
+                    srcSet={`${getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      300
+                    )} 1x, ${getImageUrl(
+                      article.images[article.mainImageIndex || 0],
+                      600
+                    )} 2x`}
+                    sizes="233px"
+                    alt={article.titre}
+                    crossOrigin="anonymous"
+                    fetchpriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                  <div className="cardInfo">
+                    <h3 className="titreArticle">{article.titre}</h3>
+                    <p className="articlePrix">{article.prix} €</p>
+                  </div>
+                </Link>
+              </div>
             ))}
           </div>
         </>
