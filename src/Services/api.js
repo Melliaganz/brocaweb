@@ -22,7 +22,6 @@ const handleResponse = async (res) => {
 
   if (res.status === 401) {
     localStorage.removeItem("token");
-    // On évite la redirection brutale si on est déjà sur login
     if (window.location.pathname !== "/login") {
       window.location.href = "/login";
     }
@@ -106,6 +105,14 @@ export const placeOrder = async (items) => {
 
 export const getAllOrders = async () => {
   const res = await fetch(`${API_BASE_URL}/orders`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const getUserOrders = async () => {
+  const res = await fetch(`${API_BASE_URL}/orders/my-orders`, {
     method: "GET",
     headers: getAuthHeaders(),
   });

@@ -88,7 +88,15 @@ function Navbar() {
                   title: "Gestion des commandes",
                 },
               ]
-            : []),
+            : [
+                {
+                  id: "UserOrders",
+                  href: "/mes-commandes",
+                  text: "Mes Commandes",
+                  icon: <ReceiptLong />,
+                  title: "Consulter mes commandes",
+                },
+              ]),
           {
             id: "Cart",
             href: "/checkout",

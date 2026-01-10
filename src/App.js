@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { useEffect } from "react";
 
 import { AuthProvider } from "./Services/AuthContext";
@@ -24,7 +29,7 @@ import CategoriePage from "./Pages/CategoriePage/CategoriePage";
 import Checkout from "./Pages/Checkout/Checkout";
 import AdminOrders from "./Pages/Orders/AdminOrders";
 import UserManagement from "./Pages/Admin/UserManagement";
-
+import UserOrders from "./Pages/UserOrder/UserOrder"
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -47,19 +52,31 @@ function App() {
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/article/:id" element={<ArticleDetail />} />
                 <Route path="/login" element={<Login />} />
-                
-                <Route path="/categorie/:categorie" element={<CategoriePage />} />
+
+                <Route
+                  path="/categorie/:categorie"
+                  element={<CategoriePage />}
+                />
                 <Route path="/checkout" element={<Checkout />} />
-                
+
                 <Route path="/conditions" element={<Conditions />} />
                 <Route path="/mentions-legales" element={<Mentions />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/a-propos" element={<APropos />} />
-
+                <Route path="/mes-commandes" element={<UserOrders />} />
                 <Route path="/admin/create-user" element={<Register />} />
-                <Route path="/admin/user-management" element={<UserManagement />} />
-                <Route path="/admin/create-article" element={<CreateArticle />} />
-                <Route path="/admin/edit-article/:id" element={<EditArticle />} />
+                <Route
+                  path="/admin/user-management"
+                  element={<UserManagement />}
+                />
+                <Route
+                  path="/admin/create-article"
+                  element={<CreateArticle />}
+                />
+                <Route
+                  path="/admin/edit-article/:id"
+                  element={<EditArticle />}
+                />
                 <Route path="/admin/orders" element={<AdminOrders />} />
 
                 <Route path="*" element={<Page404 />} />
