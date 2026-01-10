@@ -11,7 +11,7 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top:10rem
+  margin-top: 10rem;
 }
 
 .headerList h2 {
@@ -73,6 +73,24 @@
   background-color: #fafafa;
 }
 
+/* --- Styles pour les inputs d'édition --- */
+.userTable input[type="text"],
+.userTable input[type="email"],
+.userTable select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.userTable input:focus,
+.userTable select:focus {
+  border-color: #007bff;
+}
+
+/* --- Badges --- */
 .badge {
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
@@ -91,17 +109,50 @@
   color: #616161;
 }
 
-.btnDelete {
+/* --- Boutons d'action --- */
+.btnEdit, .btnSave, .btnCancel, .btnDelete {
   background: none;
   border: none;
-  color: #dc3545;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-  padding: 5px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.btnEdit {
+  color: #ffc107;
+}
+
+.btnEdit:hover {
+  background-color: #fff9e6;
+  transform: scale(1.1);
+}
+
+.btnSave {
+  color: #28a745;
+}
+
+.btnSave:hover {
+  background-color: #eafaf1;
+  transform: scale(1.1);
+}
+
+.btnCancel {
+  color: #6c757d;
+}
+
+.btnCancel:hover {
+  background-color: #f4f4f4;
+  transform: scale(1.1);
+}
+
+.btnDelete {
+  color: #dc3545;
 }
 
 .btnDelete:hover:not(:disabled) {
   color: #a71d2a;
+  background-color: #fff5f5;
   transform: scale(1.1);
 }
 
@@ -110,6 +161,7 @@
   cursor: not-allowed;
 }
 
+/* --- Responsive --- */
 @media (max-width: 768px) {
   .userManagementContainer {
     padding: 1rem;

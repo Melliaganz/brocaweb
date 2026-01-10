@@ -37,6 +37,14 @@ function ArticleDetail() {
 
   const navigate = useNavigate();
 
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "/placeholder.jpg";
+    if (imageName.startsWith("http")) {
+      return imageName;
+    }
+    return `${API_BASE_URL_IMG}/uploads/${imageName}`;
+  };
+
   const handleDelete = async () => {
     try {
       await deleteArticle(id);
@@ -123,11 +131,12 @@ function ArticleDetail() {
         <div className="imagesGallery">
           <div className="mainImageContainer">
             <img
-              src={`${API_BASE_URL_IMG}/uploads/${article.images[currentImageIndex]}`}
+              src={getImageUrl(article.images[currentImageIndex])}
               alt={article.titre}
               className="mainImage"
               width={300}
               height={200}
+              onClick={() => setSelectedImage(getImageUrl(article.images[currentImageIndex]))}
             />
           </div>
 
@@ -138,7 +147,7 @@ function ArticleDetail() {
                   i !== (article.mainImageIndex || 0) && (
                     <img
                       key={i}
-                      src={`${API_BASE_URL_IMG}/uploads/${img}`}
+                      src={getImageUrl(img)}
                       alt={`Miniature ${i + 1}`}
                       className={`thumbnailImage ${
                         i === currentImageIndex ? "activeThumb" : ""

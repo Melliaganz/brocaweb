@@ -101,10 +101,20 @@ export const getAllOrders = async () => {
   });
   return handleResponse(res);
 };
+
 export const getAllUsers = async () => {
   const res = await fetch(`${API_BASE_URL}/auth/admin/users`, {
     method: "GET",
     headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const updateUser = async (id, userData) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(userData),
   });
   return handleResponse(res);
 };

@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
 import "./home.css";
-import { useEffect, useState } from "react";
-import { useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 function Home() {
   const [articles, setArticles] = useState([]);
@@ -10,6 +9,14 @@ function Home() {
   const [recentByCategory, setRecentByCategory] = useState({});
   const [error, setError] = useState("");
   const [sortOption, setSortOption] = useState("recent");
+
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "/placeholder.jpg";
+    if (imageName.startsWith("http")) {
+      return imageName;
+    }
+    return `${API_BASE_URL_IMG}/uploads/${imageName}`;
+  };
 
   const sortedArticles = useMemo(() => {
     const sorted = [...articles];
@@ -37,11 +44,6 @@ function Home() {
     const fetchArticles = async () => {
       try {
         const data = await getArticles();
-        if (data && data.length > 0) {
-          console.log("Premier article reçu :", data[0].titre);
-        } else {
-          console.log("Aucun article en base de données.");
-        }
         const availableArticles = data.filter(
           (article) => article.quantite > 0
         );
@@ -63,12 +65,10 @@ function Home() {
         if (err.response) {
           switch (err.response.status) {
             case 404:
-              setError("Aucun article trouvé (erreur 404");
+              setError("Aucun article trouvé (erreur 404)");
               break;
             case 500:
-              setError(
-                "Erreur interne du serveur. Veuillez réessayer plus tard"
-              );
+              setError("Erreur interne du serveur.");
               break;
             case 401:
               setError("Non autorisé. Veuillez vous connecter.");
@@ -76,8 +76,6 @@ function Home() {
             default:
               setError(`Erreur inconnue : ${err.response.status}`);
           }
-        } else if (err.request) {
-          setError("Le serveur ne répond pas. Vérifiez votre connexion.");
         } else {
           setError(`${err.message}`);
         }
@@ -132,9 +130,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`${API_BASE_URL_IMG}/uploads/${
-                article.images[article.mainImageIndex || 0]
-              }`}
+              src={getImageUrl(article.images[article.mainImageIndex || 0])}
               alt={article.titre}
               width={300}
               height={200}
@@ -155,9 +151,7 @@ function Home() {
             className="articleCard"
           >
             <img
-              src={`${API_BASE_URL_IMG}/uploads/${
-                article.images[article.mainImageIndex || 0]
-              }`}
+              src={getImageUrl(article.images[article.mainImageIndex || 0])}
               alt={article.titre}
             />
             <h3 className="titreArticle">{article.titre}</h3>

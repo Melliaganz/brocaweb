@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getAllUsers, deleteUser } from "../../Services/api";
+import { getAllUsers, deleteUser, updateUser } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { PersonAdd, DeleteForever } from "@mui/icons-material";
+import { PersonAdd, DeleteForever, Edit, Save, Cancel } from "@mui/icons-material";
 import "./userManagement.css";
 
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editFormData, setEditFormData] = useState({ nom: "", email: "", role: "" });
+  
   const { user, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -42,6 +45,30 @@ function UserManagement() {
     }
   };
 
+  const handleEditClick = (u) => {
+    setEditingId(u._id);
+    setEditFormData({ nom: u.nom, email: u.email, role: u.role });
+  };
+
+  const handleCancelClick = () => {
+    setEditingId(null);
+  };
+
+  const handleInputChange = (e) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async (id) => {
+    try {
+      const updatedUser = await updateUser(id, editFormData);
+      setUsers(users.map((u) => (u._id === id ? { ...u, ...editFormData } : u)));
+      setEditingId(null);
+      alert("Utilisateur mis à jour");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   if (loading) return <p>Chargement...</p>;
 
   return (
@@ -67,21 +94,61 @@ function UserManagement() {
         <tbody>
           {users.map((u) => (
             <tr key={u._id}>
-              <td>{u.nom}</td>
-              <td>{u.email}</td>
-              <td>
-                <span className={`badge ${u.role}`}>{u.role}</span>
-              </td>
-              <td>
-                <button 
-                  onClick={() => handleDelete(u._id)}
-                  className="btnDelete"
-                  disabled={u._id === user.id}
-                  title={u._id === user.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
-                >
-                  <DeleteForever />
-                </button>
-              </td>
+              {editingId === u._id ? (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      name="nom"
+                      value={editFormData.nom}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="email"
+                      name="email"
+                      value={editFormData.email}
+                      onChange={handleInputChange}
+                    />
+                  </td>
+                  <td>
+                    <select name="role" value={editFormData.role} onChange={handleInputChange}>
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button onClick={() => handleSave(u._id)} className="btnSave">
+                      <Save />
+                    </button>
+                    <button onClick={handleCancelClick} className="btnCancel">
+                      <Cancel />
+                    </button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{u.nom}</td>
+                  <td>{u.email}</td>
+                  <td>
+                    <span className={`badge ${u.role}`}>{u.role}</span>
+                  </td>
+                  <td>
+                    <button onClick={() => handleEditClick(u)} className="btnEdit">
+                      <Edit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(u._id)}
+                      className="btnDelete"
+                      disabled={u._id === user.id}
+                      title={u._id === user.id ? "Vous ne pouvez pas vous supprimer" : "Supprimer"}
+                    >
+                      <DeleteForever />
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>

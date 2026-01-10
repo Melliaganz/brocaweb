@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL_IMG, getArticleById, updateArticle } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
-import "./editArticle.css"; // Réutilisation du même style
+import "./editArticle.css";
 
 function EditArticle() {
   const { id } = useParams();
@@ -22,6 +22,14 @@ function EditArticle() {
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "/placeholder.jpg";
+    if (imageName.startsWith("http")) {
+      return imageName;
+    }
+    return `${API_BASE_URL_IMG}/uploads/${imageName}`;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +54,7 @@ function EditArticle() {
     };
     fetchData();
   }, [id]);
+
   useEffect(() => {
     if (!user || user.role !== "admin") {
       navigate("/");
@@ -201,22 +210,25 @@ function EditArticle() {
         </div>
 
         <p>Images actuelles :</p>
-        <div className="previewGrid">
+        <div className="previewGrid" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           {existingImages.map((img, idx) => (
             <div key={idx} className="previewItem">
               <img
-                src={`${API_BASE_URL_IMG}/uploads/${img}`}
+                src={getImageUrl(img)}
                 alt=""
                 onClick={() => setMainImageIndex(idx)}
                 width={300}
                 height={200}
                 style={{
-                  border: idx === mainImageIndex ? "2px solid green" : "none",
+                  border: idx === mainImageIndex ? "3px solid #28a745" : "1px solid #ccc",
                   cursor: "pointer",
+                  objectFit: "cover",
+                  borderRadius: "8px"
                 }}
               />
               <button
                 type="button"
+                className="btnRemoveImg"
                 onClick={() => handleRemoveExistingImage(idx)}
               >
                 X
@@ -228,7 +240,7 @@ function EditArticle() {
         {newImages.length > 0 && (
           <>
             <p>Nouvelles images :</p>
-            <div className="previewGrid">
+            <div className="previewGrid" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               {newImages.map((img, idx) => (
                 <div key={idx} className="previewItem">
                   <img
@@ -237,16 +249,21 @@ function EditArticle() {
                     onClick={() =>
                       setMainImageIndex(existingImages.length + idx)
                     }
+                    width={300}
+                    height={200}
                     style={{
                       border:
                         existingImages.length + idx === mainImageIndex
-                          ? "2px solid green"
-                          : "none",
+                          ? "3px solid #28a745"
+                          : "1px solid #ccc",
                       cursor: "pointer",
+                      objectFit: "cover",
+                      borderRadius: "8px"
                     }}
                   />
                   <button
                     type="button"
+                    className="btnRemoveImg"
                     onClick={() => handleRemoveNewImage(idx)}
                   >
                     X

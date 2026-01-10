@@ -9,6 +9,14 @@ function CategoriePage() {
   const [error, setError] = useState("");
   const [sortOption, setSortOption] = useState("recent");
 
+  const getImageUrl = (imageName) => {
+    if (!imageName) return "/placeholder.jpg";
+    if (imageName.startsWith("http")) {
+      return imageName;
+    }
+    return `${API_BASE_URL_IMG}/uploads/${imageName}`;
+  };
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -75,7 +83,7 @@ function CategoriePage() {
             className="articleCard"
           >
             <img
-              src={`${API_BASE_URL_IMG}/uploads/${article.images[article.mainImageIndex || 0]}`}
+              src={getImageUrl(article.images[article.mainImageIndex || 0])}
               alt={article.titre}
             />
             <h3 className="titreArticle">{article.titre}</h3>

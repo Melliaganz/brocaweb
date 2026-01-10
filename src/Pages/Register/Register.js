@@ -53,7 +53,7 @@ function Register() {
 
   return (
     <div className="formulaireContainer">
-      <h2>Créer un utilisateur (Admin)</h2>
+      <h2>Créer un utilisateur</h2>
       <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
         <input
           className="inputs"
