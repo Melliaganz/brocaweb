@@ -1,15 +1,6 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Link",
-          "value": "</static/css/main.72a713a6.css>; rel=preload; as=style"
-        }
-      ]
-    },
-    {
       "source": "/static/(.*)",
       "headers": [
         {
