@@ -1,0 +1,143 @@
+.ordersContainer {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  min-height: 80vh;
+}
+
+.ordersContainer h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orderCard {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf2f7;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.orderCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.orderHeader {
+  background: #f8fafc;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #edf2f7;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.orderDate {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.orderDetails {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.orderItems {
+  flex: 1;
+}
+
+.orderItems p {
+  margin: 5px 0;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.orderStatus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 100px;
+  padding: 10px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.orderStatus span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.orderFooter {
+  padding: 15px 20px;
+  background: #ffffff;
+  border-top: 1px dashed #edf2f7;
+  text-align: right;
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+.orderFooter strong {
+  color: #2b6cb0;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 50px;
+  background: #f8fafc;
+  border-radius: 12px;
+  color: #718096;
+  font-style: italic;
+}
+
+.error {
+  background: #fff5f5;
+  color: #c53030;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c53030;
+}
+
+/* Responsivité Mobile */
+@media (max-width: 600px) {
+  .ordersContainer {
+    padding: 10px;
+    margin: 20px auto;
+  }
+
+  .orderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .orderDetails {
+    flex-direction: column;
+  }
+
+  .orderStatus {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
