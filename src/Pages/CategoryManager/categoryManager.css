@@ -1,0 +1,83 @@
+.categoryManagerContainer {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.categoryError {
+  background: #fff5f5;
+  color: #e53e3e;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #fed7d7;
+}
+
+.addCategoryForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.addCategoryForm input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+.addCatBtn {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.categoriesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.categoryItem {
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+}
+
+.deleteCatBtn {
+  background: transparent;
+  color: #a0aec0;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.deleteCatBtn:hover {
+  color: #e53e3e;
+}
