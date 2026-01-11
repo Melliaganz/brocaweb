@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
@@ -28,8 +28,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("cart"); // Vide le panier du stockage local
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("cart"); // Vide le panier du stockage local
     setIsAuthenticated(false);
     setUser(null);
   };

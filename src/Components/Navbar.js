@@ -39,7 +39,7 @@ function Navbar() {
   }, [menuOpen]);
 
   const handleLogout = React.useCallback(() => {
-    logout(); // Nettoie Token + User + LocalStorage Cart via AuthContext
+    logout(); // Nettoie Token + User + sessionStorage Cart via AuthContext
     clearCart(); // Nettoie l'état du panier dans le CartContext
     if (menuOpen) toggleMenu();
     navigate("/");

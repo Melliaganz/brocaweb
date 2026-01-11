@@ -53,41 +53,39 @@
   align-items: start;
 }
 
-/* --- Groupe Catégorie spécifique --- */
 .categorySelectorContainer {
   display: flex;
-  gap: 8px;
-  align-items: flex-start; 
-  margin-bottom: 20px;
+  gap: 5px;
+  flex: 1;
+  margin-bottom: 1.2rem;
 }
 
 .selectWithBtn {
   flex: 1;
-  margin-bottom: 0 !important; 
+  margin-bottom: 0 !important;
 }
+
 .selectInputGroup{
   width: 100%;
 }
+
 .manageCatsBtn {
-  height: 46px;
-  width: 46px;
-  background: var(--blank_001);
-  border: 1px solid var(--blank_001);
+  background: #f0f2f5;
+  border: 1px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--secondary);
+  padding: 0 10px;
+  color: #4a90e2;
   transition: all 0.2s;
 }
 
 .manageCatsBtn:hover {
-  background: var(--background);
-  border-color: var(--secondary);
+  background: #e2e8f0;
+  color: #2b6cb0;
 }
 
-/* --- Zone d'upload --- */
 .fileInputContainer {
   margin-bottom: 1.5rem;
   margin-top: 1rem;
@@ -116,7 +114,6 @@
   transform: translateY(-2px);
 }
 
-/* --- Preview des images --- */
 .previewContainer {
   display: flex;
   flex-direction: row;
@@ -183,15 +180,6 @@
   font-weight: bold;
 }
 
-.hint {
-  text-align: center;
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-
-/* --- Bouton Submit --- */
 .submitBtn {
   width: 100%;
   padding: 16px;
@@ -218,7 +206,6 @@
   cursor: not-allowed;
 }
 
-/* --- MODALE CENTRÉE --- */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -227,8 +214,8 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
-  justify-content: center; /* Centrage horizontal */
-  align-items: center;     /* Centrage vertical */
+  justify-content: center;
+  align-items: center;
   z-index: 2000;
   backdrop-filter: blur(4px);
 }
@@ -245,7 +232,7 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centre le contenu interne du CategoryManager */
+  align-items: center;
 }
 
 .closeModal {
@@ -261,28 +248,46 @@
   line-height: 1;
 }
 
-.closeModal:hover {
-  color: var(--primary);
+/* --- Style de la barre de progression --- */
+.uploadStatusModal {
+  text-align: center;
+  max-width: 400px !important;
 }
 
-/* --- Responsive --- */
+.progressBarContainer {
+  width: 100%;
+  height: 12px;
+  background-color: #eee;
+  border-radius: 10px;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--secondary);
+  transition: width 0.4s ease;
+}
+
+.statusResult {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.statusResult.success { color: #28a745; }
+.statusResult.error { color: #dc3545; }
+
+.statusMessage {
+  font-size: 0.9rem;
+  color: #666;
+}
+
 @media (max-width: 600px) {
   .createArticleContainer {
     margin-top: 7rem;
     padding: 1.5rem;
     width: 95%;
-  }
-
-  .selectInput {
-    grid-template-columns: 1fr;
-  }
-
-  .categorySelectorContainer {
-    margin-bottom: 1.2rem;
-  }
-
-  .previewItem {
-    width: 80px;
-    height: 80px;
   }
 }

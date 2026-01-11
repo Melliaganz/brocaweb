@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllOrders, updateOrderStatus, API_BASE_URL_IMG } from "../../Services/api";
+import { getAllOrders, updateOrderStatus, deleteOrder, API_BASE_URL_IMG } from "../../Services/api";
 import "./adminOrders.css";
 import { 
   BarChart, 
@@ -7,7 +7,8 @@ import {
   Euro, 
   ShoppingBasket, 
   Person,
-  ImageNotSupported
+  ImageNotSupported,
+  DeleteOutline
 } from "@mui/icons-material";
 
 function AdminOrders() {
@@ -33,17 +34,41 @@ function AdminOrders() {
       setLoading(false);
     }
   };
-
+  
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await updateOrderStatus(orderId, newStatus);
-      // Mise à jour locale de l'état pour éviter un rechargement complet
       setOrders(orders.map(order => 
         order._id === orderId ? { ...order, status: newStatus } : order
       ));
     } catch (err) {
       alert("Erreur lors de la mise à jour du statut.");
     }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (window.confirm("Supprimer définitivement cette commande ?")) {
+      try {
+        await deleteOrder(orderId);
+        setOrders(orders.filter(order => order._id !== orderId));
+      } catch (err) {
+        alert("Erreur lors de la suppression.");
+      }
+    }
+  };
+
+  const renderItemImage = (item) => {
+    const imagePath = item.image || item.article?.images?.[0];
+    
+    if (!imagePath) {
+      return <ImageNotSupported className="adminOrderThumb placeholder" />;
+    }
+
+    if (imagePath.startsWith("http")) {
+      return <img src={imagePath} alt="" className="adminOrderThumb" />;
+    }
+
+    return <img src={`${API_BASE_URL_IMG}/uploads/${imagePath}`} alt="" className="adminOrderThumb" />;
   };
 
   const stats = {
@@ -110,6 +135,7 @@ function AdminOrders() {
                   <th>Articles</th>
                   <th>Total</th>
                   <th>Statut</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -130,15 +156,7 @@ function AdminOrders() {
                       <ul className="itemsList">
                         {order.items.map((item, idx) => (
                           <li key={idx} className="adminOrderItem">
-                            {item.article?.images?.[0] ? (
-                              <img 
-                                src={`${API_BASE_URL_IMG}/${item.article.images[0]}`} 
-                                alt="" 
-                                className="adminOrderThumb"
-                              />
-                            ) : (
-                              <ImageNotSupported className="adminOrderThumb placeholder" />
-                            )}
+                            {renderItemImage(item)}
                             <span><strong>{item.quantity}x</strong> {item.titre}</span>
                           </li>
                         ))}
@@ -155,6 +173,14 @@ function AdminOrders() {
                         <option value="Traité">Traité</option>
                         <option value="Livré">Livré</option>
                       </select>
+                    </td>
+                    <td>
+                      <button 
+                        onClick={() => handleDeleteOrder(order._id)}
+                        style={{ background: 'none', border: 'none', color: '#d32f2f', cursor: 'pointer', padding: '5px' }}
+                      >
+                        <DeleteOutline />
+                      </button>
                     </td>
                   </tr>
                 ))}

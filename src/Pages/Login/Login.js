@@ -21,7 +21,7 @@ function Login() {
     try {
       const data = await login(email, motDePasse);
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        sessionStorage.setItem("token", data.token);
 
         const base64Url = data.token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");

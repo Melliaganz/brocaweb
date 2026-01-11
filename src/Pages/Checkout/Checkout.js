@@ -52,7 +52,17 @@ function Checkout() {
   const handleOrder = async () => {
     setLoading(true);
     try {
-      await placeOrder(cartItems.map((item) => ({ articleId: item._id, quantity: item.quantity })));
+      // Correction ici : on envoie les infos nécessaires pour l'affichage historique
+      // notamment l'image et le titre si le backend ne les gère pas par défaut
+      const orderData = cartItems.map((item) => ({
+        articleId: item._id,
+        quantity: item.quantity,
+        titre: item.titre, // Optionnel mais recommandé
+        prix: item.prix,   // Optionnel mais recommandé
+        image: item.images?.[0] // On envoie le nom de la première image
+      }));
+
+      await placeOrder(orderData);
       setIsSuccess(true);
       clearCart();
     } catch (err) {

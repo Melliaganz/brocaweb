@@ -2,7 +2,7 @@ export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL;
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const getAuthHeaders = (isFormData = false) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
   };
@@ -21,7 +21,7 @@ const handleResponse = async (res) => {
   }
 
   if (res.status === 401) {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     if (window.location.pathname !== "/login") {
       window.location.href = "/login";
     }
@@ -169,6 +169,14 @@ export const createCategory = async (name) => {
 
 export const deleteCategory = async (id) => {
   const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const deleteOrder = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

@@ -2,8 +2,8 @@ import { useState, useContext, useEffect } from "react";
 import { createArticle, getCategories } from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Services/AuthContext";
-import CategoryManager from "../CategoryManager/CategoryManager"; // Import du composant
-import { AddCircleOutline } from "@mui/icons-material";
+import CategoryManager from "../CategoryManager/CategoryManager"; 
+import { AddCircleOutline, CheckCircleOutline, ErrorOutline } from "@mui/icons-material";
 import "./createArticle.css";
 
 function CreateArticle() {
@@ -22,7 +22,14 @@ function CreateArticle() {
   const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const [showCatManager, setShowCatManager] = useState(false); // État pour la modale
+  const [showCatManager, setShowCatManager] = useState(false);
+
+  const [uploadStatus, setUploadStatus] = useState({ 
+    show: false, 
+    progress: 0, 
+    status: "idle", 
+    message: "" 
+  });
 
   const { isAuthenticated, user } = useContext(AuthContext);
   const maxFiles = 5;
@@ -82,8 +89,7 @@ function CreateArticle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+    setUploadStatus({ show: true, progress: 10, status: "loading", message: "Initialisation de l'envoi..." });
 
     const payload = new FormData();
     payload.append("titre", formData.titre);
@@ -96,15 +102,21 @@ function CreateArticle() {
 
     images.forEach((img) => payload.append("images", img));
 
+    const progressInterval = setInterval(() => {
+      setUploadStatus(prev => {
+        if (prev.progress < 90) return { ...prev, progress: prev.progress + 5, message: "Upload des images en cours..." };
+        return prev;
+      });
+    }, 400);
+
     try {
       await createArticle(payload);
-      setMessage("Article créé avec succès !");
+      clearInterval(progressInterval);
+      setUploadStatus({ show: true, progress: 100, status: "success", message: "Article créé avec succès !" });
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Erreur lors de la création.";
-      setMessage(errorMsg);
-    } finally {
-      setLoading(false);
+      clearInterval(progressInterval);
+      setUploadStatus({ show: true, progress: 100, status: "error", message: err.response?.data?.message || "Erreur lors de la création." });
     }
   };
 
@@ -239,16 +251,10 @@ function CreateArticle() {
         <button 
           type="submit" 
           className="submitBtn" 
-          disabled={!isFormValid() || loading}
+          disabled={!isFormValid() || uploadStatus.status === "loading"}
         >
-          {loading ? "Création..." : "Créer l’article"}
+          {uploadStatus.status === "loading" ? "Création..." : "Créer l’article"}
         </button>
-
-        {message && (
-          <p className={`message ${message.includes("succès") ? "success" : "error"}`}>
-            {message}
-          </p>
-        )}
       </form>
 
       {showCatManager && (
@@ -256,6 +262,35 @@ function CreateArticle() {
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
             <button className="closeModal" onClick={() => { setShowCatManager(false); fetchCats(); }}>×</button>
             <CategoryManager />
+          </div>
+        </div>
+      )}
+
+      {uploadStatus.show && (
+        <div className="modalOverlay">
+          <div className="modalContent uploadStatusModal">
+            {uploadStatus.status === "loading" && (
+              <>
+                <h3>Envoi en cours</h3>
+                <div className="progressBarContainer">
+                  <div className="progressBar" style={{ width: `${uploadStatus.progress}%` }}></div>
+                </div>
+              </>
+            )}
+            {uploadStatus.status === "success" && (
+              <div className="statusResult success">
+                <CheckCircleOutline style={{ fontSize: 60 }} />
+                <h3>Succès !</h3>
+              </div>
+            )}
+            {uploadStatus.status === "error" && (
+              <div className="statusResult error">
+                <ErrorOutline style={{ fontSize: 60 }} />
+                <h3>Échec</h3>
+                <button className="submitBtn" style={{marginTop: '1rem'}} onClick={() => setUploadStatus({ ...uploadStatus, show: false })}>Réessayer</button>
+              </div>
+            )}
+            <p className="statusMessage">{uploadStatus.message}</p>
           </div>
         </div>
       )}

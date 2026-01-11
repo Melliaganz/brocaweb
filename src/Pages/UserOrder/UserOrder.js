@@ -34,6 +34,30 @@ function UserOrders() {
     }
   };
 
+  const renderItemImage = (item) => {
+    const imagePath = item.image || item.article?.images?.[0];
+    
+    if (!imagePath) {
+      return (
+        <div style={{ width: '40px', height: '40px', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px' }}>
+          <ImageNotSupported style={{ fontSize: '20px', color: '#ccc' }} />
+        </div>
+      );
+    }
+
+    const src = imagePath.startsWith("http") 
+      ? imagePath 
+      : `${API_BASE_URL_IMG}/uploads/${imagePath}`;
+
+    return (
+      <img 
+        src={src} 
+        alt={item.titre}
+        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+      />
+    );
+  };
+
   if (loading) return <div className="loaderContainer"><span className="loader"></span></div>;
 
   return (
@@ -56,17 +80,7 @@ function UserOrders() {
                 <div className="orderItems">
                   {order.items && order.items.map((item, index) => (
                     <div key={index} className="orderItemRow" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                      {item.article?.images && item.article.images.length > 0 ? (
-                        <img 
-                          src={`${API_BASE_URL_IMG}/${item.article.images[0]}`} 
-                          alt={item.titre}
-                          style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                        />
-                      ) : (
-                        <div style={{ width: '40px', height: '40px', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px' }}>
-                          <ImageNotSupported style={{ fontSize: '20px', color: '#ccc' }} />
-                        </div>
-                      )}
+                      {renderItemImage(item)}
                       <p style={{ margin: 0 }}>
                         <strong>{item.quantity}x</strong> {item.titre}
                       </p>
