@@ -1,6 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getArticleById, deleteArticle, API_BASE_URL_IMG } from "../../Services/api";
+import {
+  getArticleById,
+  deleteArticle,
+  API_BASE_URL_IMG,
+} from "../../Services/api";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Services/AuthContext";
@@ -14,7 +18,7 @@ import {
   Edit,
   Remove,
   ShoppingCart,
-  Lock
+  Lock,
 } from "@mui/icons-material";
 
 function ArticleDetail() {
@@ -55,7 +59,7 @@ function ArticleDetail() {
       setShowConfirm(false);
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 4000);
     } catch (err) {
       setError("Erreur lors de la suppression");
     }
@@ -82,10 +86,13 @@ function ArticleDetail() {
     setLastAddedQty(quantitySelected);
     addToCart(article, quantitySelected);
     setShowNotification(true);
+    
     const remainingAfterAdd = availableStock - quantitySelected;
     setQuantitySelected(remainingAfterAdd > 0 ? 1 : 0);
+
     setTimeout(() => {
       setShowNotification(false);
+      navigate("/");
     }, 2500);
   };
 
@@ -112,20 +119,28 @@ function ArticleDetail() {
 
   return (
     <div className="articleDetailContainer">
-      {/* Modale d'Authentification requise */}
       {showAuthModal && (
         <div className="modalOverlay" onClick={() => setShowAuthModal(false)}>
-          <div className="confirmBox authModal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="confirmBox authModal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="auth-icon-circle">
               <Lock style={{ fontSize: "3rem", color: "#f44336" }} />
             </div>
             <h3>Connexion requise</h3>
             <p>Veuillez vous connecter pour ajouter des articles au panier.</p>
             <div className="confirmActions">
-              <button className="buttonValidate" onClick={() => navigate("/login")}>
+              <button
+                className="buttonValidate"
+                onClick={() => navigate("/login")}
+              >
                 Se connecter
               </button>
-              <button className="buttonCancel" onClick={() => setShowAuthModal(false)}>
+              <button
+                className="buttonCancel"
+                onClick={() => setShowAuthModal(false)}
+              >
                 Fermer
               </button>
             </div>
@@ -133,7 +148,6 @@ function ArticleDetail() {
         </div>
       )}
 
-      {/* Modale de succès Suppression */}
       {isDeleted && (
         <div className="confirmModal">
           <div className="confirmBox successAnim">
@@ -156,12 +170,22 @@ function ArticleDetail() {
             <p>
               <strong>{lastAddedQty} x</strong> {article.titre}
             </p>
-            <button
-              onClick={() => setShowNotification(false)}
-              className="close-modal-btn"
-            >
-              Continuer mes achats
-            </button>
+            
+            <div className="modalActions">
+              <button onClick={() => navigate("/")} className="close-modal-btn">
+                Continuer mes achats
+              </button>
+              <button
+                className="close-modal-btn cart-btn"
+                onClick={() => navigate("/checkout")}
+              >
+                Voir le panier
+              </button>
+            </div>
+
+            <div className="progressBarContainer">
+              <div className="progressBarFill"></div>
+            </div>
           </div>
         </div>
       )}
@@ -174,7 +198,9 @@ function ArticleDetail() {
               src={getImageUrl(article.images[currentImageIndex])}
               alt={article.titre}
               className="mainImage"
-              onClick={() => setSelectedImage(getImageUrl(article.images[currentImageIndex]))}
+              onClick={() =>
+                setSelectedImage(getImageUrl(article.images[currentImageIndex]))
+              }
             />
           </div>
 
@@ -285,9 +311,7 @@ function ArticleDetail() {
           <div className="articleButtonDetail">
             <button onClick={handleAddToCart} disabled={availableStock <= 0}>
               <ShoppingCart />
-              {availableStock <= 0
-                ? "Rupture de stock"
-                : "Ajouter au panier"}
+              {availableStock <= 0 ? "Rupture de stock" : "Ajouter au panier"}
             </button>
           </div>
         </div>

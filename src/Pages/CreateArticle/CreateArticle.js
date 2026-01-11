@@ -18,8 +18,6 @@ function CreateArticle() {
 
   const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [showCatManager, setShowCatManager] = useState(false);
@@ -69,7 +67,12 @@ function CreateArticle() {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (images.length + files.length > maxFiles) {
-      setMessage("Limite de 5 images maximum.");
+      setUploadStatus({ 
+        show: true, 
+        progress: 0, 
+        status: "error", 
+        message: "Limite de 5 images maximum." 
+      });
       return;
     }
     setImages((prev) => [...prev, ...files]);

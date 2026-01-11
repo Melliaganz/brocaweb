@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { io } from "socket.io-client";
 
 export const AuthContext = createContext();
@@ -11,12 +11,26 @@ export function AuthProvider({ children }) {
 
   const SOCKET_URL = process.env.REACT_APP_API_URL.replace("/api", "");
 
-  const initSocket = (userId) => {
-    if (socket && socket.connected) return;
+  const logout = useCallback(() => {
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+    sessionStorage.removeItem("token");
+    setIsAuthenticated(false);
+    setUser(null);
+  }, [socket]);
+
+  const initSocket = useCallback((userId) => {
+    if (socket?.connected) {
+      socket.emit("register_user", userId);
+      return;
+    }
 
     const newSocket = io(SOCKET_URL, {
       transports: ["websocket"],
       reconnection: true,
+      reconnectionAttempts: 5,
     });
 
     newSocket.on("connect", () => {
@@ -24,7 +38,7 @@ export function AuthProvider({ children }) {
     });
 
     setSocket(newSocket);
-  };
+  }, [SOCKET_URL, socket]);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -43,34 +57,25 @@ export function AuthProvider({ children }) {
             nom: payload.nom,
           };
           setUser(userData);
-          initSocket(userData.id);
         }
       } catch (err) {
         logout();
       }
     }
     setLoading(false);
+  }, [logout]);
 
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
-  }, []);
-
-  const logout = () => {
+useEffect(() => {
+  if (isAuthenticated && user?.id && !socket) {
+    initSocket(user.id);
+  }
+  
+  return () => {
     if (socket) {
-      socket.disconnect();
-      setSocket(null);
+      socket.off("connect");
     }
-    sessionStorage.removeItem("token");
-
-    // On ne supprime plus "cart" ici si on veut garder une trace locale
-    // ou simplement laisser le CartContext s'en charger au prochain login.
-
-    setIsAuthenticated(false);
-    setUser(null);
   };
+}, [isAuthenticated, user?.id, initSocket]);
 
   return (
     <AuthContext.Provider

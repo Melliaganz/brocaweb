@@ -37,6 +37,10 @@ function UserManagement() {
 
   useEffect(() => {
     if (socket) {
+      // 1. On demande au serveur de renvoyer l'état actuel de tous les connectés
+      socket.emit("request_sync_status");
+
+      // 2. Écouteur pour les changements individuels
       socket.on("user_status_change", ({ userId, status }) => {
         setUsers((prevUsers) =>
           prevUsers.map((u) =>
@@ -45,13 +49,25 @@ function UserManagement() {
         );
       });
 
+      // 3. Écouteur pour la synchronisation globale initiale
+      socket.on("sync_all_statuses", (onlineUserIds) => {
+        setUsers((prevUsers) =>
+          prevUsers.map((u) => ({
+            ...u,
+            socketStatus: onlineUserIds.includes(u._id) ? "online" : "offline",
+          }))
+        );
+      });
+
       socket.on("cart_updated", () => {
         fetchUsers();
       });
     }
+
     return () => {
       if (socket) {
         socket.off("user_status_change");
+        socket.off("sync_all_statuses");
         socket.off("cart_updated");
       }
     };
@@ -69,20 +85,13 @@ function UserManagement() {
   };
 
   const getStatus = (u) => {
+    // Force ton propre statut à "online" si tu es l'admin connecté sur la page
+    if (u._id === user?.id) {
+      return { label: "En ligne", class: "online" };
+    }
     if (u.socketStatus === "online") {
       return { label: "En ligne", class: "online" };
     }
-
-    if (u.lastActivity) {
-      const now = new Date();
-      const activityDate = new Date(u.lastActivity);
-      const diffInMinutes = (now - activityDate) / (1000 * 60);
-
-      if (diffInMinutes < 10) {
-        return { label: "Inactif", class: "away" };
-      }
-    }
-
     return { label: "Hors ligne", class: "offline" };
   };
 
@@ -144,14 +153,14 @@ function UserManagement() {
             <th>Email</th>
             <th>Rôle</th>
             <th>Panier</th>
-            <th>Dernière activité</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map((u) => {
             const status = getStatus(u);
-            const cartItemsCount = u.cart?.items?.reduce((acc, item) => acc + item.quantite, 0) || 0;
+            const cartItemsCount =
+              u.cart?.items?.reduce((acc, item) => acc + item.quantite, 0) || 0;
 
             return (
               <tr
@@ -196,7 +205,6 @@ function UserManagement() {
                       </select>
                     </td>
                     <td data-label="Panier">-</td>
-                    <td data-label="Activité">-</td>
                     <td data-label="Actions">
                       <button
                         onClick={() => handleSave(u._id)}
@@ -218,14 +226,14 @@ function UserManagement() {
                     </td>
                     <td data-label="Panier">
                       <div className="cartInfo">
-                        <ShoppingCart style={{ fontSize: "16px", color: cartItemsCount > 0 ? "#27ae60" : "#bdc3c7" }} />
-                        <span>{cartItemsCount} art.</span>
+                        <ShoppingCart
+                          style={{
+                            fontSize: "16px",
+                            color: cartItemsCount > 0 ? "#27ae60" : "#bdc3c7",
+                          }}
+                        />
+                        <span>{cartItemsCount} articles</span>
                       </div>
-                    </td>
-                    <td data-label="Activité">
-                      {u.lastActivity
-                        ? new Date(u.lastActivity).toLocaleTimeString()
-                        : "Jamais"}
                     </td>
                     <td data-label="Actions">
                       <button

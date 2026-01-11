@@ -11,7 +11,7 @@ function Login() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated, setUser } = useContext(AuthContext);
+  const { setIsAuthenticated, setUser, socket } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,6 +29,13 @@ function Login() {
 
         setIsAuthenticated(true);
         setUser({ id: payload.id, role: payload.role });
+
+        if (socket) {
+          if (!socket.connected) {
+            socket.connect();
+          }
+          socket.emit("register_user", payload.id);
+        }
 
         navigate("/");
       }
@@ -83,7 +90,7 @@ function Login() {
           {loading ? "Connexion..." : "Se connecter"}
         </button>
       </form>
-      
+
       {message && <p className="errorMessage">{message}</p>}
     </div>
   );
