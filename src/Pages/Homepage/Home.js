@@ -57,11 +57,29 @@ function Home() {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         for (const article of sortedForCats) {
-          if (!categoryMap[article.categorie]) {
+          if (!categoryMap[article.categorie])
             categoryMap[article.categorie] = article;
-          }
         }
         setRecentByCategory(categoryMap);
+
+        const categories = Object.keys(categoryMap);
+        if (categories.length > 0) {
+          const lcpArt = categoryMap[categories[0]];
+          const lcpImg = lcpArt.images[lcpArt.mainImageIndex || 0];
+
+          const link = document.createElement("link");
+          link.rel = "preload";
+          link.as = "image";
+          link.href = getImageUrl(lcpImg, 300);
+          link.imageSrcset = `${getImageUrl(lcpImg, 300)} 1x, ${getImageUrl(
+            lcpImg,
+            600
+          )} 2x`;
+          link.imageSizes = "233px";
+          link.fetchPriority = "high";
+          link.crossOrigin = "anonymous";
+          document.head.appendChild(link);
+        }
       } catch (err) {
         setError("Erreur de connexion au catalogue.");
       } finally {
@@ -71,70 +89,48 @@ function Home() {
     fetchArticles();
   }, []);
 
-  useEffect(() => {
-    if (sortedArticles.length > 0) {
-      const firstArticle = sortedArticles[0];
-      const mainImg = firstArticle.images[firstArticle.mainImageIndex || 0];
-
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = getImageUrl(mainImg, 300);
-      link.imageSrcset = `${getImageUrl(mainImg, 300)} 1x, ${getImageUrl(
-        mainImg,
-        600
-      )} 2x`;
-      link.imageSizes = "233px"; // Correspond à la largeur réelle de l'image dans ta grille CSS
-      link.crossOrigin = "anonymous";
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-
-      return () => {
-        if (document.head.contains(link)) document.head.removeChild(link);
-      };
-    }
-  }, [sortedArticles]);
-
-  if (loading) {
-    return (
-      <div className="homeContainer">
-        <span className="loader"></span>
-        <p>Chargement des pépites...</p>
+  const SkeletonCard = () => (
+    <div className="articleCard skeleton">
+      <div className="skeletonImg"></div>
+      <div className="cardInfo">
+        <div className="skeletonText title"></div>
+        <div className="skeletonText price"></div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (error) {
+  if (error)
     return (
       <div className="homeContainer">
         <p className="message error">{error}</p>
       </div>
     );
-  }
 
   return (
     <div className="homeContainer">
-      {articles.length === 0 ? (
-        <div className="emptyState">
-          <Inventory
-            style={{
-              fontSize: "4rem",
-              color: "var(--secondary)",
-              opacity: 0.5,
-            }}
-          />
-          <h2>Aucun article disponible</h2>
-          <p>Revenez plus tard pour découvrir nos nouveautés.</p>
-        </div>
+      {loading ? (
+        <>
+          <div className="skeletonMainTitle"></div>
+          <div className="skeletonSort"></div>
+          <div className="sectionHeader">
+            <Category className="sectionIcon" />
+            <h2>Par catégories</h2>
+          </div>
+          <div className="articlesGrid">
+            {[1, 2, 3, 4].map((n) => (
+              <SkeletonCard key={n} />
+            ))}
+          </div>
+        </>
       ) : (
         <>
           <h1 className="mainTitle">Découvrez nos trésors</h1>
-
           <div className="sortControls">
             <Sort style={{ color: "var(--secondary)" }} />
-            <label htmlFor="sort">Trier par :</label>
+            <label htmlFor="sort-select">Trier par :</label>
             <select
-              id="sort"
+              id="sort-select"
+              name="sortOption"
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
             >
@@ -151,16 +147,14 @@ function Home() {
             <Category className="sectionIcon" />
             <h2>Par catégories</h2>
           </div>
-
           <div className="articlesGrid">
-            {Object.entries(recentByCategory).map(([categorie, article]) => (
-              <div key={categorie} className="articleCard categoryCard">
+            {Object.entries(recentByCategory).map(
+              ([categorie, article], index) => (
                 <Link
                   to={`/categorie/${encodeURIComponent(categorie)}`}
-                  key={article._id}
-                  className="articleCard categoryCard"
+                  key={categorie}
+                  className="articleCard"
                 >
-                  {" "}
                   <img
                     src={getImageUrl(
                       article.images[article.mainImageIndex || 0],
@@ -174,51 +168,58 @@ function Home() {
                       600
                     )} 2x`}
                     sizes="233px"
-                    alt={categorie}
+                    alt={article.images}
                     crossOrigin="anonymous"
-                    loading="lazy"
+                    width="300"
+                    height="160"
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding={index === 0 ? "sync" : "async"}
                   />
                   <div className="cardInfo">
                     <h3 className="titreArticle">{categorie}</h3>
                   </div>
                 </Link>
-              </div>
-            ))}
+              )
+            )}
           </div>
 
           <div className="sectionHeader" style={{ marginTop: "3rem" }}>
             <ShoppingBag className="sectionIcon" />
             <h2>Tout le catalogue</h2>
           </div>
-
           <div className="articlesGrid">
             {sortedArticles.map((article, index) => (
-              <div key={article._id} className="articleCard">
-                <Link to={`/article/${article._id}`}>
-                  <img
-                    src={getImageUrl(
-                      article.images[article.mainImageIndex || 0],
-                      300
-                    )}
-                    srcSet={`${getImageUrl(
-                      article.images[article.mainImageIndex || 0],
-                      300
-                    )} 1x, ${getImageUrl(
-                      article.images[article.mainImageIndex || 0],
-                      600
-                    )} 2x`}
-                    sizes="233px"
-                    alt={article.titre}
-                    crossOrigin="anonymous"
-                    fetchpriority={index === 0 ? "high" : "auto"}
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                  <div className="cardInfo">
-                    <h3 className="titreArticle">{article.titre}</h3>
-                    <p className="articlePrix">{article.prix} €</p>
-                  </div>
-                </Link>
-              </div>
+              <Link
+                to={`/article/${article._id}`}
+                key={article._id}
+                className="articleCard"
+              >
+                <img
+                  src={getImageUrl(
+                    article.images[article.mainImageIndex || 0],
+                    300
+                  )}
+                  srcSet={`${getImageUrl(
+                    article.images[article.mainImageIndex || 0],
+                    300
+                  )} 1x, ${getImageUrl(
+                    article.images[article.mainImageIndex || 0],
+                    600
+                  )} 2x`}
+                  sizes="233px"
+                  alt={article.titre}
+                  crossOrigin="anonymous"
+                  // On retire le lazy load pour la première ligne du catalogue aussi
+                  loading={index < 2 ? "eager" : "lazy"}
+                  width="300"
+                  height="160"
+                />
+                <div className="cardInfo">
+                  <h3 className="titreArticle">{article.titre}</h3>
+                  <p className="articlePrix">{article.prix} €</p>
+                </div>
+              </Link>
             ))}
           </div>
         </>

@@ -10,13 +10,20 @@
       content="BrocaWeb : la brocante virtuelle de la rue Saint Faron. Trouvez des trésors vintage et articles de seconde main."
     />
 
-    <link 
-      rel="preload" 
-      href="%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2" 
-      as="font" 
-      type="font/woff2" 
+    <link
+      rel="preload"
+      href="%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2"
+      as="font"
+      type="font/woff2"
       crossorigin="anonymous"
-    >
+    />
+    <link
+      rel="preload"
+      href="%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-800.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -29,7 +36,8 @@
         font-style: normal;
         font-weight: 400;
         font-display: swap;
-        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2") format("woff2");
+        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2")
+          format("woff2");
       }
 
       @font-face {
@@ -37,12 +45,25 @@
         font-style: normal;
         font-weight: 800;
         font-display: swap;
-        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-800.woff2") format("woff2");
+        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-800.woff2")
+          format("woff2");
+      }
+
+      body {
+        margin: 0;
+        background-color: #eee4dd;
+      }
+
+      header {
+        height: 80px;
       }
     </style>
   </head>
   <body>
-    <noscript>Vous devez activer JavaScript pour faire fonctionner cette application.</noscript>
+    <noscript
+      >Vous devez activer JavaScript pour faire fonctionner cette
+      application.</noscript
+    >
     <div id="root"></div>
   </body>
 </html>
