@@ -58,7 +58,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.userTable th, 
+.userTable th,
 .userTable td {
   padding: 1.2rem;
   text-align: left;
@@ -74,7 +74,8 @@
 }
 
 /* --- Inputs & Selects --- */
-.userTable input, .userTable select {
+.userTable input,
+.userTable select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid var(--blank_001);
@@ -100,7 +101,10 @@
 }
 
 /* --- Boutons d'action --- */
-.btnEdit, .btnSave, .btnCancel, .btnDelete {
+.btnEdit,
+.btnSave,
+.btnCancel,
+.btnDelete {
   background: none;
   border: none;
   cursor: pointer;
@@ -108,20 +112,57 @@
   transition: transform 0.2s;
 }
 
-.btnEdit { color: #ffc107; }
-.btnSave { color: #28a745; }
-.btnCancel { color: #6c757d; }
-.btnDelete { color: #dc3545; }
+.btnEdit {
+  color: #ffc107;
+}
+.btnSave {
+  color: #28a745;
+}
+.btnCancel {
+  color: #6c757d;
+}
+.btnDelete {
+  color: #dc3545;
+}
 
 .btnDelete:disabled {
   color: #ccc;
   cursor: not-allowed;
 }
 
-.btnEdit:hover, .btnSave:hover, .btnDelete:hover:not(:disabled) {
+.btnEdit:hover,
+.btnSave:hover,
+.btnDelete:hover:not(:disabled) {
   transform: scale(1.2);
 }
+.statusBadge {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+.statusBadge.online {
+  color: #2ecc71;
+}
+.statusBadge.away {
+  color: #f39c12;
+}
+.statusBadge.offline {
+  color: #95a5a6;
+}
 
+.roleBadge.admin {
+  background-color: #e74c3c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.roleBadge.user {
+  background-color: #3498db;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
 /* --- Responsive --- */
 @media (max-width: 850px) {
   .userTable thead {

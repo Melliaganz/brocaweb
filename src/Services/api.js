@@ -182,3 +182,36 @@ export const deleteOrder = async (id) => {
   });
   return handleResponse(res);
 };
+
+export const getCart = async () => {
+  const res = await fetch(`${API_BASE_URL}/cart`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const addToServerCart = async (articleId, quantite) => {
+  const res = await fetch(`${API_BASE_URL}/cart/add`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ articleId, quantite }),
+  });
+  return handleResponse(res);
+};
+
+export const removeFromServerCart = async (articleId) => {
+  const res = await fetch(`${API_BASE_URL}/cart/remove/${articleId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const clearServerCart = async () => {
+  const res = await fetch(`${API_BASE_URL}/cart/clear`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};

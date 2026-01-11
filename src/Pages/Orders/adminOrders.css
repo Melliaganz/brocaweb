@@ -161,9 +161,21 @@
   outline: none;
 }
 
-.statusSelect.encours { background-color: #fff3e0; color: #ef6c00; border-color: #ffe0b2; }
-.statusSelect.traité { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
-.statusSelect.livré { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+.statusSelect.encours {
+  background-color: #fff3e0;
+  color: #ef6c00;
+  border-color: #ffe0b2;
+}
+.statusSelect.traité {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-color: #bbdefb;
+}
+.statusSelect.livré {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #c8e6c9;
+}
 
 .adminOrderItem {
   display: flex;
@@ -179,8 +191,60 @@
   border-radius: 4px;
   background: #f0f0f0;
 }
+.tabsSelector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
 
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  background: #f5f5f5;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.tabBtn.active {
+  background: #2c3e50;
+  color: white;
+}
+
+.tabBadge {
+  background: #e74c3c;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+}
+
+.btnActionDelete {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btnActionDelete:hover {
+  transform: scale(1.2);
+}
 @media (max-width: 768px) {
-  .adminOrdersContainer { width: 95%; padding: 1.5rem; margin-top: 8rem; }
-  .statsGrid { grid-template-columns: 1fr; }
+  .adminOrdersContainer {
+    width: 95%;
+    padding: 1.5rem;
+    margin-top: 8rem;
+  }
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
 }
