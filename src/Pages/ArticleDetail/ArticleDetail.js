@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getArticleById,
   deleteArticle,
@@ -34,6 +34,8 @@ function ArticleDetail() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lastAddedQty, setLastAddedQty] = useState(0);
+
+  const timeoutRef = useRef(null);
 
   const { user, isAuthenticated } = useContext(AuthContext);
   const { addToCart, cartItems } = useContext(CartContext);
@@ -76,6 +78,15 @@ function ArticleDetail() {
     }
   };
 
+  const handleManualNavigation = (path) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setShowNotification(false);
+    navigate(path);
+  };
+
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
@@ -86,11 +97,11 @@ function ArticleDetail() {
     setLastAddedQty(quantitySelected);
     addToCart(article, quantitySelected);
     setShowNotification(true);
-    
+
     const remainingAfterAdd = availableStock - quantitySelected;
     setQuantitySelected(remainingAfterAdd > 0 ? 1 : 0);
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setShowNotification(false);
       navigate("/");
     }, 2500);
@@ -111,6 +122,10 @@ function ArticleDetail() {
       }
     };
     fetchArticle();
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [id]);
 
   if (loading) return <p>Chargement...</p>;
@@ -170,14 +185,17 @@ function ArticleDetail() {
             <p>
               <strong>{lastAddedQty} x</strong> {article.titre}
             </p>
-            
+
             <div className="modalActions">
-              <button onClick={() => navigate("/")} className="close-modal-btn">
+              <button
+                onClick={() => handleManualNavigation("/")}
+                className="close-modal-btn"
+              >
                 Continuer mes achats
               </button>
               <button
                 className="close-modal-btn cart-btn"
-                onClick={() => navigate("/checkout")}
+                onClick={() => handleManualNavigation("/checkout")}
               >
                 Voir le panier
               </button>

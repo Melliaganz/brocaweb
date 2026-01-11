@@ -12,7 +12,7 @@
 
     <link 
       rel="preload" 
-      href="%PUBLIC_URL%/fonts/plus-jakarta-sans-v8-latin-regular.woff2" 
+      href="%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2" 
       as="font" 
       type="font/woff2" 
       crossorigin="anonymous"
@@ -22,6 +22,24 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <title>BrocaWeb - Brocante en ligne</title>
+
+    <style>
+      @font-face {
+        font-family: "Plus Jakarta Sans";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-regular.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "Plus Jakarta Sans";
+        font-style: normal;
+        font-weight: 800;
+        font-display: swap;
+        src: url("%PUBLIC_URL%/fonts/plus-jakarta-sans-v12-latin-800.woff2") format("woff2");
+      }
+    </style>
   </head>
   <body>
     <noscript>Vous devez activer JavaScript pour faire fonctionner cette application.</noscript>
