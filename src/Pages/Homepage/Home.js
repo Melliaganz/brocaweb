@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { API_BASE_URL_IMG, getArticles } from "../../Services/api";
 import "./home.css";
 import { useEffect, useState, useMemo } from "react";
-import { Sort, Category, ShoppingBag, Inventory } from "@mui/icons-material";
+import { Sort, Category, ShoppingBag } from "@mui/icons-material";
 
 function Home() {
   const [articles, setArticles] = useState([]);
