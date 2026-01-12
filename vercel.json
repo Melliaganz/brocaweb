@@ -1,6 +1,15 @@
 {
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</static/css/main.f5cdd513.css>; rel=preload; as=style"
+        }
+      ]
+    },
+    {
       "source": "/static/(.*)",
       "headers": [
         {
