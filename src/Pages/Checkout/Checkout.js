@@ -27,8 +27,8 @@ function Checkout() {
       for (const item of cartItems) {
         try {
           const article = await getArticleById(item._id);
-          if (article && article.quantite > 0) {
-            const adjustedQuantity = Math.min(item.quantity, article.quantite);
+          if (article && article.stock > 0) {
+            const adjustedQuantity = Math.min(item.quantity, article.stock);
             if (adjustedQuantity !== item.quantity) hasChanged = true;
             validItems.push({ ...item, quantity: adjustedQuantity });
           } else {

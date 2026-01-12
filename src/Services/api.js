@@ -1,5 +1,5 @@
 export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL;
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL = process.env.REACT_APP_API_URL + "/api";
 
 const getAuthHeaders = (isFormData = false) => {
   const token = sessionStorage.getItem("token");
@@ -31,6 +31,7 @@ const handleResponse = async (res) => {
   return data;
 };
 
+// --- AUTHENTIFICATION ---
 export const register = async ({ nom, email, motDePasse }) => {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
@@ -49,15 +50,7 @@ export const login = async (email, motDePasse) => {
   return handleResponse(res);
 };
 
-export const adminCreateUser = async (userData) => {
-  const res = await fetch(`${API_BASE_URL}/auth/admin/create-user`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(userData),
-  });
-  return handleResponse(res);
-};
-
+// --- ARTICLES ---
 export const getArticles = async () => {
   const res = await fetch(`${API_BASE_URL}/articles`);
   return handleResponse(res);
@@ -71,6 +64,15 @@ export const getArticleById = async (id) => {
 export const createArticle = async (formData) => {
   const res = await fetch(`${API_BASE_URL}/articles`, {
     method: "POST",
+    headers: getAuthHeaders(true), // Important: true car FormData
+    body: formData,
+  });
+  return handleResponse(res);
+};
+
+export const updateArticle = async (id, formData) => {
+  const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
+    method: "PUT",
     headers: getAuthHeaders(true),
     body: formData,
   });
@@ -85,28 +87,12 @@ export const deleteArticle = async (id) => {
   return handleResponse(res);
 };
 
-export const updateArticle = async (id, formData) => {
-  const res = await fetch(`${API_BASE_URL}/articles/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(true),
-    body: formData,
-  });
-  return handleResponse(res);
-};
-
-export const placeOrder = async (items) => {
+// --- COMMANDES (ORDERS) ---
+export const placeOrder = async (items, totalPrice) => {
   const res = await fetch(`${API_BASE_URL}/orders`, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify({ items }),
-  });
-  return handleResponse(res);
-};
-
-export const getAllOrders = async () => {
-  const res = await fetch(`${API_BASE_URL}/orders`, {
-    method: "GET",
-    headers: getAuthHeaders(),
+    body: JSON.stringify({ items, totalAmount: totalPrice }),
   });
   return handleResponse(res);
 };
@@ -119,26 +105,9 @@ export const getUserOrders = async () => {
   return handleResponse(res);
 };
 
-export const getAllUsers = async () => {
-  const res = await fetch(`${API_BASE_URL}/auth/admin/users`, {
+export const getAllOrders = async () => {
+  const res = await fetch(`${API_BASE_URL}/orders`, {
     method: "GET",
-    headers: getAuthHeaders(),
-  });
-  return handleResponse(res);
-};
-
-export const updateUser = async (id, userData) => {
-  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(userData),
-  });
-  return handleResponse(res);
-};
-
-export const deleteUser = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
-    method: "DELETE",
     headers: getAuthHeaders(),
   });
   return handleResponse(res);
@@ -153,28 +122,6 @@ export const updateOrderStatus = async (orderId, newStatus) => {
   return handleResponse(res);
 };
 
-export const getCategories = async () => {
-  const res = await fetch(`${API_BASE_URL}/categories`);
-  return handleResponse(res);
-};
-
-export const createCategory = async (name) => {
-  const res = await fetch(`${API_BASE_URL}/categories`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ name }),
-  });
-  return handleResponse(res);
-};
-
-export const deleteCategory = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-  return handleResponse(res);
-};
-
 export const deleteOrder = async (id) => {
   const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
     method: "DELETE",
@@ -183,6 +130,7 @@ export const deleteOrder = async (id) => {
   return handleResponse(res);
 };
 
+// --- PANIER (CART) ---
 export const getCart = async () => {
   const res = await fetch(`${API_BASE_URL}/cart`, {
     method: "GET",
@@ -210,6 +158,64 @@ export const removeFromServerCart = async (articleId) => {
 
 export const clearServerCart = async () => {
   const res = await fetch(`${API_BASE_URL}/cart/clear`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+// --- CATEGORIES ---
+export const getCategories = async () => {
+  const res = await fetch(`${API_BASE_URL}/categories`);
+  return handleResponse(res);
+};
+
+export const createCategory = async (name) => {
+  const res = await fetch(`${API_BASE_URL}/categories`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ name }),
+  });
+  return handleResponse(res);
+};
+
+export const deleteCategory = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+// --- ADMIN USERS ---
+export const getAllUsers = async () => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export const adminCreateUser = async (userData) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/create-user`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(userData),
+  });
+  return handleResponse(res);
+};
+
+export const updateUser = async (id, userData) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(userData),
+  });
+  return handleResponse(res);
+};
+
+export const deleteUser = async (id) => {
+  const res = await fetch(`${API_BASE_URL}/auth/admin/users/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });

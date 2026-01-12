@@ -10,10 +10,10 @@ function CategoriePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const getImageUrl = (imageName) => {
-    if (!imageName) return "/placeholder.jpg";
-    if (imageName.startsWith("http")) return imageName;
-    return `${API_BASE_URL_IMG}/uploads/${imageName}`;
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "/placeholder.jpg";
+    if (imagePath.startsWith("http")) return imagePath;
+    return `${API_BASE_URL_IMG}/uploads/${imagePath}`;
   };
 
   useEffect(() => {
@@ -21,9 +21,14 @@ function CategoriePage() {
       try {
         setLoading(true);
         const data = await getArticles();
-        const filtered = data.filter(
-          (a) => a.categorie.toLowerCase() === categorie.toLowerCase() && a.quantite > 0
-        );
+        
+        // CORRECTION : On filtre sur 'stock' au lieu de 'quantite'
+        const filtered = data.filter((a) => {
+          const matchCat = a.categorie && a.categorie.toLowerCase() === categorie.toLowerCase();
+          const hasStock = (a.stock !== undefined ? a.stock > 0 : true);
+          return matchCat && hasStock;
+        });
+        
         setArticles(filtered);
       } catch (err) {
         setError("Erreur lors du chargement des articles.");
@@ -74,22 +79,28 @@ function CategoriePage() {
         </div>
       ) : (
         <div className="articlesGrid">
-          {articles.map((article) => (
-            <Link
-              key={article._id}
-              to={`/article/${article._id}`}
-              className="articleCard"
-            >
-              <img
-                src={getImageUrl(article.images[article.mainImageIndex || 0])}
-                alt={article.titre}
-              />
-              <div className="cardInfo">
-                <h3 className="titreArticle">{article.titre}</h3>
-                <p className="articlePrix">{article.prix} €</p>
-              </div>
-            </Link>
-          ))}
+          {articles.map((article) => {
+            const mainImg = article.images && article.images.length > 0 
+              ? article.images[article.mainImageIndex || 0] 
+              : null;
+              
+            return (
+              <Link
+                key={article._id}
+                to={`/article/${article._id}`}
+                className="articleCard"
+              >
+                <img
+                  src={getImageUrl(mainImg)}
+                  alt={article.titre}
+                />
+                <div className="cardInfo">
+                  <h3 className="titreArticle">{article.titre}</h3>
+                  <p className="articlePrix">{article.prix} €</p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

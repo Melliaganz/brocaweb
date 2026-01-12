@@ -40,11 +40,15 @@ function ArticleDetail() {
   const { user, isAuthenticated } = useContext(AuthContext);
   const { addToCart, cartItems } = useContext(CartContext);
 
+  const navigate = useNavigate();
+
+  // --- CALCULS DE STOCK (CORRIGÉS POUR 'STOCK' AU LIEU DE 'QUANTITE') ---
   const itemInCart = (cartItems || []).find((item) => item._id === id);
   const quantityInCart = itemInCart ? itemInCart.quantity : 0;
-  const availableStock = article ? article.quantite - quantityInCart : 0;
-
-  const navigate = useNavigate();
+  
+  // Utilisation de article.stock
+  const totalStock = article ? (article.stock ?? 0) : 0;
+  const availableStock = totalStock - quantityInCart;
 
   const getImageUrl = (imageName) => {
     if (!imageName) return "/placeholder.jpg";
@@ -136,28 +140,15 @@ function ArticleDetail() {
     <div className="articleDetailContainer">
       {showAuthModal && (
         <div className="modalOverlay" onClick={() => setShowAuthModal(false)}>
-          <div
-            className="confirmBox authModal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="confirmBox authModal" onClick={(e) => e.stopPropagation()}>
             <div className="auth-icon-circle">
               <Lock style={{ fontSize: "3rem", color: "#f44336" }} />
             </div>
             <h3>Connexion requise</h3>
             <p>Veuillez vous connecter pour ajouter des articles au panier.</p>
             <div className="confirmActions">
-              <button
-                className="buttonValidate"
-                onClick={() => navigate("/login")}
-              >
-                Se connecter
-              </button>
-              <button
-                className="buttonCancel"
-                onClick={() => setShowAuthModal(false)}
-              >
-                Fermer
-              </button>
+              <button className="buttonValidate" onClick={() => navigate("/login")}>Se connecter</button>
+              <button className="buttonCancel" onClick={() => setShowAuthModal(false)}>Fermer</button>
             </div>
           </div>
         </div>
@@ -182,28 +173,12 @@ function ArticleDetail() {
               <Done style={{ fontSize: "3rem", color: "#4caf50" }} />
             </div>
             <h3>Ajouté au panier !</h3>
-            <p>
-              <strong>{lastAddedQty} x</strong> {article.titre}
-            </p>
-
+            <p><strong>{lastAddedQty} x</strong> {article.titre}</p>
             <div className="modalActions">
-              <button
-                onClick={() => handleManualNavigation("/")}
-                className="close-modal-btn"
-              >
-                Continuer mes achats
-              </button>
-              <button
-                className="close-modal-btn cart-btn"
-                onClick={() => handleManualNavigation("/checkout")}
-              >
-                Voir le panier
-              </button>
+              <button onClick={() => handleManualNavigation("/")} className="close-modal-btn">Continuer mes achats</button>
+              <button className="close-modal-btn cart-btn" onClick={() => handleManualNavigation("/checkout")}>Voir le panier</button>
             </div>
-
-            <div className="progressBarContainer">
-              <div className="progressBarFill"></div>
-            </div>
+            <div className="progressBarContainer"><div className="progressBarFill"></div></div>
           </div>
         </div>
       )}
@@ -216,9 +191,7 @@ function ArticleDetail() {
               src={getImageUrl(article.images[currentImageIndex])}
               alt={article.titre}
               className="mainImage"
-              onClick={() =>
-                setSelectedImage(getImageUrl(article.images[currentImageIndex]))
-              }
+              onClick={() => setSelectedImage(getImageUrl(article.images[currentImageIndex]))}
             />
           </div>
 
@@ -229,9 +202,7 @@ function ArticleDetail() {
                   key={i}
                   src={getImageUrl(img)}
                   alt={`Miniature ${i + 1}`}
-                  className={`thumbnailImage ${
-                    i === currentImageIndex ? "activeThumb" : ""
-                  }`}
+                  className={`thumbnailImage ${i === currentImageIndex ? "activeThumb" : ""}`}
                   onClick={() => setCurrentImageIndex(i)}
                 />
               ))}
@@ -242,63 +213,38 @@ function ArticleDetail() {
         <div className="articleDetailInfo">
           {user?.role === "admin" && (
             <div className="articleActions">
-              <button
-                className="editBtn"
-                onClick={() => navigate(`/admin/edit-article/${id}`)}
-              >
-                <Edit /> Modifier
-              </button>
-              <button
-                className="deleteBtn"
-                onClick={() => setShowConfirm(true)}
-              >
-                <Delete /> Supprimer
-              </button>
+              <button className="editBtn" onClick={() => navigate(`/admin/edit-article/${id}`)}><Edit /> Modifier</button>
+              <button className="deleteBtn" onClick={() => setShowConfirm(true)}><Delete /> Supprimer</button>
             </div>
           )}
+          
           {showConfirm && (
             <div className="confirmModal">
               <div className="confirmBox">
                 <p>Confirmer la suppression de cet article ?</p>
                 <div className="confirmActions">
-                  <button className="buttonValidate" onClick={handleDelete}>
-                    <Done /> Oui, supprimer
-                  </button>
-                  <button
-                    className="buttonCancel"
-                    onClick={() => setShowConfirm(false)}
-                  >
-                    <Close /> Annuler
-                  </button>
+                  <button className="buttonValidate" onClick={handleDelete}><Done /> Oui, supprimer</button>
+                  <button className="buttonCancel" onClick={() => setShowConfirm(false)}><Close /> Annuler</button>
                 </div>
               </div>
             </div>
           )}
+
           <div className="descriptionArticleDetail">
-            <p>
-              <strong>Prix :</strong> {article.prix} €
-            </p>
-            <p>
-              <strong>Description :</strong> {article.description}
-            </p>
-            <p>
-              <strong>État :</strong> {article.etat}
-            </p>
-            <p>
-              <strong>Catégorie :</strong> {article.categorie}
-            </p>
+            <p><strong>Prix :</strong> {article.prix} €</p>
+            <p><strong>Description :</strong> {article.description}</p>
+            <p><strong>État :</strong> {article.etat}</p>
+            <p><strong>Catégorie :</strong> {article.categorie}</p>
             <p>
               <strong>Quantité disponible:</strong>{" "}
-              {article.quantite !== availableStock
-                ? availableStock
-                : article.quantite}
+              {availableStock}
             </p>
           </div>
+
           {quantityInCart > 0 && (
-            <p style={{ color: "#666", fontSize: "0.9rem" }}>
-              ({quantityInCart} déjà dans votre panier)
-            </p>
+            <p style={{ color: "#666", fontSize: "0.9rem" }}>({quantityInCart} déjà dans votre panier)</p>
           )}
+
           <div className="purchaseActions">
             <div className="quantitySelector">
               <button
@@ -326,6 +272,7 @@ function ArticleDetail() {
               </button>
             </div>
           </div>
+
           <div className="articleButtonDetail">
             <button onClick={handleAddToCart} disabled={availableStock <= 0}>
               <ShoppingCart />
@@ -334,15 +281,11 @@ function ArticleDetail() {
           </div>
         </div>
       </div>
+
       {selectedImage && (
         <div className="modalOverlay" onClick={() => setSelectedImage(null)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="closeModalBtn"
-              onClick={() => setSelectedImage(null)}
-            >
-              <Close />
-            </button>
+            <button className="closeModalBtn" onClick={() => setSelectedImage(null)}><Close /></button>
             <img src={selectedImage} alt="Zoom" className="modalImage" />
           </div>
         </div>
