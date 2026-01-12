@@ -73,11 +73,30 @@ export function AuthProvider({ children }) {
   }, [logout]);
 
   useEffect(() => {
+    const handlePageHide = () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        setSocket(null);
+      }
+    };
+
+    const handlePageShow = (event) => {
+      if (event.persisted && isAuthenticated && user?.id) {
+        initSocket(user.id);
+      }
+    };
+
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+
     if (isAuthenticated && user?.id && !socketRef.current) {
       initSocket(user.id);
     }
 
     return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
       if (socketRef.current) {
         socketRef.current.off("connect");
       }
