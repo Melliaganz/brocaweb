@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { getArticles } from "../../Services/api";
 import "./home.css";
 import { useEffect, useState, useMemo } from "react";
-import { Sort, Category, ShoppingBag } from "@mui/icons-material";
+import { Sort, Category, ShoppingBag, SearchOff } from "@mui/icons-material";
 
 function Home() {
   const [articles, setArticles] = useState([]);
@@ -51,7 +51,6 @@ function Home() {
       try {
         const data = await getArticles();
         
-        // CORRECTION : On utilise article.stock au lieu de article.quantite
         const availableArticles = data.filter(
           (article) => (article.stock !== undefined ? article.stock > 0 : true)
         );
@@ -86,9 +85,33 @@ function Home() {
     <div className="homeContainer">
       {loading ? (
         <div className="loading">Chargement des trésors...</div>
+      ) : articles.length === 0 ? (
+        <div className="emptyState">
+          <SearchOff style={{ fontSize: "5rem", color: "var(--secondary)", opacity: 0.5 }} />
+          <h2>Le catalogue est vide</h2>
+          <p>Revenez bientôt pour découvrir nos nouvelles pépites !</p>
+        </div>
       ) : (
         <>
           <h1 className="mainTitle">Découvrez nos trésors</h1>
+
+          <div className="sortControls">
+            <Sort style={{ color: "var(--secondary)" }} />
+            <label htmlFor="sort-select">Trier par :</label>
+            <select
+              id="sort-select"
+              name="sortOption"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+            >
+              <option value="recent">Plus récents</option>
+              <option value="priceAsc">Prix croissant</option>
+              <option value="priceDesc">Prix décroissant</option>
+              <option value="alphaAsc">A → Z</option>
+              <option value="alphaDesc">Z → A</option>
+              <option value="categorie">Catégorie</option>
+            </select>
+          </div>
           
           {/* Section Par catégories */}
           {Object.keys(recentByCategory).length > 0 && (
