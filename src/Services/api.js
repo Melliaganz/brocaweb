@@ -1,5 +1,5 @@
-export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL;
-const API_BASE_URL = process.env.REACT_APP_API_URL + "/api";
+export const API_BASE_URL_IMG = process.env.REACT_APP_API_IMG_URL || "https://brocawebapi.onrender.com";
+const API_BASE_URL = (process.env.REACT_APP_API_URL || "https://brocawebapi.onrender.com") + "/api";
 
 const getAuthHeaders = (isFormData = false) => {
   const token = sessionStorage.getItem("token");
@@ -31,7 +31,6 @@ const handleResponse = async (res) => {
   return data;
 };
 
-// --- AUTHENTIFICATION ---
 export const register = async ({ nom, email, motDePasse }) => {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
@@ -50,7 +49,6 @@ export const login = async (email, motDePasse) => {
   return handleResponse(res);
 };
 
-// --- ARTICLES ---
 export const getArticles = async () => {
   const res = await fetch(`${API_BASE_URL}/articles`);
   return handleResponse(res);
@@ -64,7 +62,7 @@ export const getArticleById = async (id) => {
 export const createArticle = async (formData) => {
   const res = await fetch(`${API_BASE_URL}/articles`, {
     method: "POST",
-    headers: getAuthHeaders(true), // Important: true car FormData
+    headers: getAuthHeaders(true),
     body: formData,
   });
   return handleResponse(res);
@@ -87,7 +85,6 @@ export const deleteArticle = async (id) => {
   return handleResponse(res);
 };
 
-// --- COMMANDES (ORDERS) ---
 export const placeOrder = async (items, totalPrice) => {
   const res = await fetch(`${API_BASE_URL}/orders`, {
     method: "POST",
@@ -130,7 +127,6 @@ export const deleteOrder = async (id) => {
   return handleResponse(res);
 };
 
-// --- PANIER (CART) ---
 export const getCart = async () => {
   const res = await fetch(`${API_BASE_URL}/cart`, {
     method: "GET",
@@ -164,7 +160,6 @@ export const clearServerCart = async () => {
   return handleResponse(res);
 };
 
-// --- CATEGORIES ---
 export const getCategories = async () => {
   const res = await fetch(`${API_BASE_URL}/categories`);
   return handleResponse(res);
@@ -187,7 +182,6 @@ export const deleteCategory = async (id) => {
   return handleResponse(res);
 };
 
-// --- ADMIN USERS ---
 export const getAllUsers = async () => {
   const res = await fetch(`${API_BASE_URL}/auth/admin/users`, {
     method: "GET",
