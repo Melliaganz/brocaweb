@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# BrocaWeb - Mon Grenier en ligne
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**BrocaWeb** est une plateforme familiale de vide-grenier en ligne. Elle a été conçue pour faciliter la vente d’objets entre particuliers, en mettant l'accent sur la simplicité, la transparence et la proximité.
 
-## Available Scripts
+Ce projet a pour mission spécifique de donner une seconde vie aux objets soigneusement conservés dans le grenier de la rue Saint-Faron.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🛠 Stack Technique
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* **Frontend :** React 19
+* **Design & UI :** Material UI (MUI v7) & Emotion
+* **Navigation :** React Router DOM
+* **Communication :** Socket.io-client (pour les interactions en temps réel)
+* **Gestionnaire de paquets :** Yarn (4.x)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🚀 Fonctionnalités
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* **Catalogue d'objets :** Consultation des articles du grenier de la rue Saint-Faron.
+* **Simplicité d'utilisation :** Interface épurée pour une navigation intuitive.
+* **Interactivité :** Communication en temps réel intégrée via Socket.io.
+* **Design Soigné :** Composants modernes et responsive grâce à Material UI.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 💻 Installation et Lancement
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prérequis
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Node.js (LTS recommandé)
+* Yarn installé sur votre machine
 
-### `npm run eject`
+### Étapes
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1.  **Cloner le dépôt**
+    ```bash
+    git clone <URL_DU_REPO>
+    cd mongrenier
+    ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2.  **Installer les dépendances**
+    ```bash
+    yarn install
+    ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3.  **Lancer le projet en mode développement**
+    ```bash
+    yarn start
+    ```
+    *L'application sera accessible sur `http://localhost:3000`.*
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4.  **Builder pour la production**
+    ```bash
+    yarn build
+    ```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📁 Structure du Projet
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* `src/` : Code source de l'application (Composants, Pages, Hooks).
+* `public/` : Assets statiques et fichier `index.html`.
+* `package.json` : Dépendances et scripts de l'application.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📝 Licence
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ce projet est privé et destiné à un usage familial pour la plateforme BrocaWeb.
