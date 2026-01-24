@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL_IMG, getArticleById, updateArticle } from "../../Services/api";
+import { API_BASE_URL_IMG, getArticleById, updateArticle, getCategories } from "../../Services/api";
 import { AuthContext } from "../../Services/AuthContext";
+import CategoryManager from "../CategoryManager/CategoryManager"; 
 import "../CreateArticle/createArticle.css";
-import { CloudUpload } from "@mui/icons-material";
+import { CloudUpload, AddCircleOutline } from "@mui/icons-material";
 
 function EditArticle() {
   const { id } = useParams();
@@ -21,9 +22,11 @@ function EditArticle() {
   
   const [existingImages, setExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showCatManager, setShowCatManager] = useState(false);
 
   const getImageUrl = (imageName) => {
     if (!imageName) return "/placeholder.jpg";
@@ -31,9 +34,19 @@ function EditArticle() {
     return `${API_BASE_URL_IMG}/uploads/${imageName}`;
   };
 
+  const fetchCats = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error("Erreur chargement catégories", err);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await fetchCats();
         const article = await getArticleById(id);
         setFormData({
           titre: article.titre || "",
@@ -152,7 +165,7 @@ function EditArticle() {
           required
         />
 
-        <div className="selectInput">
+        <div className="selectInputGroup">
           <select name="etat" value={formData.etat} onChange={handleChange} className="inputs" required>
             <option value="">État</option>
             <option value="Neuf">Neuf</option>
@@ -162,14 +175,30 @@ function EditArticle() {
             <option value="À réparer">À réparer</option>
           </select>
 
-          <select name="categorie" value={formData.categorie} onChange={handleChange} className="inputs" required>
-            <option value="">Catégorie</option>
-            <option value="Électronique">Électronique</option>
-            <option value="Meubles">Meubles</option>
-            <option value="Vêtements">Vêtements</option>
-            <option value="Jeux / Jouets">Jeux / Jouets</option>
-            <option value="Autre">Autre</option>
-          </select>
+          <div className="categorySelectorContainer">
+            <select 
+              name="categorie" 
+              value={formData.categorie} 
+              onChange={handleChange} 
+              className="inputs selectWithBtn" 
+              required
+            >
+              <option value="">Catégorie</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <button 
+              type="button" 
+              className="manageCatsBtn"
+              onClick={() => setShowCatManager(true)}
+              title="Gérer les catégories"
+            >
+              <AddCircleOutline />
+            </button>
+          </div>
 
           <input
             type="number"
@@ -184,7 +213,6 @@ function EditArticle() {
         </div>
 
         <div className="previewContainer">
-          {/* Images existantes */}
           {existingImages.map((img, idx) => (
             <div 
               key={`ex-${idx}`} 
@@ -197,7 +225,6 @@ function EditArticle() {
             </div>
           ))}
 
-          {/* Nouvelles images */}
           {newImages.map((img, idx) => {
             const globalIdx = existingImages.length + idx;
             return (
@@ -235,6 +262,15 @@ function EditArticle() {
           {loading ? "Enregistrement..." : "Valider les modifications"}
         </button>
       </form>
+
+      {showCatManager && (
+        <div className="modalOverlay" onClick={() => { setShowCatManager(false); fetchCats(); }}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <button className="closeModal" onClick={() => { setShowCatManager(false); fetchCats(); }}>×</button>
+            <CategoryManager />
+          </div>
+        </div>
+      )}
 
       {message && <p className={`message ${message.includes("Erreur") ? "error" : "success"}`}>{message}</p>}
     </div>
