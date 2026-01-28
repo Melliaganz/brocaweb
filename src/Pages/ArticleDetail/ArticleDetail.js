@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import {
   getArticleById,
@@ -19,6 +19,7 @@ import {
   Remove,
   ShoppingCart,
   Lock,
+  ArrowBack,
 } from "@mui/icons-material";
 
 function ArticleDetail() {
@@ -182,7 +183,9 @@ function ArticleDetail() {
           </div>
         </div>
       )}
-
+    <Link to="/" className="backLink" style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: 'var(--secondary)' }}>
+          <ArrowBack fontSize="small" /> Retour
+        </Link>
       <h2>{article.titre}</h2>
       <div className="articleDetailContent">
         <div className="imagesGallery">
